@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../styles/globals.css";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { convex } from "@/lib/convexClient";
 import Header from "@/components/Header/Header";

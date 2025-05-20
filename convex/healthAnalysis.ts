@@ -65,28 +65,27 @@ export const analyzeHealthData = action({
       userProfile.symptoms?.join(", ") || "No specific symptoms reported.";
 
     const prompt = `
-      Analyze the following health information for a user and provide a concise summary.
-      User Profile:
+      Analyze this user's health info and summarize it.
+      
+      User:
       - Age: ${userProfile.age || "Not specified"}
       - Sex: ${userProfile.sex || "Not specified"}
       - Symptoms: ${symptomsString}
-      - General Health Status: ${userProfile.generalHealthStatus || "Not specified"}
-
-      ${args.labResultId && labContent ? `Lab Test Results (text format):\n${labContent}\n` : ""}
-
-      Based on this information, please provide:
-      1. Potential Health Issues: (List 2-3 potential issues or areas of concern. Be cautious and general, advising professional consultation.)
-      2. Recommended Medical Specialty: (Suggest a type of doctor or specialist they might consider consulting, e.g., General Practitioner, Cardiologist, Endocrinologist.)
-      3. Supplement Suggestions: (Suggest 1-2 relevant supplements with a brief explanation of why, e.g., Magnesium for stress, Vitamin D if deficiency is suspected. Emphasize that these are not medical advice and to consult a doctor.)
-
-      Format your response as a JSON object with keys: "potentialIssues" (array of strings), "recommendedSpecialty" (string), "supplementSuggestions" (array of strings).
+      - Health Status: ${userProfile.generalHealthStatus || "Not specified"}
+      ${args.labResultId && labContent ? `Lab Results:\n${labContent}\n` : ""}
+      
+      Provide a JSON with:
+      1. "potentialIssues" (2–3 general concerns, recommend seeing a doctor)
+      2. "recommendedSpecialty" (suggest a relevant doctor type)
+      3. "supplementSuggestions" (1–2 optional supplements with reasons; include medical disclaimer)
+      
       Example:
       {
-        "potentialIssues": ["Potential nutritional deficiencies", "Stress-related symptoms"],
+        "potentialIssues": ["Possible deficiencies", "Stress symptoms"],
         "recommendedSpecialty": "General Practitioner",
-        "supplementSuggestions": ["Magnesium: May help with stress and sleep if symptoms are present.", "Multivitamin: To cover potential general nutritional gaps."]
+        "supplementSuggestions": ["Magnesium: For stress and sleep", "Vitamin D: If low levels are suspected"]
       }
-    `;
+      `;
 
     let analysisResult: {
       potentialIssues?: string[];

@@ -4,7 +4,6 @@ import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { SignInForm } from "../SignInForm/SignInForm";
 import { UserProfileForm } from "../UserProfileForm/UserProfileForm";
-import { FileUpload } from "../FileUpload/FileUpload";
 import { HealthAnalysisDisplay } from "../HealthAnalysisDisplay/HealthAnalysisDisplay";
 
 const SalAnalyzeForm = () => {
@@ -55,7 +54,7 @@ const SalAnalyzeForm = () => {
           </p>
         )}
         <UserProfileForm />
-        <FileUpload />
+
         <HealthAnalysisDisplay
           userProfile={userProfileForDisplay}
           latestLabResult={latestLabResult}

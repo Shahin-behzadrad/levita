@@ -2,6 +2,7 @@ import React, { useState, useEffect, FormEvent } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { toast } from "sonner";
+import { FileUpload } from "../FileUpload/FileUpload";
 
 export function UserProfileForm() {
   const userProfile = useQuery(api.userProfiles.getUserProfile);
@@ -140,6 +141,8 @@ export function UserProfileForm() {
           <option value="poor">Poor</option>
         </select>
       </div>
+
+      <FileUpload />
 
       <button
         type="submit"

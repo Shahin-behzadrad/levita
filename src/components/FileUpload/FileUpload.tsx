@@ -16,8 +16,6 @@ export function FileUpload() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
-    console.log(file?.type);
-
     if (file) {
       // Basic validation for text or PDF
       if (
@@ -117,31 +115,6 @@ export function FileUpload() {
       {labResults === undefined && (
         <div className="flex justify-center items-center pt-4">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
-        </div>
-      )}
-      {labResults && labResults.length > 0 && (
-        <div className="mt-8">
-          <h3 className="text-lg font-medium text-gray-700">Uploaded Files:</h3>
-          <ul className="mt-2 space-y-2">
-            {labResults.map((result) => (
-              <li
-                key={result._id}
-                className="text-sm text-gray-600 p-2 border rounded-md bg-gray-50 flex justify-between items-center"
-              >
-                <span>{result.fileName}</span>
-                {result.url && (
-                  <a
-                    href={result.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-indigo-600 hover:text-indigo-800 font-medium"
-                  >
-                    View
-                  </a>
-                )}
-              </li>
-            ))}
-          </ul>
         </div>
       )}
       {labResults && labResults.length === 0 && (
