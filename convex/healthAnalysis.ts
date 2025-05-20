@@ -8,7 +8,6 @@ import OpenAI from "openai";
 
 // Initialize OpenAI client using bundled Convex environment variables
 const openai = new OpenAI({
-  baseURL: "https://api.openai.com/v1",
   apiKey: process.env.CONVEX_OPENAI_API_KEY,
 });
 
