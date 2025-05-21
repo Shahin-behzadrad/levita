@@ -26,7 +26,7 @@ export function FileUpload() {
       ) {
         setSelectedFile(file);
       } else {
-        toast.error("Invalid file type. Please upload a PDF or Text file.");
+        toast("Invalid file type. Please upload a PDF or Text file.");
         setSelectedFile(null);
         if (fileInputRef.current) fileInputRef.current.value = ""; // Reset input
       }
@@ -36,7 +36,7 @@ export function FileUpload() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!selectedFile) {
-      toast.error("Please select a file to upload.");
+      toast("Please select a file to upload.");
       return;
     }
 
@@ -60,12 +60,12 @@ export function FileUpload() {
         fileName: selectedFile.name,
       });
 
-      toast.success("File uploaded successfully!");
+      toast("File uploaded successfully!");
       setSelectedFile(null);
       if (fileInputRef.current) fileInputRef.current.value = ""; // Reset input
     } catch (error) {
       console.error("Failed to upload file:", error);
-      toast.error(
+      toast(
         `Failed to upload file. ${error instanceof Error ? error.message : ""}`
       );
     } finally {

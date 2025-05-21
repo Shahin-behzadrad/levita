@@ -20,9 +20,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import SalSVG from "@/components/svgs/Sal";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { toast } from "sonner";
+import { useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
 
 export default function SignUp() {
   const { signIn } = useAuthActions();
+  const updateUserProfile = useMutation(api.userProfiles.updateUserProfile);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,20 +42,31 @@ export default function SignUp() {
     formData.set("flow", "signUp");
 
     try {
+      // First try to sign up
       await signIn("password", formData);
-      // Sign-up successful; redirect to health analysis page
+
+      // After successful sign-up, update the user profile with their name
+      await updateUserProfile({ name });
+
+      toast("Account created successfully!");
       router.push("/health-analysis");
     } catch (error: any) {
       console.error("Sign-up error:", error);
       const errorMessage = error?.message || "";
 
       if (errorMessage.includes("already exists")) {
-        toast.error(
+        toast(
           "An account with this email already exists. Please sign in instead."
         );
         router.push("/sign-in");
+      } else if (errorMessage.includes("InvalidAccountId")) {
+        toast("Invalid email address. Please try again.");
+      } else if (errorMessage.includes("InvalidSecret")) {
+        toast(
+          "Invalid password format. Password must be at least 8 characters long and include a number and special character."
+        );
       } else {
-        toast.error("An error occurred during sign up. Please try again.");
+        toast("An error occurred during sign up. Please try again.");
       }
     } finally {
       setIsLoading(false);

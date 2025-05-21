@@ -35,18 +35,16 @@ export default function SignIn() {
 
     try {
       await signIn("password", formData);
-      // Sign-in successful; redirect to analyze page
+      toast.success("Signed in successfully!");
       router.push("/health-analysis");
     } catch (error: any) {
       console.error("Sign-in error:", error);
-
-      // Customize error handling based on error message or code
       const errorMessage = error?.message || "";
 
-      if (errorMessage.includes("user not found")) {
-        toast.error("Account not found. Redirecting to sign-up page...");
+      if (errorMessage.includes("InvalidAccountId")) {
+        toast.error("No account found with this email. Please sign up first.");
         router.push("/sign-up");
-      } else if (errorMessage.includes("invalid password")) {
+      } else if (errorMessage.includes("InvalidSecret")) {
         toast.error("Incorrect password. Please try again.");
       } else {
         toast.error("An unexpected error occurred. Please try again later.");
