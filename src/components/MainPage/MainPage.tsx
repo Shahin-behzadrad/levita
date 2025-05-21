@@ -1,5 +1,3 @@
-import Link from "next/link";
-import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -7,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import HeroActions from "../HeroActions/HeroActions";
 
 const MainPage = () => {
   return (
@@ -23,18 +22,7 @@ const MainPage = () => {
                 results using advanced AI technology.
               </p>
             </div>
-            <div className="space-x-4">
-              <Link href="/sign-up">
-                <Button size="lg" className="bg-teal-600 hover:bg-teal-700">
-                  Get Started
-                </Button>
-              </Link>
-              <Link href="/learn-more">
-                <Button size="lg" variant="outline">
-                  Learn More
-                </Button>
-              </Link>
-            </div>
+            <HeroActions />
           </div>
         </div>
       </section>
