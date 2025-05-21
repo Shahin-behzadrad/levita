@@ -3,6 +3,7 @@ import "../styles/globals.css";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { convex } from "@/lib/convexClient";
 import Header from "@/components/Header/Header";
+import Footer from "@/components/Footer/Footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,6 +21,7 @@ export default function RootLayout({
         <ConvexAuthProvider client={convex}>
           <Header />
           {children}
+          <Footer />
         </ConvexAuthProvider>
       </body>
     </html>

@@ -11,14 +11,19 @@ import {
 } from "@radix-ui/react-avatar";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { SignOutButton } from "../SignOutButton/SignOutButton";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const loggedInUser = useQuery(api.auth.loggedInUser);
+  const router = useRouter();
 
   return (
     <header className="fixed top-0 left-0 right-0 border-b backdrop-blur bg-white/70 z-50">
       <div className="container flex h-16 items-center justify-between py-4">
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => router.push("/")}
+        >
           <SalSVG />
           <span className="text-xl font-bold">HealthAI</span>
         </div>

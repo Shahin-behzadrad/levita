@@ -18,8 +18,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import SalSVG from "@/components/svgs/Sal";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { toast } from "sonner";
 
 export default function SignUp() {
+  const { signIn } = useAuthActions();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,11 +33,30 @@ export default function SignUp() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate account creation
-    setTimeout(() => {
-      setIsLoading(false);
+    const formData = new FormData();
+    formData.set("email", email);
+    formData.set("password", password);
+    formData.set("flow", "signUp");
+
+    try {
+      await signIn("password", formData);
+      // Sign-up successful; redirect to health analysis page
       router.push("/health-analysis");
-    }, 1500);
+    } catch (error: any) {
+      console.error("Sign-up error:", error);
+      const errorMessage = error?.message || "";
+
+      if (errorMessage.includes("already exists")) {
+        toast.error(
+          "An account with this email already exists. Please sign in instead."
+        );
+        router.push("/sign-in");
+      } else {
+        toast.error("An error occurred during sign up. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
