@@ -29,7 +29,7 @@ const MainPage = () => {
                   Get Started
                 </Button>
               </Link>
-              <Link href="/about">
+              <Link href="/learn-more">
                 <Button size="lg" variant="outline">
                   Learn More
                 </Button>

@@ -1,6 +1,6 @@
 const SalSVG = () => {
   return (
-    <svg width="120" height="48" viewBox="0 0 150 74.2716582961706">
+    <svg width="100" height="40" viewBox="0 0 150 74.2716582961706">
       <defs id="SvgjsDefs1083"></defs>
       <g
         id="SvgjsG1084"

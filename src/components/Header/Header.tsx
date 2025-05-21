@@ -11,14 +11,19 @@ import {
 } from "@radix-ui/react-avatar";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { SignOutButton } from "../SignOutButton/SignOutButton";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
-  const loggedInUser = useQuery(api.auth.loggedInUser);
+  const userData = useQuery(api.userProfiles.getUserProfile);
+  const router = useRouter();
 
   return (
     <header className="fixed top-0 left-0 right-0 border-b backdrop-blur bg-white/70 z-50">
       <div className="container flex h-16 items-center justify-between py-4">
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => router.push("/")}
+        >
           <SalSVG />
           <span className="text-xl font-bold">HealthAI</span>
         </div>
@@ -35,18 +40,18 @@ const Header = () => {
         <Authenticated>
           <Popover>
             <div className="flex items-center gap-2">
-              <h1>{loggedInUser?.email} </h1>
+              <h1>{userData?.name} </h1>
               <PopoverTrigger asChild className="cursor-pointer">
                 <AvatarRoot>
                   <AvatarFallback className="w-12 h-12 rounded-full bg-muted text-muted-foreground font-medium flex items-center justify-center">
-                    {loggedInUser?.email?.slice(0, 2).toUpperCase() || "??"}
+                    {userData?.name?.slice(0, 2).toUpperCase() || "??"}
                   </AvatarFallback>
                 </AvatarRoot>
               </PopoverTrigger>
             </div>
             <PopoverContent className="rounded-xl border bg-white shadow-md p-4 mt-1 mr-5 w-56">
               <div className="text-sm font-semibold mb-2">
-                {loggedInUser?.name || loggedInUser?.email}
+                {userData?.name ?? "Welcome"}
               </div>
               <SignOutButton />
             </PopoverContent>

@@ -8,7 +8,7 @@ import OpenAI from "openai";
 
 // Initialize OpenAI client using bundled Convex environment variables
 const openai = new OpenAI({
-  apiKey: process.env.CONVEX_OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 async function getFileContent(

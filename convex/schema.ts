@@ -5,6 +5,7 @@ import { authTables } from "@convex-dev/auth/server";
 const applicationTables = {
   userProfiles: defineTable({
     userId: v.id("users"),
+    name: v.string(),
     age: v.optional(v.number()),
     sex: v.optional(v.string()), // e.g., "male", "female", "other"
     symptoms: v.optional(v.array(v.string())),
@@ -21,7 +22,8 @@ const applicationTables = {
   healthAnalyses: defineTable({
     userId: v.id("users"),
     labResultId: v.optional(v.id("labResults")), // Optional if analysis is based only on profile
-    userProfileAtAnalysis: v.object({ // Snapshot of profile when analysis was run
+    userProfileAtAnalysis: v.object({
+      // Snapshot of profile when analysis was run
       age: v.optional(v.number()),
       sex: v.optional(v.string()),
       symptoms: v.optional(v.array(v.string())),
@@ -31,7 +33,8 @@ const applicationTables = {
     recommendedSpecialty: v.optional(v.string()),
     supplementSuggestions: v.optional(v.array(v.string())),
     rawAnalysis: v.optional(v.string()), // Store the full AI response if needed
-  }).index("by_userId", ["userId"])
+  })
+    .index("by_userId", ["userId"])
     .index("by_labResultId", ["labResultId"]),
 };
 

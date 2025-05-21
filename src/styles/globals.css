@@ -92,3 +92,28 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Toast Styles */
+.toast-custom {
+  background: white !important;
+  color: black !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.toast-custom[data-type="success"] {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border: 1px solid #86efac !important;
+}
+
+.toast-custom[data-type="error"] {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #fca5a5 !important;
+}
+
+.toast-custom[data-type="warning"] {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #fcd34d !important;
+}
