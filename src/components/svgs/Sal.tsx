@@ -12,7 +12,6 @@ const SalSVG = ({
         id="SvgjsG1084"
         transform="matrix(4.2277339891573575,0,0,4.2277339891573575,-1.183766403977951,-25.535511117294526)"
         fill="#521262"
-        className="dark:fill-white"
       >
         <path
           style={{ transform: "translateY(1px)" }}

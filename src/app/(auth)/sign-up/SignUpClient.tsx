@@ -90,7 +90,7 @@ export default function SignUpClient() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
       <Card className="w-full max-w-md mt-10">
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4 pb-4 border-b">
