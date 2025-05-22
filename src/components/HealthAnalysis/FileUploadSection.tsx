@@ -24,7 +24,7 @@ export function FileUploadSection({
       <div className="flex items-center justify-center w-full">
         <label
           htmlFor="file-upload"
-          className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+          className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <svg
@@ -41,11 +41,11 @@ export function FileUploadSection({
                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
               ></path>
             </svg>
-            <p className="mb-2 text-sm text-gray-500">
+            <p className="mb-2 text-sm text-gray-500 dark:text-white">
               <span className="font-semibold">Click to upload</span> or drag and
               drop
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-white">
               PDF, JPG, or PNG (MAX. 10MB)
             </p>
           </div>
@@ -59,7 +59,7 @@ export function FileUploadSection({
         </label>
       </div>
       {selectedFile && (
-        <p className="text-sm text-gray-500 mt-2">
+        <p className="text-sm text-gray-500 dark:text-white mt-2">
           Selected file: {selectedFile.name}
         </p>
       )}

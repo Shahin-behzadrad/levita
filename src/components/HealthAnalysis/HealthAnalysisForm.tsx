@@ -55,7 +55,7 @@ export function HealthAnalysisForm({
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full dark:bg-gray-900">
       <CardHeader>
         <CardTitle>Health Analysis</CardTitle>
         <CardDescription>
@@ -140,7 +140,7 @@ export function HealthAnalysisForm({
         <CardFooter>
           <Button
             type="submit"
-            className="w-full bg-teal-600 hover:bg-teal-700"
+            className="w-full bg-teal-600 hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600"
             disabled={isAnalyzing}
           >
             {isAnalyzing ? (

@@ -5,6 +5,7 @@ import { convex } from "@/lib/convexClient";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,25 +18,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <ConvexAuthProvider client={convex}>
-          <Header />
-          {children}
-          <Footer />
-          <Toaster
-            theme="light"
-            richColors
-            toastOptions={{
-              style: {
-                background: "white",
-                color: "black",
-                border: "1px solid #e5e7eb",
-              },
-              className: "toast-custom",
-            }}
-          />
-        </ConvexAuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ConvexAuthProvider client={convex}>
+            <Header />
+            {children}
+            <Footer />
+            <Toaster
+              theme="light"
+              richColors
+              toastOptions={{
+                style: {
+                  background: "white",
+                  color: "black",
+                  border: "1px solid #e5e7eb",
+                },
+                className: "toast-custom",
+              }}
+            />
+          </ConvexAuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

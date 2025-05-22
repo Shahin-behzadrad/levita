@@ -23,10 +23,10 @@ export default function PrivacyPolicyClient() {
             <h2 className="text-2xl font-semibold mb-4">
               1. Information We Collect
             </h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-white mb-4">
               We collect information that you provide directly to us, including:
             </p>
-            <ul className="list-disc pl-6 text-gray-600 space-y-2">
+            <ul className="list-disc pl-6 text-gray-600 dark:text-white space-y-2">
               <li>Personal information (name, email address, age, sex)</li>
               <li>Health-related information you choose to share</li>
               <li>Lab results and medical documents you upload</li>
@@ -38,10 +38,10 @@ export default function PrivacyPolicyClient() {
             <h2 className="text-2xl font-semibold mb-4">
               2. How We Use Your Information
             </h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-white mb-4">
               We use the information we collect to:
             </p>
-            <ul className="list-disc pl-6 text-gray-600 space-y-2">
+            <ul className="list-disc pl-6 text-gray-600 dark:text-white space-y-2">
               <li>Provide and improve our AI health analysis services</li>
               <li>Personalize your experience</li>
               <li>Communicate with you about our services</li>
@@ -51,7 +51,7 @@ export default function PrivacyPolicyClient() {
 
           <section>
             <h2 className="text-2xl font-semibold mb-4">3. Data Security</h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 dark:text-white mb-4">
               We implement appropriate technical and organizational measures to
               protect your personal information. However, no method of
               transmission over the Internet or electronic storage is 100%
@@ -61,8 +61,10 @@ export default function PrivacyPolicyClient() {
 
           <section>
             <h2 className="text-2xl font-semibold mb-4">4. Your Rights</h2>
-            <p className="text-gray-600 mb-4">You have the right to:</p>
-            <ul className="list-disc pl-6 text-gray-600 space-y-2">
+            <p className="text-gray-600 dark:text-white mb-4">
+              You have the right to:
+            </p>
+            <ul className="list-disc pl-6 text-gray-600 dark:text-white space-y-2">
               <li>Access your personal information</li>
               <li>Correct inaccurate data</li>
               <li>Request deletion of your data</li>
@@ -73,7 +75,12 @@ export default function PrivacyPolicyClient() {
 
           <div className="pt-6">
             <Link href="/">
-              <Button variant="outline">Back to Home</Button>
+              <Button
+                variant="outline"
+                className="dark:border-gray-700 dark:text-white"
+              >
+                Back to Home
+              </Button>
             </Link>
           </div>
         </CardContent>
