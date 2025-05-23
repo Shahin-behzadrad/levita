@@ -1,15 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HealthAnalysisForm } from "@/components/HealthAnalysis/HealthAnalysisForm";
+import {
+  HealthAnalysisForm,
+  userProfileData,
+} from "@/components/HealthAnalysis/HealthAnalysisForm";
 import { AnalysisResults } from "@/components/HealthAnalysis/AnalysisResults";
-import { useConvexAuth } from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
+import { api } from "../../../convex/_generated/api";
 
 export default function HealthAnalysis() {
+  const userProfile = useQuery(api.userProfiles.getUserProfile);
+  const updateUserProfile = useMutation(api.userProfiles.updateUserProfile);
+
   const router = useRouter();
   const { isAuthenticated, isLoading } = useConvexAuth();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [labFile, setLabFile] = useState<File | null>(null);
   const [result, setResult] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,33 +26,18 @@ export default function HealthAnalysis() {
     }
   }, [isAuthenticated, isLoading]);
 
-  const handleAnalyze = async (formData: FormData) => {
-    setIsAnalyzing(true);
-    setResult(null);
-
-    try {
-      setTimeout(() => {
-        setIsAnalyzing(false);
-        setResult(
-          "Based on the symptoms and lab results provided, this could indicate a mild upper respiratory infection. " +
-            "Your lab results show normal white blood cell count, which is reassuring. " +
-            "Recommended actions: Rest, stay hydrated, and monitor symptoms. If fever persists for more than 3 days or " +
-            "breathing difficulties occur, please consult with a healthcare professional immediately."
-        );
-      }, 3000);
-    } catch (error) {
-      console.error("Error analyzing health data:", error);
-      setIsAnalyzing(false);
-    }
+  const handleSubmit = async (data: userProfileData) => {
+    console.log(data, labFile);
   };
-
   if (!isAuthenticated) return null;
 
   return (
     <div className="flex min-h-screen flex-col max-w-screen-md mx-auto">
       <main className="flex-1 container py-8 mt-16">
         <HealthAnalysisForm
-          onSubmit={handleAnalyze}
+          onFileUploaded={setLabFile}
+          userProfile={userProfile}
+          onSubmit={handleSubmit}
           isAnalyzing={isAnalyzing}
         />
         {result && <AnalysisResults result={result} />}

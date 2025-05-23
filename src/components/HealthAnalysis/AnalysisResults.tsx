@@ -8,11 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-interface AnalysisResultsProps {
-  result: string;
-}
-
-export function AnalysisResults({ result }: AnalysisResultsProps) {
+export function AnalysisResults({ result }: { result: string }) {
   return (
     <Card className="mt-8">
       <CardHeader>
