@@ -19,7 +19,7 @@ export const getUserProfile = query({
 
 export const updateUserProfile = mutation({
   args: {
-    name: v.string(),
+    name: v.optional(v.string()),
     age: v.optional(v.number()),
     sex: v.optional(v.string()),
     symptoms: v.optional(v.array(v.string())),

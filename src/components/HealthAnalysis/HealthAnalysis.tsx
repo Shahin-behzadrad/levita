@@ -14,6 +14,10 @@ export default function HealthAnalysis() {
   const userProfile = useQuery(api.userProfiles.getUserProfile);
   const updateUserProfile = useMutation(api.userProfiles.updateUserProfile);
 
+  const generateUploadUrl = useMutation(api.labResults.generateUploadUrl);
+  const saveLabResult = useMutation(api.labResults.saveLabResult);
+  const labResults = useQuery(api.labResults.getLabResults);
+
   const router = useRouter();
   const { isAuthenticated, isLoading } = useConvexAuth();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -27,8 +31,37 @@ export default function HealthAnalysis() {
   }, [isAuthenticated, isLoading]);
 
   const handleSubmit = async (data: userProfileData) => {
-    console.log(data, labFile);
+    setIsAnalyzing(true);
+    try {
+      await updateUserProfile({
+        age: Number(data?.age),
+        generalHealthStatus: data?.generalHealthStatus,
+        sex: data?.sex,
+        symptoms:
+          typeof data?.symptoms === "string"
+            ? (data.symptoms as string).split(",").map((s: string) => s.trim())
+            : data?.symptoms || [],
+      });
+      if (labFile) {
+        const uploadUrl = await generateUploadUrl();
+        const response = await fetch(uploadUrl, {
+          method: "POST",
+          headers: { "Content-Type": labFile.type },
+          body: labFile,
+        });
+        if (!response.ok) {
+          throw new Error("Failed to upload file");
+        }
+        const { storageId } = await response.json();
+        await saveLabResult({ storageId, fileName: labFile.name });
+      }
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
+
   if (!isAuthenticated) return null;
 
   return (

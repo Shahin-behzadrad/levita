@@ -57,7 +57,7 @@ export function HealthAnalysisForm({
     if (userProfile) {
       setValue("age", userProfile?.age?.toString() || "");
       setValue("sex", userProfile?.sex || "");
-      setValue("symptoms", userProfile?.symptoms);
+      setValue("symptoms", userProfile?.symptoms || []);
       setValue("generalHealthStatus", userProfile?.generalHealthStatus || "");
     }
   }, [userProfile, setValue]);

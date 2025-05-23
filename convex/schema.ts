@@ -5,7 +5,7 @@ import { authTables } from "@convex-dev/auth/server";
 const applicationTables = {
   userProfiles: defineTable({
     userId: v.id("users"),
-    name: v.string(),
+    name: v.optional(v.string()),
     age: v.optional(v.number()),
     sex: v.optional(v.string()), // e.g., "male", "female", "other"
     symptoms: v.optional(v.array(v.string())),
