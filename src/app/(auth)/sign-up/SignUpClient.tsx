@@ -84,7 +84,7 @@ export default function SignUpClient() {
       // First check if email exists
       const emailExists = await checkEmailExists(email);
       if (emailExists) {
-        toast(
+        toast.warning(
           "An account with this email already exists. Please sign in instead."
         );
         router.push("/sign-in");
