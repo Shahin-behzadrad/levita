@@ -1,9 +1,8 @@
 "use client";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Menu } from "lucide-react";
 import { SignOutButton } from "../SignOutButton/SignOutButton";
 import {
   Root as AvatarRoot,
@@ -23,6 +22,7 @@ const Sidebar = ({ isOpen, onOpenChange, userData }: SidebarProps) => {
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+        <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
         <div className="flex flex-col h-full">
           {userData?._id ? (
             <>

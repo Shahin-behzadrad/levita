@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -19,12 +19,20 @@ import SalSVG from "@/components/svgs/Sal";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
+import { useConvexAuth } from "convex/react";
 
 export default function SignInClient() {
   const { signIn } = useAuthActions();
+  const { isAuthenticated } = useConvexAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/health-analysis");
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,9 +43,9 @@ export default function SignInClient() {
     formData.set("flow", "signIn");
 
     try {
-      await signIn("password", formData);
-      toast.success("Signed in successfully!");
-      router.push("/health-analysis");
+      await signIn("password", formData).then(() => {
+        toast.success("Signed in successfully!");
+      });
     } catch (error: any) {
       console.error("Sign-in error:", error);
       const errorMessage = error?.message || "";
