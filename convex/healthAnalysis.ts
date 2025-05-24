@@ -93,7 +93,7 @@ export const analyzeHealthData = action({
       throw new Error("User profile not found or access denied.");
     }
 
-    let labContent = "";
+    let labContents: string[] = [];
     let isImage = false;
     let imageError: string | undefined;
 
@@ -111,17 +111,17 @@ export const analyzeHealthData = action({
           isImage: isImageFile,
           error,
         } = await getFileContent(ctx, labResult.storageId);
-        labContent = content;
+        labContents.push(content);
         isImage = isImageFile;
         imageError = error;
 
         if (error) {
           console.error("Image processing error:", error);
-          labContent = `Error processing image: ${error}`;
+          labContents.push(`Error processing image: ${error}`);
         }
       } catch (e) {
         console.error("Failed to get file content:", e);
-        labContent = "Error reading lab file content.";
+        labContents.push("Error reading lab file content.");
       }
     }
 
@@ -136,7 +136,7 @@ export const analyzeHealthData = action({
       - Sex: ${userProfile.sex || "Not specified"}
       - Symptoms: ${symptomsString}
       - Health Status: ${userProfile.generalHealthStatus || "Not specified"}
-      ${args.labResultId ? `Lab Results: ${isImage ? "[Image Analysis]" : labContent}\n` : ""}
+      ${args.labResultId ? `Lab Results: ${isImage ? "[Image Analysis]" : labContents.join("\n\n")}\n` : ""}
       
       Provide a detailed JSON response with the following structure:
       {
@@ -185,7 +185,8 @@ export const analyzeHealthData = action({
       3. Prioritize evidence-based recommendations
       4. Consider the user's age and sex in recommendations
       5. If analyzing an image, focus on visible symptoms or conditions
-      `;
+      6. If multiple lab results are provided, analyze them together for a comprehensive assessment
+    `;
 
     let analysisResult: {
       potentialIssues?: Array<{
@@ -223,13 +224,13 @@ export const analyzeHealthData = action({
         {
           role: "user" as const,
           content:
-            isImage && labContent && !imageError
+            isImage && labContents.length > 0 && !imageError
               ? [
                   { type: "text" as const, text: prompt },
-                  {
+                  ...labContents.map((content) => ({
                     type: "image_url" as const,
-                    image_url: { url: labContent },
-                  },
+                    image_url: { url: content },
+                  })),
                 ]
               : prompt,
         },
@@ -238,7 +239,11 @@ export const analyzeHealthData = action({
       console.log("Sending to OpenAI:", {
         hasImage: isImage,
         imageError,
-        contentLength: labContent.length,
+        contentLength: labContents.join("\n").length,
+        messageStructure: JSON.stringify(messages, null, 2),
+        imageContent: isImage
+          ? labContents[0].substring(0, 100) + "..."
+          : "No image content",
       });
 
       const completion = await openai.chat.completions.create({

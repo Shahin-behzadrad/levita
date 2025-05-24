@@ -30,7 +30,7 @@ export interface userProfileData {
 }
 interface HealthAnalysisFormProps {
   onSubmit: (formData: userProfileData) => Promise<void>;
-  onFileUploaded: (file: File | null) => void;
+  onFileUploaded: (files: File[]) => void;
   isAnalyzing: boolean;
   userProfile?: userProfileData | null;
 }
@@ -50,8 +50,8 @@ export function HealthAnalysisForm({
     },
   });
 
-  const [file, setFile] = useState<File | null>(null);
-  const [filePreview, setFilePreview] = useState<string | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [filePreviews, setFilePreviews] = useState<string[]>([]);
 
   useEffect(() => {
     if (userProfile) {
@@ -62,17 +62,28 @@ export function HealthAnalysisForm({
     }
   }, [userProfile, setValue]);
 
-  const handleFileChange = (file: File | null) => {
-    setFile(file);
-    if (file) {
+  const handleFileChange = (newFiles: File[]) => {
+    setFiles(newFiles);
+    const previews: string[] = [];
+
+    newFiles.forEach((file) => {
       const reader = new FileReader();
-      reader.onloadend = () => setFilePreview(reader.result as string);
+      reader.onloadend = () => {
+        previews.push(reader.result as string);
+        setFilePreviews([...previews]);
+      };
       reader.readAsDataURL(file);
-      onFileUploaded(file);
-    } else {
-      setFilePreview(null);
-      onFileUploaded(null);
-    }
+    });
+
+    onFileUploaded(newFiles);
+  };
+
+  const removeFile = (index: number) => {
+    const newFiles = files.filter((_, i) => i !== index);
+    const newPreviews = filePreviews.filter((_, i) => i !== index);
+    setFiles(newFiles);
+    setFilePreviews(newPreviews);
+    onFileUploaded(newFiles);
   };
 
   const onSubmitForm = async (data: userProfileData) => {
@@ -162,24 +173,34 @@ export function HealthAnalysisForm({
             </div>
           </div>
 
-          {filePreview ? (
-            <div className="w-[120px] h-[120px] relative rounded-md border shadow-md">
-              <CircleX
-                color="red"
-                className="bg-white w-7 h-7 absolute top-[-10px] right-[-10px] z-10 rounded-full shadow-md cursor-pointer hover:opacity-80"
-                onClick={() => setFilePreview(null)}
-              />
-              <Image
-                src={filePreview}
-                alt="Preview"
-                className="object-cover"
-                fill
-                sizes="50px"
-              />
-            </div>
-          ) : (
-            <FileUploadSection onFileChange={handleFileChange} />
-          )}
+          <div className="space-y-4">
+            <Label>Lab Results (Optional)</Label>
+            {filePreviews.length > 0 ? (
+              <div className="flex gap-5 flex-wrap">
+                {filePreviews.map((preview, index) => (
+                  <div
+                    key={index}
+                    className="relative w-[120px] h-[120px] rounded-md border shadow-md"
+                  >
+                    <CircleX
+                      color="red"
+                      className="bg-white w-7 h-7 absolute top-[-10px] right-[-10px] z-10 rounded-full shadow-md cursor-pointer hover:opacity-80"
+                      onClick={() => removeFile(index)}
+                    />
+                    <Image
+                      src={preview}
+                      alt={`Preview ${index + 1}`}
+                      className="object-cover"
+                      fill
+                      sizes="50px"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <FileUploadSection onFileChange={handleFileChange} />
+            )}
+          </div>
         </CardContent>
         <CardFooter>
           <Button
