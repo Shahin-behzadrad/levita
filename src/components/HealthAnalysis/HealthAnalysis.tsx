@@ -1,16 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HealthAnalysisForm } from "@/components/HealthAnalysis/HealthAnalysisForm";
-import { AnalysisResults } from "@/components/HealthAnalysis/AnalysisResults";
-import { useConvexAuth } from "convex/react";
+import {
+  HealthAnalysisForm,
+  userProfileData,
+} from "@/components/HealthAnalysis/HealthAnalysisForm";
+import { useAction, useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "convex/_generated/dataModel";
+import { toast } from "sonner";
+import AnalysisResults from "./AnalysisResults";
 
 export default function HealthAnalysis() {
+  const userProfile = useQuery(api.userProfiles.getUserProfile);
+  const updateUserProfile = useMutation(api.userProfiles.updateUserProfile);
+
+  const analyses = useQuery(
+    api.healthQueriesAndMutations.getHealthAnalysesForUser
+  );
+  const generateUploadUrl = useMutation(api.labResults.generateUploadUrl);
+  const saveLabResult = useMutation(api.labResults.saveLabResult);
+  const labResults = useQuery(api.labResults.getLabResults);
+  const performAnalysis = useAction(api.healthAnalysis.analyzeHealthData);
+
   const router = useRouter();
   const { isAuthenticated, isLoading } = useConvexAuth();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [labFiles, setLabFiles] = useState<File[]>([]);
+  const [selectedAnalysisId, setSelectedAnalysisId] =
+    useState<Id<"healthAnalyses"> | null>(null);
+  const [showNewAnalysis, setShowNewAnalysis] = useState(false);
+
+  // TODO: I just need this raw analysis to be displayed in the UI
+  //  so other unused and unnecessary results that are generated in healthAnalysis.ts
+  // can be removed
+  const selectedAnalysisDetails = useQuery(
+    api.healthQueriesAndMutations.getHealthAnalysisById,
+    selectedAnalysisId ? { analysisId: selectedAnalysisId } : "skip"
+  );
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -18,36 +46,144 @@ export default function HealthAnalysis() {
     }
   }, [isAuthenticated, isLoading]);
 
-  const handleAnalyze = async (formData: FormData) => {
+  const handleSubmit = async (data: userProfileData) => {
     setIsAnalyzing(true);
-    setResult(null);
-
+    const latestLabResult =
+      labResults && labResults.length > 0 ? labResults[0] : null;
     try {
-      setTimeout(() => {
-        setIsAnalyzing(false);
-        setResult(
-          "Based on the symptoms and lab results provided, this could indicate a mild upper respiratory infection. " +
-            "Your lab results show normal white blood cell count, which is reassuring. " +
-            "Recommended actions: Rest, stay hydrated, and monitor symptoms. If fever persists for more than 3 days or " +
-            "breathing difficulties occur, please consult with a healthcare professional immediately."
-        );
-      }, 3000);
+      await updateUserProfile({
+        age: Number(data?.age),
+        generalHealthStatus: data?.generalHealthStatus,
+        sex: data?.sex,
+        symptoms:
+          typeof data?.symptoms === "string"
+            ? (data.symptoms as string).split(",").map((s: string) => s.trim())
+            : data?.symptoms || [],
+      });
+
+      let uploadedLabResultIds: Id<"labResults">[] = [];
+
+      if (labFiles.length > 0) {
+        const storageIds: string[] = [];
+        const fileNames: string[] = [];
+
+        // Upload all files
+        for (const file of labFiles) {
+          const uploadUrl = await generateUploadUrl();
+          const response = await fetch(uploadUrl, {
+            method: "POST",
+            headers: { "Content-Type": file.type },
+            body: file,
+          });
+          if (!response.ok) {
+            throw new Error(`Failed to upload file: ${file.name}`);
+          }
+          const { storageId } = await response.json();
+          storageIds.push(storageId);
+          fileNames.push(file.name);
+        }
+
+        // Save all lab results
+        for (let i = 0; i < storageIds.length; i++) {
+          const result = await saveLabResult({
+            storageId: storageIds[i] as Id<"_storage">,
+            fileName: fileNames[i],
+          });
+          if (result) {
+            uploadedLabResultIds.push(result);
+          }
+        }
+      }
+
+      if (userProfile?._id) {
+        try {
+          // Use the first uploaded lab result for the analysis
+          const analysisId = await performAnalysis({
+            userProfileId: userProfile._id,
+            labResultId: uploadedLabResultIds[0] || latestLabResult?._id,
+          });
+          toast.success("Health analysis complete!");
+          if (analysisId) {
+            setSelectedAnalysisId(analysisId);
+            setShowNewAnalysis(false);
+          }
+        } catch (error) {
+          console.error("Analysis failed:", error);
+          toast.error(
+            `Analysis failed. ${error instanceof Error ? error.message : ""}`
+          );
+        }
+      }
     } catch (error) {
-      console.error("Error analyzing health data:", error);
+      console.error("Failed to update profile:", error);
+      toast.error("Failed to process lab results. Please try again.");
+    } finally {
       setIsAnalyzing(false);
     }
   };
 
   if (!isAuthenticated) return null;
+  console.log(analyses);
 
   return (
-    <div className="flex min-h-screen flex-col max-w-screen-md mx-auto">
-      <main className="flex-1 container py-8 mt-16">
-        <HealthAnalysisForm
-          onSubmit={handleAnalyze}
-          isAnalyzing={isAnalyzing}
-        />
-        {result && <AnalysisResults result={result} />}
+    <div className="min-h-screen max-w-screen-lg mx-auto">
+      <main className="flex flex-col container py-8 mt-16 gap-6">
+        {analyses && analyses.length > 0 && !showNewAnalysis ? (
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Previous Analyses</h2>
+              <button
+                onClick={() => setShowNewAnalysis(true)}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                New Analysis
+              </button>
+            </div>
+            <select
+              className="p-2 border rounded"
+              value={selectedAnalysisId || ""}
+              onChange={(e) =>
+                setSelectedAnalysisId(e.target.value as Id<"healthAnalyses">)
+              }
+            >
+              <option value="">Select an analysis</option>
+              {analyses.map((analysis) => (
+                <option key={analysis._id} value={analysis._id}>
+                  Analysis from{" "}
+                  {new Date(analysis._creationTime).toLocaleString(undefined, {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {analyses && analyses.length > 0 && (
+              <button
+                onClick={() => setShowNewAnalysis(false)}
+                className="self-start px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+              >
+                View Previous Analyses
+              </button>
+            )}
+            <HealthAnalysisForm
+              onFileUploaded={setLabFiles}
+              userProfile={userProfile}
+              onSubmit={handleSubmit}
+              isAnalyzing={isAnalyzing}
+            />
+          </div>
+        )}
+        {selectedAnalysisDetails && !showNewAnalysis && (
+          <AnalysisResults
+            result={JSON.parse(selectedAnalysisDetails?.rawAnalysis || "{}")}
+          />
+        )}
       </main>
     </div>
   );

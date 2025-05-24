@@ -14,12 +14,62 @@ const openai = new OpenAI({
 async function getFileContent(
   ctx: ActionCtx,
   storageId: Id<"_storage">
-): Promise<string> {
+): Promise<{ content: string; isImage: boolean; error?: string }> {
   const blob = await ctx.storage.get(storageId);
   if (!blob) {
     throw new Error(`File not found for storageId: ${storageId}`);
   }
-  return await blob.text();
+
+  // Check if the file is an image
+  if (blob.type.startsWith("image/")) {
+    try {
+      // Convert blob to base64 for image analysis
+      const arrayBuffer = await blob.arrayBuffer();
+      const base64 = Buffer.from(arrayBuffer).toString("base64");
+
+      // Validate image size (OpenAI has a 20MB limit)
+      const sizeInMB = arrayBuffer.byteLength / (1024 * 1024);
+      if (sizeInMB > 20) {
+        return {
+          content: "",
+          isImage: true,
+          error: "Image size exceeds 20MB limit",
+        };
+      }
+
+      // Validate image format
+      const validFormats = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      if (!validFormats.includes(blob.type)) {
+        return {
+          content: "",
+          isImage: true,
+          error: `Unsupported image format: ${blob.type}. Supported formats are: ${validFormats.join(", ")}`,
+        };
+      }
+
+      return {
+        content: `data:${blob.type};base64,${base64}`,
+        isImage: true,
+      };
+    } catch (error) {
+      console.error("Error processing image:", error);
+      return {
+        content: "",
+        isImage: true,
+        error: "Failed to process image",
+      };
+    }
+  }
+
+  return {
+    content: await blob.text(),
+    isImage: false,
+  };
 }
 
 export const analyzeHealthData = action({
@@ -43,9 +93,11 @@ export const analyzeHealthData = action({
       throw new Error("User profile not found or access denied.");
     }
 
-    let labContent = "";
+    let labContents: string[] = [];
+    let isImage = false;
+    let imageError: string | undefined;
+
     if (args.labResultId) {
-      // Use ctx.runQuery with internal API path
       const labResult: Doc<"labResults"> | null = await ctx.runQuery(
         internal.healthQueriesAndMutations.getLabResultInternal,
         { labResultId: args.labResultId }
@@ -54,10 +106,22 @@ export const analyzeHealthData = action({
         throw new Error("Lab result not found or access denied.");
       }
       try {
-        labContent = await getFileContent(ctx, labResult.storageId);
+        const {
+          content,
+          isImage: isImageFile,
+          error,
+        } = await getFileContent(ctx, labResult.storageId);
+        labContents.push(content);
+        isImage = isImageFile;
+        imageError = error;
+
+        if (error) {
+          console.error("Image processing error:", error);
+          labContents.push(`Error processing image: ${error}`);
+        }
       } catch (e) {
         console.error("Failed to get file content:", e);
-        labContent = "Error reading lab file content.";
+        labContents.push("Error reading lab file content.");
       }
     }
 
@@ -65,39 +129,128 @@ export const analyzeHealthData = action({
       userProfile.symptoms?.join(", ") || "No specific symptoms reported.";
 
     const prompt = `
-      Analyze this user's health info and summarize it.
+      Analyze this user's health information and provide a comprehensive health assessment.
       
-      User:
+      User Profile:
       - Age: ${userProfile.age || "Not specified"}
       - Sex: ${userProfile.sex || "Not specified"}
       - Symptoms: ${symptomsString}
       - Health Status: ${userProfile.generalHealthStatus || "Not specified"}
-      ${args.labResultId && labContent ? `Lab Results:\n${labContent}\n` : ""}
+      ${args.labResultId ? `Lab Results: ${isImage ? "[Image Analysis]" : labContents.join("\n\n")}\n` : ""}
       
-      Provide a JSON with:
-      1. "potentialIssues" (2–3 general concerns, recommend seeing a doctor)
-      2. "recommendedSpecialty" (suggest a relevant doctor type)
-      3. "supplementSuggestions" (1–2 optional supplements with reasons; include medical disclaimer)
-      
-      Example:
+      Provide a detailed JSON response with the following structure:
       {
-        "potentialIssues": ["Possible deficiencies", "Stress symptoms"],
-        "recommendedSpecialty": "General Practitioner",
-        "supplementSuggestions": ["Magnesium: For stress and sleep", "Vitamin D: If low levels are suspected"]
+        "potentialIssues": [
+          {
+            "issue": "Description of the health concern",
+            "severity": "low/medium/high",
+            "recommendation": "Specific action to take"
+          }
+        ],
+        "recommendedSpecialists": [
+          {
+            "specialty": "Type of specialist",
+            "reason": "Why this specialist is recommended",
+            "priority": "high/medium/low"
+          }
+        ],
+        "recommendedActivities": [
+          {
+            "activity": "Name of activity",
+            "frequency": "How often to perform",
+            "benefits": "Expected health benefits"
+          }
+        ],
+        "medicationSuggestions": [
+          {
+            "name": "Medication name",
+            "purpose": "What it's for",
+            "dosage": "Recommended dosage",
+            "source": "Link to reliable medical information",
+            "disclaimer": "Important safety information"
+          }
+        ],
+        "lifestyleChanges": [
+          {
+            "change": "Specific lifestyle change",
+            "impact": "Expected health impact",
+            "implementation": "How to implement"
+          }
+        ]
       }
-      `;
+      
+      Important:
+      1. For medication suggestions, always include reliable medical information sources
+      2. Include appropriate medical disclaimers
+      3. Prioritize evidence-based recommendations
+      4. Consider the user's age and sex in recommendations
+      5. If analyzing an image, focus on visible symptoms or conditions
+      6. If multiple lab results are provided, analyze them together for a comprehensive assessment
+    `;
 
     let analysisResult: {
-      potentialIssues?: string[];
-      recommendedSpecialty?: string;
-      supplementSuggestions?: string[];
+      potentialIssues?: Array<{
+        issue: string;
+        severity: string;
+        recommendation: string;
+      }>;
+      recommendedSpecialists?: Array<{
+        specialty: string;
+        reason: string;
+        priority: string;
+      }>;
+      recommendedActivities?: Array<{
+        activity: string;
+        frequency: string;
+        benefits: string;
+      }>;
+      medicationSuggestions?: Array<{
+        name: string;
+        purpose: string;
+        dosage: string;
+        source: string;
+        disclaimer: string;
+      }>;
+      lifestyleChanges?: Array<{
+        change: string;
+        impact: string;
+        implementation: string;
+      }>;
       error?: string;
     };
+
     try {
+      const messages = [
+        {
+          role: "user" as const,
+          content:
+            isImage && labContents.length > 0 && !imageError
+              ? [
+                  { type: "text" as const, text: prompt },
+                  ...labContents.map((content) => ({
+                    type: "image_url" as const,
+                    image_url: { url: content },
+                  })),
+                ]
+              : prompt,
+        },
+      ];
+
+      console.log("Sending to OpenAI:", {
+        hasImage: isImage,
+        imageError,
+        contentLength: labContents.join("\n").length,
+        messageStructure: JSON.stringify(messages, null, 2),
+        imageContent: isImage
+          ? labContents[0].substring(0, 100) + "..."
+          : "No image content",
+      });
+
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
+        model: "gpt-4o",
+        messages,
         response_format: { type: "json_object" },
+        max_tokens: 2000,
       });
 
       const rawResponse = completion.choices[0].message.content;
@@ -108,13 +261,17 @@ export const analyzeHealthData = action({
     } catch (error) {
       console.error("OpenAI API call failed:", error);
       analysisResult = {
-        potentialIssues: ["Error during analysis. Please try again."],
-        recommendedSpecialty: "N/A",
-        supplementSuggestions: [],
+        potentialIssues: [
+          {
+            issue: "Error during analysis",
+            severity: "low",
+            recommendation: "Please try again or consult a healthcare provider",
+          },
+        ],
         error:
           error instanceof Error
             ? error.message
-            : "Unknown error during AI analysis.",
+            : "Unknown error during AI analysis",
       };
     }
 
@@ -130,9 +287,14 @@ export const analyzeHealthData = action({
           symptoms: userProfile.symptoms,
           generalHealthStatus: userProfile.generalHealthStatus,
         },
-        potentialIssues: analysisResult.potentialIssues,
-        recommendedSpecialty: analysisResult.recommendedSpecialty,
-        supplementSuggestions: analysisResult.supplementSuggestions,
+        potentialIssues:
+          analysisResult.potentialIssues?.map((issue) => issue.issue) || [],
+        recommendedSpecialty:
+          analysisResult.recommendedSpecialists?.[0]?.specialty,
+        supplementSuggestions:
+          analysisResult.medicationSuggestions?.map(
+            (med) => `${med.name}: ${med.purpose}`
+          ) || [],
         rawAnalysis: JSON.stringify(analysisResult),
       }
     );

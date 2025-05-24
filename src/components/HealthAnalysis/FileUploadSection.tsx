@@ -2,19 +2,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface FileUploadSectionProps {
-  onFileChange: (file: File | null) => void;
-  selectedFile: File | null;
+  onFileChange: (files: File[]) => void;
 }
 
-export function FileUploadSection({
-  onFileChange,
-  selectedFile,
-}: FileUploadSectionProps) {
+export function FileUploadSection({ onFileChange }: FileUploadSectionProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      onFileChange(e.target.files[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      const filesArray = Array.from(e.target.files);
+      onFileChange(filesArray);
     } else {
-      onFileChange(null);
+      onFileChange([]);
     }
   };
 
@@ -46,23 +43,19 @@ export function FileUploadSection({
               drop
             </p>
             <p className="text-xs text-gray-500">
-              PDF, JPG, or PNG (MAX. 10MB)
+              PDF, JPG, or PNG (MAX. 10MB per file)
             </p>
           </div>
           <Input
             id="file-upload"
             type="file"
             className="hidden"
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept=".jpg,.jpeg,.png"
             onChange={handleFileChange}
+            multiple
           />
         </label>
       </div>
-      {selectedFile && (
-        <p className="text-sm text-gray-500 mt-2">
-          Selected file: {selectedFile.name}
-        </p>
-      )}
     </div>
   );
 }
