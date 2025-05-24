@@ -5,17 +5,20 @@ import {
   HealthAnalysisForm,
   userProfileData,
 } from "@/components/HealthAnalysis/HealthAnalysisForm";
-import { AnalysisResults } from "@/components/HealthAnalysis/AnalysisResults";
 import { useAction, useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "convex/_generated/dataModel";
 import { toast } from "sonner";
+import AnalysisResults from "./AnalysisResults";
 
 export default function HealthAnalysis() {
   const userProfile = useQuery(api.userProfiles.getUserProfile);
   const updateUserProfile = useMutation(api.userProfiles.updateUserProfile);
 
+  const analyses = useQuery(
+    api.healthQueriesAndMutations.getHealthAnalysesForUser
+  );
   const generateUploadUrl = useMutation(api.labResults.generateUploadUrl);
   const saveLabResult = useMutation(api.labResults.saveLabResult);
   const labResults = useQuery(api.labResults.getLabResults);
@@ -25,16 +28,16 @@ export default function HealthAnalysis() {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [labFile, setLabFile] = useState<File | null>(null);
-  const [result, setResult] = useState<string | null>(null);
   const [selectedAnalysisId, setSelectedAnalysisId] =
     useState<Id<"healthAnalyses"> | null>(null);
 
+  // TODO: I just need this raw analysis to be displayed in the UI
+  //  so other unused and unnecessary results that are generated in healthAnalysis.ts
+  // can be removed
   const selectedAnalysisDetails = useQuery(
     api.healthQueriesAndMutations.getHealthAnalysisById,
     selectedAnalysisId ? { analysisId: selectedAnalysisId } : "skip"
   );
-
-  console.log(selectedAnalysisDetails);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -93,18 +96,22 @@ export default function HealthAnalysis() {
     }
   };
 
+  console.log(analyses);
+
   if (!isAuthenticated) return null;
 
   return (
-    <div className="flex min-h-screen flex-col max-w-screen-md mx-auto">
-      <main className="flex-1 container py-8 mt-16">
+    <div className="min-h-screen max-w-screen-md mx-auto">
+      <main className="flex flex-col container py-8 mt-16 gap-6">
         <HealthAnalysisForm
           onFileUploaded={setLabFile}
           userProfile={userProfile}
           onSubmit={handleSubmit}
           isAnalyzing={isAnalyzing}
         />
-        {result && <AnalysisResults result={result} />}
+        <AnalysisResults
+          result={JSON.parse(selectedAnalysisDetails?.rawAnalysis || "{}")}
+        />
       </main>
     </div>
   );

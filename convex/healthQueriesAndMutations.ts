@@ -118,6 +118,10 @@ export const getHealthAnalysisById = query({
       const labResult = await ctx.db.get(analysis.labResultId);
       labFileName = labResult?.fileName;
     }
-    return { ...analysis, labFileName };
+    return {
+      ...analysis,
+      rawAnalysis: analysis?.rawAnalysis,
+      labFileName,
+    };
   },
 });
