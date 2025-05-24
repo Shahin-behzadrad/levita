@@ -6,9 +6,11 @@ import {
   userProfileData,
 } from "@/components/HealthAnalysis/HealthAnalysisForm";
 import { AnalysisResults } from "@/components/HealthAnalysis/AnalysisResults";
-import { useConvexAuth, useMutation, useQuery } from "convex/react";
+import { useAction, useConvexAuth, useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { api } from "../../../convex/_generated/api";
+import { Id } from "convex/_generated/dataModel";
+import { toast } from "sonner";
 
 export default function HealthAnalysis() {
   const userProfile = useQuery(api.userProfiles.getUserProfile);
@@ -17,12 +19,22 @@ export default function HealthAnalysis() {
   const generateUploadUrl = useMutation(api.labResults.generateUploadUrl);
   const saveLabResult = useMutation(api.labResults.saveLabResult);
   const labResults = useQuery(api.labResults.getLabResults);
+  const performAnalysis = useAction(api.healthAnalysis.analyzeHealthData);
 
   const router = useRouter();
   const { isAuthenticated, isLoading } = useConvexAuth();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [labFile, setLabFile] = useState<File | null>(null);
   const [result, setResult] = useState<string | null>(null);
+  const [selectedAnalysisId, setSelectedAnalysisId] =
+    useState<Id<"healthAnalyses"> | null>(null);
+
+  const selectedAnalysisDetails = useQuery(
+    api.healthQueriesAndMutations.getHealthAnalysisById,
+    selectedAnalysisId ? { analysisId: selectedAnalysisId } : "skip"
+  );
+
+  console.log(selectedAnalysisDetails);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -32,6 +44,8 @@ export default function HealthAnalysis() {
 
   const handleSubmit = async (data: userProfileData) => {
     setIsAnalyzing(true);
+    const latestLabResult =
+      labResults && labResults.length > 0 ? labResults[0] : null;
     try {
       await updateUserProfile({
         age: Number(data?.age),
@@ -54,6 +68,23 @@ export default function HealthAnalysis() {
         }
         const { storageId } = await response.json();
         await saveLabResult({ storageId, fileName: labFile.name });
+      }
+      if (userProfile?._id && latestLabResult?._id) {
+        try {
+          const analysisId = await performAnalysis({
+            userProfileId: userProfile._id,
+            labResultId: latestLabResult?._id,
+          });
+          toast.success("Health analysis complete!");
+          if (analysisId) {
+            setSelectedAnalysisId(analysisId);
+          }
+        } catch (error) {
+          console.error("Analysis failed:", error);
+          toast.error(
+            `Analysis failed. ${error instanceof Error ? error.message : ""}`
+          );
+        }
       }
     } catch (error) {
       console.error("Failed to update profile:", error);

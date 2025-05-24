@@ -105,24 +105,21 @@ export function HealthAnalysisForm({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="age">Age</Label>
-              <Select
-                onValueChange={(value) => setValue("age", value)}
-                value={watch("age")?.toString()}
-                required
-              >
-                <SelectTrigger id="age">
-                  <SelectValue placeholder="Select age range" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="0-17">0-17</SelectItem>
-                  <SelectItem value="18-29">18-29</SelectItem>
-                  <SelectItem value="30-39">30-39</SelectItem>
-                  <SelectItem value="40-49">40-49</SelectItem>
-                  <SelectItem value="50-59">50-59</SelectItem>
-                  <SelectItem value="60-69">60-69</SelectItem>
-                  <SelectItem value="70+">70+</SelectItem>
-                </SelectContent>
-              </Select>
+              <input
+                type="number"
+                id="age"
+                min="0"
+                max="120"
+                step="1"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Enter your age"
+                {...register("age", {
+                  required: true,
+                  min: 0,
+                  max: 120,
+                  valueAsNumber: true,
+                })}
+              />
             </div>
 
             <div className="space-y-2">
