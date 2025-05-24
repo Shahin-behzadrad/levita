@@ -123,6 +123,7 @@ export default function HealthAnalysis() {
   };
 
   if (!isAuthenticated) return null;
+  console.log(analyses);
 
   return (
     <div className="min-h-screen max-w-screen-lg mx-auto">
@@ -149,7 +150,13 @@ export default function HealthAnalysis() {
               {analyses.map((analysis) => (
                 <option key={analysis._id} value={analysis._id}>
                   Analysis from{" "}
-                  {new Date(analysis._creationTime).toLocaleDateString()}
+                  {new Date(analysis._creationTime).toLocaleString(undefined, {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </option>
               ))}
             </select>
