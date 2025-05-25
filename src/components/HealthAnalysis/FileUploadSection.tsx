@@ -50,7 +50,7 @@ export function FileUploadSection({ onFileChange }: FileUploadSectionProps) {
             id="file-upload"
             type="file"
             className="hidden"
-            accept=".jpg,.jpeg,.png"
+            accept=".jpg,.jpeg,.png,.pdf"
             onChange={handleFileChange}
             multiple
           />

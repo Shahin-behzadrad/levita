@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CircleX, Loader2 } from "lucide-react";
+import { CircleX, Loader2, FileText } from "lucide-react";
 import { FileUploadSection } from "./FileUploadSection";
 import Image from "next/image";
 
@@ -33,6 +33,12 @@ interface HealthAnalysisFormProps {
   onFileUploaded: (files: File[]) => void;
   isAnalyzing: boolean;
   userProfile?: userProfileData | null;
+}
+
+interface FilePreview {
+  url: string;
+  type: string;
+  name: string;
 }
 
 export function HealthAnalysisForm({
@@ -51,7 +57,9 @@ export function HealthAnalysisForm({
   });
 
   const [files, setFiles] = useState<File[]>([]);
-  const [filePreviews, setFilePreviews] = useState<string[]>([]);
+  const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
+
+  console.log(filePreviews);
 
   useEffect(() => {
     if (userProfile) {
@@ -64,12 +72,17 @@ export function HealthAnalysisForm({
 
   const handleFileChange = (newFiles: File[]) => {
     setFiles(newFiles);
-    const previews: string[] = [];
+    const previews: FilePreview[] = [];
 
     newFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        previews.push(reader.result as string);
+        const preview: FilePreview = {
+          url: reader.result as string,
+          type: file.type,
+          name: file.name,
+        };
+        previews.push(preview);
         setFilePreviews([...previews]);
       };
       reader.readAsDataURL(file);
@@ -88,6 +101,47 @@ export function HealthAnalysisForm({
 
   const onSubmitForm = async (data: userProfileData) => {
     await onSubmit(data);
+  };
+
+  const renderFilePreview = (preview: FilePreview, index: number) => {
+    if (preview.type === "application/pdf") {
+      return (
+        <div
+          key={index}
+          className="relative w-[120px] h-[120px] rounded-md border shadow-md bg-white flex flex-col items-center justify-center p-2"
+        >
+          <CircleX
+            color="red"
+            className="bg-white w-7 h-7 absolute top-[-10px] right-[-10px] z-10 rounded-full shadow-md cursor-pointer hover:opacity-80"
+            onClick={() => removeFile(index)}
+          />
+          <FileText className="w-12 h-12 text-gray-400 mb-2" />
+          <p className="text-xs text-center text-gray-600 truncate w-full">
+            {preview.name}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        key={index}
+        className="relative w-[120px] h-[120px] rounded-md border shadow-md"
+      >
+        <CircleX
+          color="red"
+          className="bg-white w-7 h-7 absolute top-[-10px] right-[-10px] z-10 rounded-full shadow-md cursor-pointer hover:opacity-80"
+          onClick={() => removeFile(index)}
+        />
+        <Image
+          src={preview.url}
+          alt={`Preview ${index + 1}`}
+          className="object-cover"
+          fill
+          sizes="50px"
+        />
+      </div>
+    );
   };
 
   return (
@@ -177,25 +231,9 @@ export function HealthAnalysisForm({
             <Label>Lab Results (Optional)</Label>
             {filePreviews.length > 0 ? (
               <div className="flex gap-5 flex-wrap">
-                {filePreviews.map((preview, index) => (
-                  <div
-                    key={index}
-                    className="relative w-[120px] h-[120px] rounded-md border shadow-md"
-                  >
-                    <CircleX
-                      color="red"
-                      className="bg-white w-7 h-7 absolute top-[-10px] right-[-10px] z-10 rounded-full shadow-md cursor-pointer hover:opacity-80"
-                      onClick={() => removeFile(index)}
-                    />
-                    <Image
-                      src={preview}
-                      alt={`Preview ${index + 1}`}
-                      className="object-cover"
-                      fill
-                      sizes="50px"
-                    />
-                  </div>
-                ))}
+                {filePreviews.map((preview, index) =>
+                  renderFilePreview(preview, index)
+                )}
               </div>
             ) : (
               <FileUploadSection onFileChange={handleFileChange} />

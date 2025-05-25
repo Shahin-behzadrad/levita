@@ -123,7 +123,12 @@ export default function HealthAnalysis() {
   };
 
   if (!isAuthenticated) return null;
-  console.log(analyses);
+
+  console.log(
+    selectedAnalysisDetails
+      ? JSON.parse(selectedAnalysisDetails?.rawAnalysis)
+      : ""
+  );
 
   return (
     <div className="min-h-screen max-w-screen-lg mx-auto">
