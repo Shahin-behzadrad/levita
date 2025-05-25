@@ -180,14 +180,24 @@ export const analyzeHealthData = action({
       
       Provide a JSON response with this structure:
       {
-        "potentialIssues": [{"issue": "health concern", "severity": "low/medium/high", "recommendation": "action"}],
+        "potentialIssues": [
+          {
+            "issue": "health concern",
+            "severity": "low/medium/high",
+            "recommendation": "action",
+            "dataSource": "specify which data this is based on (e.g., 'symptoms: headache', 'lab result: RBC 4.5', 'age and sex factors')"
+          }
+        ],
         "recommendedSpecialists": [{"specialty": "type", "reason": "why", "priority": "high/medium/low"}],
         "recommendedActivities": [{"activity": "name", "frequency": "how often", "benefits": "benefits"}],
         "medicationSuggestions": [{"name": "medication", "purpose": "what for", "dosage": "amount", "source": "info link", "disclaimer": "safety info"}],
         "lifestyleChanges": [{"change": "what to change", "impact": "expected result", "implementation": "how to"}]
       }
       
-      Note: Include medical disclaimers and evidence-based recommendations.
+      Note: 
+      - For each potential issue, clearly specify which data points it's based on (symptoms, lab results, demographic factors, etc.)
+      - Include medical disclaimers and evidence-based recommendations.
+      - If an issue is based on multiple data points, list all relevant sources.
     `;
 
     let analysisResult: {
@@ -195,6 +205,7 @@ export const analyzeHealthData = action({
         issue: string;
         severity: string;
         recommendation: string;
+        dataSource: string;
       }>;
       recommendedSpecialists?: Array<{
         specialty: string;
@@ -275,6 +286,7 @@ export const analyzeHealthData = action({
             issue: "Error during analysis",
             severity: "low",
             recommendation: "Please try again or consult a healthcare provider",
+            dataSource: "",
           },
         ],
         error:
