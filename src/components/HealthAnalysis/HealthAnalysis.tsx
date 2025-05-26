@@ -130,7 +130,12 @@ export default function HealthAnalysis() {
   };
 
   if (!isAuthenticated) return null;
-  if (analyses === undefined) return <LoadingModal />;
+  if (analyses === undefined)
+    return <LoadingModal content="Loading your health analyses..." />;
+
+  if (selectedAnalysisDetails?.rawAnalysis) {
+    console.log(JSON.parse(selectedAnalysisDetails?.rawAnalysis));
+  }
 
   return (
     <div className="min-h-screen max-w-screen-lg mx-auto">

@@ -28,12 +28,6 @@ import { YoutubeVideo } from "@/types/youtube";
 import youtubeLogo from "../../../public/youtube.webp";
 import Image from "next/image";
 
-const specialistMapping = {
-  Cardiologist: "dr-smith",
-  Neurologist: "dr-johnson",
-  // Add more mappings as needed
-};
-
 const AnalysisResults = ({ result }: any) => {
   const [activityVideos, setActivityVideos] = useState<
     Record<string, YoutubeVideo>
@@ -44,13 +38,19 @@ const AnalysisResults = ({ result }: any) => {
       if (!result?.recommendedActivities) return;
 
       const videos: Record<string, YoutubeVideo> = {};
-      for (const activity of result.recommendedActivities) {
-        // const video = await searchYoutubeVideos(`${activity.activity}`);
-        // if (video) {
-        //   videos[activity.activity] = video;
-        // }
-      }
-      setActivityVideos(videos);
+      const fetchPromises = result.recommendedActivities.map(
+        async (activity: { activity: string }) => {
+          if (!activityVideos[activity.activity]) {
+            const video = await searchYoutubeVideos(`${activity.activity}`);
+            if (video) {
+              videos[activity.activity] = video;
+            }
+          }
+        }
+      );
+
+      await Promise.all(fetchPromises);
+      setActivityVideos((prev) => ({ ...prev, ...videos }));
     };
 
     fetchVideos();
@@ -234,25 +234,24 @@ const AnalysisResults = ({ result }: any) => {
                 </div>
                 <p className="text-sm text-gray-600">{activity.benefits}</p>
 
-                {/* {activityVideos[activity.activity] && ( */}
-                <div className="mt-2">
-                  <Link
-                    // href={`https://www.youtube.com/watch?v=${activityVideos[activity.activity].id}`}
-                    href={`https://www.youtube.com/watch?v=dQw4w9WgXcQ`}
-                    target="_blank"
-                    className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
-                  >
-                    <Image
-                      src={youtubeLogo}
-                      alt="Youtube"
-                      width={32}
-                      height={32}
-                      className="shadow-md"
-                    />
-                    {activity.activity}
-                  </Link>
-                </div>
-                {/* )} */}
+                {activityVideos[activity.activity] && (
+                  <div className="mt-2">
+                    <Link
+                      href={`https://www.youtube.com/watch?v=${activityVideos[activity.activity]?.id}`}
+                      target="_blank"
+                      className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      <Image
+                        src={youtubeLogo}
+                        alt="Youtube"
+                        width={32}
+                        height={32}
+                        className="rounded-sm"
+                      />
+                      {activity.activity}
+                    </Link>
+                  </div>
+                )}
 
                 {index < result?.recommendedActivities?.length - 1 && (
                   <Separator />

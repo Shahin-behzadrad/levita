@@ -149,12 +149,18 @@ const Sidebar = ({ isOpen, onOpenChange, userData }: SidebarProps) => {
           ) : (
             <div className="flex flex-col gap-4 p-4">
               <Link href="/sign-in" className="w-full">
-                <Button variant="outline" className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => onOpenChange(false)}
+                >
                   Sign In
                 </Button>
               </Link>
               <Link href="/sign-up" className="w-full">
-                <Button className="w-full">Sign Up</Button>
+                <Button className="w-full" onClick={() => onOpenChange(false)}>
+                  Sign Up
+                </Button>
               </Link>
             </div>
           )}

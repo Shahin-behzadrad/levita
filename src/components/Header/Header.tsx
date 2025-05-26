@@ -42,8 +42,13 @@ const Header = () => {
           </span>
         </div>
         {isLoading ? (
-          <div className="animate-pulse">
-            <div className="h-12 w-12 rounded-full bg-muted"></div>
+          <div className="flex items-center gap-3">
+            <div className="animate-pulse flex space-x-2">
+              <div className="flex flex-col justify-center space-y-2">
+                <div className="h-3 w-24 rounded bg-slate-100"></div>
+              </div>
+              <div className="h-10 w-10 rounded-full bg-slate-100"></div>
+            </div>
           </div>
         ) : userData?._id ? (
           <>
