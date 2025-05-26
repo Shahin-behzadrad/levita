@@ -40,6 +40,16 @@ const AnalysisResults = ({ result }: any) => {
     }
   };
 
+  const getDataSourceColor = (source: string) => {
+    if (source.toLowerCase().includes("lab")) {
+      return "bg-blue-100 text-blue-800 border-blue-200";
+    } else if (source.toLowerCase().includes("symptom")) {
+      return "bg-purple-100 text-purple-800 border-purple-200";
+    } else {
+      return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
       case "high":
@@ -89,6 +99,12 @@ const AnalysisResults = ({ result }: any) => {
           <CardContent className="space-y-4">
             {result?.potentialIssues?.map((issue: any, index: any) => (
               <div key={index} className="space-y-2">
+                <Badge
+                  variant="outline"
+                  className={getDataSourceColor(issue.dataSource)}
+                >
+                  {issue.dataSource}
+                </Badge>
                 <div className="flex items-center justify-between">
                   <h4 className="font-medium text-gray-900">{issue.issue}</h4>
                   <Badge
