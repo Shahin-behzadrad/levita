@@ -8,6 +8,7 @@ import {
   query,
   QueryCtx,
   MutationCtx,
+  mutation,
 } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { Id, Doc } from "./_generated/dataModel";
@@ -31,7 +32,7 @@ export const getLabResultInternal = internalQuery({
 export const saveHealthAnalysis = internalMutation({
   args: {
     userId: v.id("users"),
-    labResultId: v.optional(v.id("labResults")),
+    labResultIds: v.optional(v.array(v.id("labResults"))),
     userProfileAtAnalysis: v.object({
       age: v.optional(v.number()),
       sex: v.optional(v.string()),
@@ -64,7 +65,8 @@ export const linkAnalysisToLabResult = internalMutation({
 
 // Define the type for the items returned by getHealthAnalysesForUser
 type HealthAnalysisWithLabFile = Doc<"healthAnalyses"> & {
-  labFileName: string | null | undefined;
+  rawAnalysis: string | undefined;
+  labFileNames: string[] | null;
 };
 
 export const getHealthAnalysesForUser = query({
@@ -73,29 +75,34 @@ export const getHealthAnalysesForUser = query({
     if (!userId) {
       return [];
     }
+
     const analyses = await ctx.db
       .query("healthAnalyses")
-      .withIndex("by_userId", (q) => q.eq("userId", userId as Id<"users">))
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
       .order("desc")
       .collect();
 
-    return Promise.all(
-      analyses.map(
-        async (
-          analysis: Doc<"healthAnalyses">
-        ): Promise<HealthAnalysisWithLabFile> => {
-          let labFileName = null;
-          if (analysis.labResultId) {
-            const labResult = await ctx.db.get(analysis.labResultId);
-            labFileName = labResult?.fileName;
-          }
-          return {
-            ...analysis,
-            labFileName,
-          };
+    // Get lab file names for each analysis
+    const analysesWithLabFiles = await Promise.all(
+      analyses.map(async (analysis) => {
+        let labFileNames: string[] | null = null;
+        if (analysis.labResultIds && analysis.labResultIds.length > 0) {
+          const labResults = await Promise.all(
+            analysis.labResultIds.map((id) => ctx.db.get(id))
+          );
+          labFileNames = labResults
+            .filter((result): result is Doc<"labResults"> => result !== null)
+            .map((result) => result.fileName);
         }
-      )
+        return {
+          ...analysis,
+          rawAnalysis: analysis.rawAnalysis,
+          labFileNames,
+        };
+      })
     );
+
+    return analysesWithLabFiles;
   },
 });
 
@@ -113,15 +120,19 @@ export const getHealthAnalysisById = query({
     if (!analysis || analysis.userId !== userId) {
       return null;
     }
-    let labFileName = null;
-    if (analysis.labResultId) {
-      const labResult = await ctx.db.get(analysis.labResultId);
-      labFileName = labResult?.fileName;
+    let labFileNames: string[] | null = null;
+    if (analysis.labResultIds && analysis.labResultIds.length > 0) {
+      const labResults = await Promise.all(
+        analysis.labResultIds.map((id) => ctx.db.get(id))
+      );
+      labFileNames = labResults
+        .filter((result): result is Doc<"labResults"> => result !== null)
+        .map((result) => result.fileName);
     }
     return {
       ...analysis,
-      rawAnalysis: analysis?.rawAnalysis,
-      labFileName,
+      rawAnalysis: analysis.rawAnalysis,
+      labFileNames,
     };
   },
 });

@@ -76,7 +76,12 @@ export const useHealthAnalysis = () => {
         try {
           const analysisId = await performAnalysis({
             userProfileId: userProfile._id,
-            labResultId: uploadedLabResultIds[0] || latestLabResult?._id,
+            labResultIds:
+              uploadedLabResultIds.length > 0
+                ? uploadedLabResultIds
+                : latestLabResult
+                  ? [latestLabResult._id]
+                  : undefined,
           });
           toast.success("Health analysis complete!");
           if (analysisId) {

@@ -77,6 +77,7 @@ export default function HealthAnalysis() {
         {selectedAnalysisDetails?.rawAnalysis && !showNewAnalysis && (
           <AnalysisResults
             result={JSON.parse(selectedAnalysisDetails.rawAnalysis)}
+            labFileNames={selectedAnalysisDetails.labFileNames}
           />
         )}
       </main>

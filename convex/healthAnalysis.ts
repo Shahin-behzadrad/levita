@@ -107,7 +107,7 @@ async function getFileContent(
 export const analyzeHealthData = action({
   args: {
     userProfileId: v.id("userProfiles"),
-    labResultId: v.optional(v.id("labResults")),
+    labResultIds: v.optional(v.array(v.id("labResults"))),
   },
   handler: async (ctx: ActionCtx, args): Promise<Id<"healthAnalyses">> => {
     const identity = await ctx.auth.getUserIdentity();
@@ -131,37 +131,39 @@ export const analyzeHealthData = action({
     let imageError: string | undefined;
     let pdfError: string | undefined;
 
-    if (args.labResultId) {
-      const labResult: Doc<"labResults"> | null = await ctx.runQuery(
-        internal.healthQueriesAndMutations.getLabResultInternal,
-        { labResultId: args.labResultId }
-      );
-      if (!labResult || labResult.userId !== userId) {
-        throw new Error("Lab result not found or access denied.");
-      }
-      try {
-        const {
-          content,
-          isImage: isImageFile,
-          isPdf: isPdfFile,
-          error,
-        } = await getFileContent(ctx, labResult.storageId);
-        labContents.push(content);
-        isImage = isImageFile;
-        isPdf = isPdfFile;
-        if (isImageFile) {
-          imageError = error;
-        } else if (isPdfFile) {
-          pdfError = error;
+    if (args.labResultIds && args.labResultIds.length > 0) {
+      for (const labResultId of args.labResultIds) {
+        const labResult: Doc<"labResults"> | null = await ctx.runQuery(
+          internal.healthQueriesAndMutations.getLabResultInternal,
+          { labResultId }
+        );
+        if (!labResult || labResult.userId !== userId) {
+          throw new Error("Lab result not found or access denied.");
         }
+        try {
+          const {
+            content,
+            isImage: isImageFile,
+            isPdf: isPdfFile,
+            error,
+          } = await getFileContent(ctx, labResult.storageId);
+          labContents.push(content);
+          isImage = isImageFile;
+          isPdf = isPdfFile;
+          if (isImageFile) {
+            imageError = error;
+          } else if (isPdfFile) {
+            pdfError = error;
+          }
 
-        if (error) {
-          console.error("File processing error:", error);
-          labContents.push(`Error processing file: ${error}`);
+          if (error) {
+            console.error("File processing error:", error);
+            labContents.push(`Error processing file: ${error}`);
+          }
+        } catch (e) {
+          console.error("Failed to get file content:", e);
+          labContents.push("Error reading lab file content.");
         }
-      } catch (e) {
-        console.error("Failed to get file content:", e);
-        labContents.push("Error reading lab file content.");
       }
     }
 
@@ -169,17 +171,18 @@ export const analyzeHealthData = action({
       userProfile.symptoms?.join(", ") || "No specific symptoms reported.";
 
     const prompt = `
-      Analyze the following health information and uploaded lab result image to provide a structured health assessment.
+      Analyze the following health information and uploaded lab result images to provide a structured health assessment.
       
       User Profile:
       - Age: ${userProfile.age || "Not specified"}
       - Sex: ${userProfile.sex || "Not specified"}
       - Symptoms: ${symptomsString}
       - Health Status: ${userProfile.generalHealthStatus || "Not specified"}
-      ${args.labResultId ? `Lab Results: ${isImage ? "[Image Analysis]" : isPdf ? "[PDF Analysis]" : labContents.join("\n\n")}\n` : ""}
+      ${args.labResultIds && args.labResultIds.length > 0 ? `Lab Results: ${isImage ? "[Multiple Image Analysis]" : isPdf ? "[PDF Analysis]" : labContents.join("\n\n")}\n` : ""}
       
-      Lab Result:
-      - The image contains a lab test result. Please extract any relevant medical values or observations from the image and include them in your analysis.
+      Lab Results:
+      - The images contain lab test results. Please extract any relevant medical values or observations from each image and include them in your analysis.
+      - Analyze all provided images together to get a comprehensive view of the patient's health status.
 
       Provide a JSON response with this structure:
       {
@@ -196,9 +199,8 @@ export const analyzeHealthData = action({
         "medicationSuggestions": [{"name": "name of the drug", "purpose": "what for", "dosage": "amount", "source": "https://drugs.com/search.php?searchterm={name of the drug}", "disclaimer": "safety info"}],
         "lifestyleChanges": [{"change": "what to change", "impact": "expected result", "implementation": "how to"}]
       }
-
       
-       Note: Refer to the image as "lab result image" and explicitly mention which values came from visual extraction.
+      Note: Refer to the images as "lab result images" and explicitly mention which values came from visual extraction from each image.
     `;
 
     let analysisResult: {
@@ -268,7 +270,7 @@ export const analyzeHealthData = action({
       });
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o", // Updated to use the current model
+        model: "gpt-4o",
         messages,
         response_format: { type: "json_object" },
         max_tokens: 2000,
@@ -302,7 +304,7 @@ export const analyzeHealthData = action({
       internal.healthQueriesAndMutations.saveHealthAnalysis,
       {
         userId,
-        labResultId: args.labResultId,
+        labResultIds: args.labResultIds || [],
         userProfileAtAnalysis: {
           age: userProfile.age,
           sex: userProfile.sex,
@@ -320,17 +322,6 @@ export const analyzeHealthData = action({
         rawAnalysis: JSON.stringify(analysisResult),
       }
     );
-
-    if (args.labResultId && analysisId) {
-      // Use ctx.runMutation with internal API path
-      await ctx.runMutation(
-        internal.healthQueriesAndMutations.linkAnalysisToLabResult,
-        {
-          labResultId: args.labResultId,
-          analysisId: analysisId,
-        }
-      );
-    }
 
     return analysisId;
   },

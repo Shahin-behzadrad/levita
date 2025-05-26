@@ -19,6 +19,7 @@ import {
   Info,
   AlertCircle,
   ExternalLink,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,13 @@ import { YoutubeVideo } from "@/types/youtube";
 import youtubeLogo from "../../../public/youtube.webp";
 import Image from "next/image";
 
-const AnalysisResults = ({ result }: any) => {
+const AnalysisResults = ({
+  result,
+  labFileNames,
+}: {
+  result: any;
+  labFileNames?: string[] | null;
+}) => {
   const [activityVideos, setActivityVideos] = useState<
     Record<string, YoutubeVideo>
   >({});
@@ -116,6 +123,31 @@ const AnalysisResults = ({ result }: any) => {
           medical decisions.
         </AlertDescription>
       </Alert>
+
+      {/* Lab Results Section */}
+      {labFileNames && labFileNames.length > 0 && (
+        <Card className="border-purple-200">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-purple-800">
+              <FileText className="h-5 w-5" />
+              Analyzed Lab Results
+            </CardTitle>
+            <CardDescription>
+              The following lab result files were analyzed
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {labFileNames.map((fileName, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-purple-600" />
+                  <span className="text-sm text-gray-600">{fileName}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Potential Issues */}

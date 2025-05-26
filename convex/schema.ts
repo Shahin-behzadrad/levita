@@ -21,7 +21,7 @@ const applicationTables = {
 
   healthAnalyses: defineTable({
     userId: v.id("users"),
-    labResultId: v.optional(v.id("labResults")), // Optional if analysis is based only on profile
+    labResultIds: v.optional(v.array(v.id("labResults"))), // Array of lab result IDs
     userProfileAtAnalysis: v.object({
       // Snapshot of profile when analysis was run
       age: v.optional(v.number()),
@@ -33,9 +33,7 @@ const applicationTables = {
     recommendedSpecialty: v.optional(v.string()),
     supplementSuggestions: v.optional(v.array(v.string())),
     rawAnalysis: v.optional(v.string()), // Store the full AI response if needed
-  })
-    .index("by_userId", ["userId"])
-    .index("by_labResultId", ["labResultId"]),
+  }).index("by_userId", ["userId"]),
 };
 
 export default defineSchema({
