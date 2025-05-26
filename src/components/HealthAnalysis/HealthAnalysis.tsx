@@ -11,6 +11,7 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "convex/_generated/dataModel";
 import { toast } from "sonner";
 import AnalysisResults from "./AnalysisResults";
+import LoadingModal from "../LoadingModal/LoadingModal";
 
 export default function HealthAnalysis() {
   const userProfile = useQuery(api.userProfiles.getUserProfile);
@@ -129,6 +130,7 @@ export default function HealthAnalysis() {
   };
 
   if (!isAuthenticated) return null;
+  if (analyses === undefined) return <LoadingModal />;
 
   return (
     <div className="min-h-screen max-w-screen-lg mx-auto">

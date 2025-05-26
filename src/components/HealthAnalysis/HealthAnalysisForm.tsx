@@ -59,8 +59,6 @@ export function HealthAnalysisForm({
   const [files, setFiles] = useState<File[]>([]);
   const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
 
-  console.log(filePreviews);
-
   useEffect(() => {
     if (userProfile) {
       setValue("age", userProfile?.age?.toString() || "");
