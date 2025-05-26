@@ -43,14 +43,14 @@ export function FileUploadSection({ onFileChange }: FileUploadSectionProps) {
               drop
             </p>
             <p className="text-xs text-gray-500">
-              PDF, JPG, or PNG (MAX. 10MB per file)
+              JPG, JPEG, or PNG (MAX. 10MB per file)
             </p>
           </div>
           <Input
             id="file-upload"
             type="file"
             className="hidden"
-            accept=".jpg,.jpeg,.png,.pdf"
+            accept=".jpg,.jpeg,.png"
             onChange={handleFileChange}
             multiple
           />

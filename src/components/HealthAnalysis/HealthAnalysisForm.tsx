@@ -21,6 +21,7 @@ import {
 import { CircleX, Loader2, FileText } from "lucide-react";
 import { FileUploadSection } from "./FileUploadSection";
 import Image from "next/image";
+import LoadingModal from "@/components/LoadingModal/LoadingModal";
 
 export interface userProfileData {
   age?: string | number;
@@ -58,8 +59,6 @@ export function HealthAnalysisForm({
 
   const [files, setFiles] = useState<File[]>([]);
   const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
-
-  console.log(filePreviews);
 
   useEffect(() => {
     if (userProfile) {
@@ -145,118 +144,123 @@ export function HealthAnalysisForm({
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Health Analysis</CardTitle>
-        <CardDescription>
-          Describe your symptoms and optionally upload lab results for AI
-          analysis
-        </CardDescription>
-      </CardHeader>
-      <form onSubmit={handleSubmit(onSubmitForm)}>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="symptoms">
-              Describe your symptoms or health concerns
-            </Label>
-            <Textarea
-              id="symptoms"
-              placeholder="E.g., I've had a headache for 3 days, slight fever, and a sore throat..."
-              className="min-h-32"
-              {...register("symptoms", { required: true })}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <>
+      {isAnalyzing && (
+        <LoadingModal content="Your health details are being analyzed, please be patient." />
+      )}
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Health Analysis</CardTitle>
+          <CardDescription>
+            Describe your symptoms and optionally upload lab results for AI
+            analysis
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleSubmit(onSubmitForm)}>
+          <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="age">Age</Label>
-              <input
-                type="number"
-                id="age"
-                min="0"
-                max="120"
-                step="1"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Enter your age"
-                {...register("age", {
-                  required: true,
-                  min: 0,
-                  max: 120,
-                  valueAsNumber: true,
-                })}
+              <Label htmlFor="symptoms">
+                Describe your symptoms or health concerns
+              </Label>
+              <Textarea
+                id="symptoms"
+                placeholder="E.g., I've had a headache for 3 days, slight fever, and a sore throat..."
+                className="min-h-32"
+                {...register("symptoms", { required: true })}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="sex">Sex</Label>
-              <Select
-                onValueChange={(value) => setValue("sex", value)}
-                value={watch("sex")}
-                required
-              >
-                <SelectTrigger id="sex">
-                  <SelectValue placeholder="Select sex" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="generalHealthStatus">Health Status</Label>
-              <Select
-                onValueChange={(value) =>
-                  setValue("generalHealthStatus", value)
-                }
-                value={watch("generalHealthStatus")}
-                required
-              >
-                <SelectTrigger id="generalHealthStatus">
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="excellent">Excellent</SelectItem>
-                  <SelectItem value="good">Good</SelectItem>
-                  <SelectItem value="fair">Fair</SelectItem>
-                  <SelectItem value="poor">Poor</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <Label>Lab Results (Optional)</Label>
-            {filePreviews.length > 0 ? (
-              <div className="flex gap-5 flex-wrap">
-                {filePreviews.map((preview, index) =>
-                  renderFilePreview(preview, index)
-                )}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="age">Age</Label>
+                <input
+                  type="number"
+                  id="age"
+                  min="0"
+                  max="120"
+                  step="1"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  placeholder="Enter your age"
+                  {...register("age", {
+                    required: true,
+                    min: 0,
+                    max: 120,
+                    valueAsNumber: true,
+                  })}
+                />
               </div>
-            ) : (
-              <FileUploadSection onFileChange={handleFileChange} />
-            )}
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button
-            type="submit"
-            className="w-full bg-teal-600 hover:bg-teal-700"
-            disabled={isAnalyzing}
-          >
-            {isAnalyzing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Analyzing...
-              </>
-            ) : (
-              "Analyze Health Data"
-            )}
-          </Button>
-        </CardFooter>
-      </form>
-    </Card>
+
+              <div className="space-y-2">
+                <Label htmlFor="sex">Sex</Label>
+                <Select
+                  onValueChange={(value) => setValue("sex", value)}
+                  value={watch("sex")}
+                  required
+                >
+                  <SelectTrigger id="sex">
+                    <SelectValue placeholder="Select sex" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="generalHealthStatus">Health Status</Label>
+                <Select
+                  onValueChange={(value) =>
+                    setValue("generalHealthStatus", value)
+                  }
+                  value={watch("generalHealthStatus")}
+                  required
+                >
+                  <SelectTrigger id="generalHealthStatus">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="excellent">Excellent</SelectItem>
+                    <SelectItem value="good">Good</SelectItem>
+                    <SelectItem value="fair">Fair</SelectItem>
+                    <SelectItem value="poor">Poor</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <Label>Lab Results (Optional)</Label>
+              {filePreviews.length > 0 ? (
+                <div className="flex gap-5 flex-wrap">
+                  {filePreviews.map((preview, index) =>
+                    renderFilePreview(preview, index)
+                  )}
+                </div>
+              ) : (
+                <FileUploadSection onFileChange={handleFileChange} />
+              )}
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button
+              type="submit"
+              className="w-full bg-teal-600 hover:bg-teal-700"
+              disabled={isAnalyzing}
+            >
+              {isAnalyzing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                "Analyze Health Data"
+              )}
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+    </>
   );
 }

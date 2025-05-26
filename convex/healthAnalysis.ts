@@ -169,7 +169,7 @@ export const analyzeHealthData = action({
       userProfile.symptoms?.join(", ") || "No specific symptoms reported.";
 
     const prompt = `
-      Analyze the following health information and provide a structured assessment.
+      Analyze the following health information and uploaded lab result image to provide a structured health assessment.
       
       User Profile:
       - Age: ${userProfile.age || "Not specified"}
@@ -178,6 +178,9 @@ export const analyzeHealthData = action({
       - Health Status: ${userProfile.generalHealthStatus || "Not specified"}
       ${args.labResultId ? `Lab Results: ${isImage ? "[Image Analysis]" : isPdf ? "[PDF Analysis]" : labContents.join("\n\n")}\n` : ""}
       
+      Lab Result:
+      - The image contains a lab test result. Please extract any relevant medical values or observations from the image and include them in your analysis.
+
       Provide a JSON response with this structure:
       {
         "potentialIssues": [
@@ -193,11 +196,9 @@ export const analyzeHealthData = action({
         "medicationSuggestions": [{"name": "name of the drug", "purpose": "what for", "dosage": "amount", "source": "https://drugs.com/search.php?searchterm={name of the drug}", "disclaimer": "safety info"}],
         "lifestyleChanges": [{"change": "what to change", "impact": "expected result", "implementation": "how to"}]
       }
+
       
-      Note: 
-      - For each potential issue, clearly specify which data points it's based on (symptoms, lab results, demographic factors, etc.)
-      - Include medical disclaimers and evidence-based recommendations.
-      - If an issue is based on multiple data points, list all relevant sources.
+       Note: Refer to the image as "lab result image" and explicitly mention which values came from visual extraction.
     `;
 
     let analysisResult: {

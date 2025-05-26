@@ -1,22 +1,17 @@
 "use client";
 
-import { Unauthenticated, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { api } from "../../../convex/_generated/api";
 import SalSVG from "../svgs/Sal";
-import {
-  Root as AvatarRoot,
-  Fallback as AvatarFallback,
-} from "@radix-ui/react-avatar";
-import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
-import { SignOutButton } from "../SignOutButton/SignOutButton";
 import { useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import clsx from "clsx";
+import { UserProfile } from "../Sidebar/Sidebar";
 
 const Header = () => {
   const userData = useQuery(api.userProfiles.getUserProfile);
@@ -47,8 +42,13 @@ const Header = () => {
           </span>
         </div>
         {isLoading ? (
-          <div className="animate-pulse">
-            <div className="h-12 w-12 rounded-full bg-muted"></div>
+          <div className="flex items-center gap-3">
+            <div className="animate-pulse flex space-x-2">
+              <div className="flex flex-col justify-center space-y-2">
+                <div className="h-3 w-24 rounded bg-slate-100"></div>
+              </div>
+              <div className="h-10 w-10 rounded-full bg-slate-100"></div>
+            </div>
           </div>
         ) : userData?._id ? (
           <>
@@ -65,24 +65,7 @@ const Header = () => {
                 />
               </>
             ) : (
-              <Popover>
-                <div className="flex items-center gap-2">
-                  <h1>{userData?.name} </h1>
-                  <PopoverTrigger asChild className="cursor-pointer">
-                    <AvatarRoot>
-                      <AvatarFallback className="w-12 h-12 rounded-full bg-muted text-muted-foreground font-medium flex items-center justify-center">
-                        {userData?.name?.slice(0, 2).toUpperCase() || "??"}
-                      </AvatarFallback>
-                    </AvatarRoot>
-                  </PopoverTrigger>
-                </div>
-                <PopoverContent className="rounded-xl border bg-white shadow-md p-4 mt-1 mr-5 w-56">
-                  <div className="text-sm font-semibold mb-2">
-                    {userData?.name ?? "Welcome"}
-                  </div>
-                  <SignOutButton />
-                </PopoverContent>
-              </Popover>
+              <UserProfile userData={userData} />
             )}
           </>
         ) : (

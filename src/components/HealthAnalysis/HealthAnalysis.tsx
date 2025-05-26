@@ -11,6 +11,7 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "convex/_generated/dataModel";
 import { toast } from "sonner";
 import AnalysisResults from "./AnalysisResults";
+import LoadingModal from "../LoadingModal/LoadingModal";
 
 export default function HealthAnalysis() {
   const userProfile = useQuery(api.userProfiles.getUserProfile);
@@ -39,6 +40,12 @@ export default function HealthAnalysis() {
     api.healthQueriesAndMutations.getHealthAnalysisById,
     selectedAnalysisId ? { analysisId: selectedAnalysisId } : "skip"
   );
+
+  useEffect(() => {
+    if (analyses?.[0]?._id) {
+      setSelectedAnalysisId(analyses?.[0]?._id);
+    }
+  }, [analyses]);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -123,6 +130,12 @@ export default function HealthAnalysis() {
   };
 
   if (!isAuthenticated) return null;
+  if (analyses === undefined)
+    return <LoadingModal content="Loading your health analyses..." />;
+
+  if (selectedAnalysisDetails?.rawAnalysis) {
+    console.log(JSON.parse(selectedAnalysisDetails?.rawAnalysis));
+  }
 
   return (
     <div className="min-h-screen max-w-screen-lg mx-auto">
