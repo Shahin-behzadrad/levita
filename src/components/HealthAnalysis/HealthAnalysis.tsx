@@ -41,6 +41,12 @@ export default function HealthAnalysis() {
   );
 
   useEffect(() => {
+    if (analyses?.[0]?._id) {
+      setSelectedAnalysisId(analyses?.[0]?._id);
+    }
+  }, [analyses]);
+
+  useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.replace("/sign-up");
     }
