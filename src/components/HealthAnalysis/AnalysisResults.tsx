@@ -21,8 +21,41 @@ import {
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { searchYoutubeVideos } from "@/lib/youtube";
+import { YoutubeVideo } from "@/types/youtube";
+import youtubeLogo from "../../../public/youtube.webp";
+import Image from "next/image";
+
+const specialistMapping = {
+  Cardiologist: "dr-smith",
+  Neurologist: "dr-johnson",
+  // Add more mappings as needed
+};
 
 const AnalysisResults = ({ result }: any) => {
+  const [activityVideos, setActivityVideos] = useState<
+    Record<string, YoutubeVideo>
+  >({});
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      if (!result?.recommendedActivities) return;
+
+      const videos: Record<string, YoutubeVideo> = {};
+      for (const activity of result.recommendedActivities) {
+        // const video = await searchYoutubeVideos(`${activity.activity}`);
+        // if (video) {
+        //   videos[activity.activity] = video;
+        // }
+      }
+      setActivityVideos(videos);
+    };
+
+    fetchVideos();
+  }, [result?.recommendedActivities]);
+
   if (Object.keys(result).length === 0) {
     return null;
   }
@@ -37,6 +70,16 @@ const AnalysisResults = ({ result }: any) => {
         return "bg-green-100 text-green-800 border-green-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  const getDataSourceColor = (source: string) => {
+    if (source.toLowerCase().includes("lab")) {
+      return "bg-blue-100 text-blue-800 border-blue-200";
+    } else if (source.toLowerCase().includes("symptom")) {
+      return "bg-purple-100 text-purple-800 border-purple-200";
+    } else {
+      return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
@@ -89,6 +132,12 @@ const AnalysisResults = ({ result }: any) => {
           <CardContent className="space-y-4">
             {result?.potentialIssues?.map((issue: any, index: any) => (
               <div key={index} className="space-y-2">
+                <Badge
+                  variant="outline"
+                  className={getDataSourceColor(issue.dataSource)}
+                >
+                  {issue.dataSource}
+                </Badge>
                 <div className="flex items-center justify-between">
                   <h4 className="font-medium text-gray-900">{issue.issue}</h4>
                   <Badge
@@ -120,18 +169,37 @@ const AnalysisResults = ({ result }: any) => {
             {result?.recommendedSpecialists?.map(
               (specialist: any, index: any) => (
                 <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium text-gray-900">
-                      {specialist.specialty}
-                    </h4>
-                    <Badge
-                      variant="outline"
-                      className={getPriorityColor(specialist.priority)}
-                    >
-                      {specialist.priority} priority
-                    </Badge>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex flex-col gap-2 justify-between">
+                      <h4 className="font-medium text-gray-900">
+                        {specialist.specialty}
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        {specialist.reason}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className={getPriorityColor(specialist.priority)}
+                      >
+                        {specialist.priority} priority
+                      </Badge>
+                      <div className="flex justify-end mt-2">
+                        <Link href={`/doctors/1`}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-2"
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                            View Profile
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600">{specialist.reason}</p>
+
                   {index < result?.recommendedSpecialists?.length - 1 && (
                     <Separator />
                   )}
@@ -165,6 +233,27 @@ const AnalysisResults = ({ result }: any) => {
                   </div>
                 </div>
                 <p className="text-sm text-gray-600">{activity.benefits}</p>
+
+                {/* {activityVideos[activity.activity] && ( */}
+                <div className="mt-2">
+                  <Link
+                    // href={`https://www.youtube.com/watch?v=${activityVideos[activity.activity].id}`}
+                    href={`https://www.youtube.com/watch?v=dQw4w9WgXcQ`}
+                    target="_blank"
+                    className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    <Image
+                      src={youtubeLogo}
+                      alt="Youtube"
+                      width={32}
+                      height={32}
+                      className="shadow-md"
+                    />
+                    {activity.activity}
+                  </Link>
+                </div>
+                {/* )} */}
+
                 {index < result?.recommendedActivities?.length - 1 && (
                   <Separator />
                 )}

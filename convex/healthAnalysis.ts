@@ -14,10 +14,37 @@ const openai = new OpenAI({
 async function getFileContent(
   ctx: ActionCtx,
   storageId: Id<"_storage">
-): Promise<{ content: string; isImage: boolean; error?: string }> {
+): Promise<{
+  content: string;
+  isImage: boolean;
+  isPdf: boolean;
+  error?: string;
+}> {
   const blob = await ctx.storage.get(storageId);
   if (!blob) {
     throw new Error(`File not found for storageId: ${storageId}`);
+  }
+
+  // Check if the file is a PDF
+  if (blob.type === "application/pdf") {
+    try {
+      // For PDFs, we'll return an error since we can't process them directly
+      return {
+        content: "",
+        isImage: false,
+        isPdf: true,
+        error:
+          "PDF files are not supported in the current version. Please convert to an image format (JPEG, PNG) before uploading.",
+      };
+    } catch (error) {
+      console.error("Error processing PDF:", error);
+      return {
+        content: "",
+        isImage: false,
+        isPdf: true,
+        error: "Failed to process PDF",
+      };
+    }
   }
 
   // Check if the file is an image
@@ -33,6 +60,7 @@ async function getFileContent(
         return {
           content: "",
           isImage: true,
+          isPdf: false,
           error: "Image size exceeds 20MB limit",
         };
       }
@@ -48,6 +76,7 @@ async function getFileContent(
         return {
           content: "",
           isImage: true,
+          isPdf: false,
           error: `Unsupported image format: ${blob.type}. Supported formats are: ${validFormats.join(", ")}`,
         };
       }
@@ -55,12 +84,14 @@ async function getFileContent(
       return {
         content: `data:${blob.type};base64,${base64}`,
         isImage: true,
+        isPdf: false,
       };
     } catch (error) {
       console.error("Error processing image:", error);
       return {
         content: "",
         isImage: true,
+        isPdf: false,
         error: "Failed to process image",
       };
     }
@@ -69,6 +100,7 @@ async function getFileContent(
   return {
     content: await blob.text(),
     isImage: false,
+    isPdf: false,
   };
 }
 
@@ -95,7 +127,9 @@ export const analyzeHealthData = action({
 
     let labContents: string[] = [];
     let isImage = false;
+    let isPdf = false;
     let imageError: string | undefined;
+    let pdfError: string | undefined;
 
     if (args.labResultId) {
       const labResult: Doc<"labResults"> | null = await ctx.runQuery(
@@ -109,15 +143,21 @@ export const analyzeHealthData = action({
         const {
           content,
           isImage: isImageFile,
+          isPdf: isPdfFile,
           error,
         } = await getFileContent(ctx, labResult.storageId);
         labContents.push(content);
         isImage = isImageFile;
-        imageError = error;
+        isPdf = isPdfFile;
+        if (isImageFile) {
+          imageError = error;
+        } else if (isPdfFile) {
+          pdfError = error;
+        }
 
         if (error) {
-          console.error("Image processing error:", error);
-          labContents.push(`Error processing image: ${error}`);
+          console.error("File processing error:", error);
+          labContents.push(`Error processing file: ${error}`);
         }
       } catch (e) {
         console.error("Failed to get file content:", e);
@@ -129,63 +169,35 @@ export const analyzeHealthData = action({
       userProfile.symptoms?.join(", ") || "No specific symptoms reported.";
 
     const prompt = `
-      Analyze this user's health information and provide a comprehensive health assessment.
+      Analyze the following health information and provide a structured assessment.
       
       User Profile:
       - Age: ${userProfile.age || "Not specified"}
       - Sex: ${userProfile.sex || "Not specified"}
       - Symptoms: ${symptomsString}
       - Health Status: ${userProfile.generalHealthStatus || "Not specified"}
-      ${args.labResultId ? `Lab Results: ${isImage ? "[Image Analysis]" : labContents.join("\n\n")}\n` : ""}
+      ${args.labResultId ? `Lab Results: ${isImage ? "[Image Analysis]" : isPdf ? "[PDF Analysis]" : labContents.join("\n\n")}\n` : ""}
       
-      Provide a detailed JSON response with the following structure:
+      Provide a JSON response with this structure:
       {
         "potentialIssues": [
           {
-            "issue": "Description of the health concern",
+            "issue": "health concern",
             "severity": "low/medium/high",
-            "recommendation": "Specific action to take"
+            "recommendation": "action",
+            "dataSource": "specify which data this is based on (e.g., 'symptoms: headache', 'lab result: RBC 4.5', 'age and sex factors')"
           }
         ],
-        "recommendedSpecialists": [
-          {
-            "specialty": "Type of specialist",
-            "reason": "Why this specialist is recommended",
-            "priority": "high/medium/low"
-          }
-        ],
-        "recommendedActivities": [
-          {
-            "activity": "Name of activity",
-            "frequency": "How often to perform",
-            "benefits": "Expected health benefits"
-          }
-        ],
-        "medicationSuggestions": [
-          {
-            "name": "Medication name",
-            "purpose": "What it's for",
-            "dosage": "Recommended dosage",
-            "source": "Link to reliable medical information",
-            "disclaimer": "Important safety information"
-          }
-        ],
-        "lifestyleChanges": [
-          {
-            "change": "Specific lifestyle change",
-            "impact": "Expected health impact",
-            "implementation": "How to implement"
-          }
-        ]
+        "recommendedSpecialists": [{"specialty": "type", "reason": "why", "priority": "high/medium/low"}],
+        "recommendedActivities": [{"activity": "name", "frequency": "how often", "benefits": "benefits"}],
+        "medicationSuggestions": [{"name": "name of the drug", "purpose": "what for", "dosage": "amount", "source": "https://drugs.com/search.php?searchterm={name of the drug}", "disclaimer": "safety info"}],
+        "lifestyleChanges": [{"change": "what to change", "impact": "expected result", "implementation": "how to"}]
       }
       
-      Important:
-      1. For medication suggestions, always include reliable medical information sources
-      2. Include appropriate medical disclaimers
-      3. Prioritize evidence-based recommendations
-      4. Consider the user's age and sex in recommendations
-      5. If analyzing an image, focus on visible symptoms or conditions
-      6. If multiple lab results are provided, analyze them together for a comprehensive assessment
+      Note: 
+      - For each potential issue, clearly specify which data points it's based on (symptoms, lab results, demographic factors, etc.)
+      - Include medical disclaimers and evidence-based recommendations.
+      - If an issue is based on multiple data points, list all relevant sources.
     `;
 
     let analysisResult: {
@@ -193,6 +205,7 @@ export const analyzeHealthData = action({
         issue: string;
         severity: string;
         recommendation: string;
+        dataSource: string;
       }>;
       recommendedSpecialists?: Array<{
         specialty: string;
@@ -227,10 +240,15 @@ export const analyzeHealthData = action({
             isImage && labContents.length > 0 && !imageError
               ? [
                   { type: "text" as const, text: prompt },
-                  ...labContents.map((content) => ({
-                    type: "image_url" as const,
-                    image_url: { url: content },
-                  })),
+                  ...labContents.map((content) => {
+                    return {
+                      type: "image_url" as const,
+                      image_url: {
+                        url: content,
+                        detail: "high" as const,
+                      },
+                    };
+                  }),
                 ]
               : prompt,
         },
@@ -238,16 +256,18 @@ export const analyzeHealthData = action({
 
       console.log("Sending to OpenAI:", {
         hasImage: isImage,
+        hasPdf: isPdf,
         imageError,
+        pdfError,
         contentLength: labContents.join("\n").length,
         messageStructure: JSON.stringify(messages, null, 2),
-        imageContent: isImage
+        fileContent: isImage
           ? labContents[0].substring(0, 100) + "..."
-          : "No image content",
+          : "No file content",
       });
 
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-4o", // Updated to use the current model
         messages,
         response_format: { type: "json_object" },
         max_tokens: 2000,
@@ -266,6 +286,7 @@ export const analyzeHealthData = action({
             issue: "Error during analysis",
             severity: "low",
             recommendation: "Please try again or consult a healthcare provider",
+            dataSource: "",
           },
         ],
         error:
