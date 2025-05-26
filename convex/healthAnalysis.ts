@@ -190,7 +190,7 @@ export const analyzeHealthData = action({
         ],
         "recommendedSpecialists": [{"specialty": "type", "reason": "why", "priority": "high/medium/low"}],
         "recommendedActivities": [{"activity": "name", "frequency": "how often", "benefits": "benefits"}],
-        "medicationSuggestions": [{"name": "medication", "purpose": "what for", "dosage": "amount", "source": "info link", "disclaimer": "safety info"}],
+        "medicationSuggestions": [{"name": "name of the drug", "purpose": "what for", "dosage": "amount", "source": "https://drugs.com/search.php?searchterm={name of the drug}", "disclaimer": "safety info"}],
         "lifestyleChanges": [{"change": "what to change", "impact": "expected result", "implementation": "how to"}]
       }
       

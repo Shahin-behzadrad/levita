@@ -132,7 +132,7 @@ export default function HealthAnalysis() {
 
   return (
     <div className="min-h-screen max-w-screen-lg mx-auto">
-      <main className="flex flex-col container py-8 mt-16 gap-6">
+      <main className="flex flex-col container py-28 gap-6">
         {analyses && analyses.length > 0 && !showNewAnalysis ? (
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
