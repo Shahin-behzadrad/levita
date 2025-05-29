@@ -59,12 +59,14 @@ export default function HealthAnalysis() {
           />
         ) : (
           <>
-            <button
-              onClick={() => setShowNewAnalysis(!showNewAnalysis)}
-              className="self-start px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-            >
-              View Previous Analyses
-            </button>
+            {analyses && analyses.length > 0 && (
+              <button
+                onClick={() => setShowNewAnalysis(!showNewAnalysis)}
+                className="self-start px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+              >
+                View Previous Analyses
+              </button>
+            )}
             <HealthAnalysisForm
               onFileUploaded={setLabFiles}
               userProfile={userProfile}
