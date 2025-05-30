@@ -1,19 +1,4 @@
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
-import {
-  AlertTriangle,
-  UserCheck,
-  Activity,
-  Pill,
-  Heart,
   Clock,
   Target,
   Info,
@@ -22,12 +7,17 @@ import {
   FileText,
 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { searchYoutubeVideos } from "@/lib/youtube";
 import { YoutubeVideo } from "@/types/youtube";
 import youtubeLogo from "../../../public/youtube.webp";
 import Image from "next/image";
+import styles from "./AnalysisResults.module.scss";
+import { Card, CardContent, CardHeader } from "../Shared/Card";
+import { Button } from "../Shared/Button/Button";
+import { Badge } from "../Shared/Badge/Badge";
+import { Separator } from "../Shared/Separator/Separator";
+import Text from "../Shared/Text";
 
 const AnalysisResults = ({
   result,
@@ -70,78 +60,73 @@ const AnalysisResults = ({
   const getSeverityColor = (severity: string) => {
     switch (severity.toLowerCase()) {
       case "high":
-        return "bg-red-100 text-red-800 border-red-200";
+        return styles.badgeRed;
       case "medium":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return styles.badgeYellow;
       case "low":
-        return "bg-green-100 text-green-800 border-green-200";
+        return styles.badgeGreen;
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return styles.badgeGray;
     }
   };
 
   const getDataSourceColor = (source: string) => {
     if (source.toLowerCase().includes("lab")) {
-      return "bg-blue-100 text-blue-800 border-blue-200";
+      return styles.badgeBlue;
     } else if (source.toLowerCase().includes("symptom")) {
-      return "bg-purple-100 text-purple-800 border-purple-200";
+      return styles.badgePurple;
     } else {
-      return "bg-gray-100 text-gray-800 border-gray-200";
+      return styles.badgeGray;
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
       case "high":
-        return "bg-red-100 text-red-800 border-red-200";
+        return styles.badgeRed;
       case "medium":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return styles.badgeYellow;
       case "low":
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return styles.badgeBlue;
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return styles.badgeGray;
     }
   };
 
   return (
-    <div className="mx-auto space-y-6">
+    <div className={styles.container}>
       {/* Header */}
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-gray-900">Health Suggestions</h1>
-        <p className="text-gray-600">
-          Personalized recommendations based on your health result
-        </p>
+      <div className={styles.header}>
+        <h1>Health Suggestions</h1>
+        <p>Personalized recommendations based on your health result</p>
       </div>
 
       {/* Medical Disclaimer */}
-      <Alert className="border-blue-200 bg-blue-50">
-        <AlertCircle className="h-4 w-4 text-blue-600" />
-        <AlertDescription className="text-blue-800">
+      <div className={styles.disclaimer}>
+        <AlertCircle />
+        <div>
           <strong>Medical Disclaimer:</strong> This information is for
           educational purposes only and should not replace professional medical
           advice. Always consult with a healthcare provider before making any
           medical decisions.
-        </AlertDescription>
-      </Alert>
+        </div>
+      </div>
 
       {/* Lab Results Section */}
       {labFileNames && labFileNames.length > 0 && (
-        <Card className="border-purple-200">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-purple-800">
-              <FileText className="h-5 w-5" />
-              Analyzed Lab Results
-            </CardTitle>
-            <CardDescription>
-              The following lab result files were analyzed
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
+        <Card className={`${styles.card} ${styles.cardPurple}`}>
+          <CardHeader
+            title="Analyzed Lab Results"
+            subheader="The following lab result files were analyzed"
+            className={styles.cardHeader}
+          />
+
+          <CardContent className={styles.cardContent}>
+            <div>
               {labFileNames.map((fileName, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-purple-600" />
-                  <span className="text-sm text-gray-600">{fileName}</span>
+                <div key={index}>
+                  <FileText />
+                  <span>{fileName}</span>
                 </div>
               ))}
             </div>
@@ -149,29 +134,26 @@ const AnalysisResults = ({
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className={styles.grid}>
         {/* Potential Issues */}
-        <Card className="border-orange-200">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-orange-800">
-              <AlertTriangle className="h-5 w-5" />
-              Potential Health Issues
-            </CardTitle>
-            <CardDescription>
-              Possible conditions based on your symptoms and result
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <Card className={`${styles.card} ${styles.cardOrange}`}>
+          <CardHeader
+            title="Potential Health Issues"
+            subheader="Possible conditions based on your symptoms and result"
+            className={styles.cardHeader}
+          />
+
+          <CardContent className={styles.cardContent}>
             {result?.potentialIssues?.map((issue: any, index: any) => (
-              <div key={index} className="space-y-2">
+              <div key={index} className={styles.issueItem}>
                 <Badge
                   variant="outline"
                   className={getDataSourceColor(issue.dataSource)}
                 >
                   {issue.dataSource}
                 </Badge>
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-gray-900">{issue.issue}</h4>
+                <div className={styles.issueHeader}>
+                  <h4>{issue.issue}</h4>
                   <Badge
                     variant="outline"
                     className={getSeverityColor(issue.severity)}
@@ -179,61 +161,51 @@ const AnalysisResults = ({
                     {issue.severity}
                   </Badge>
                 </div>
-                <p className="text-sm text-gray-600">{issue.recommendation}</p>
-                {index < result?.potentialIssues?.length - 1 && <Separator />}
+                <Text
+                  value={issue.recommendation}
+                  className={styles.issueDescription}
+                />
+                {index < result?.potentialIssues?.length - 1 && (
+                  <Separator className={styles.separator} />
+                )}
               </div>
             ))}
           </CardContent>
         </Card>
 
         {/* Recommended Specialists */}
-        <Card className="border-blue-200">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-blue-800">
-              <UserCheck className="h-5 w-5" />
-              Recommended Specialists
-            </CardTitle>
-            <CardDescription>
-              Healthcare professionals you should consider consulting
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <Card className={`${styles.card} ${styles.cardBlue}`}>
+          <CardHeader
+            title="Recommended Specialists"
+            subheader="Healthcare professionals you should consider consulting"
+            className={styles.cardHeader}
+          />
+          <CardContent className={styles.cardContent}>
             {result?.recommendedSpecialists?.map(
               (specialist: any, index: any) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex flex-col gap-2 justify-between">
-                      <h4 className="font-medium text-gray-900">
-                        {specialist.specialty}
-                      </h4>
-                      <p className="text-sm text-gray-600">
-                        {specialist.reason}
-                      </p>
+                <div key={index} className={styles.specialistItem}>
+                  <div className={styles.specialistHeader}>
+                    <div className={styles.specialistInfo}>
+                      <Text value={specialist.specialty} />
+                      <Text value={specialist.reason} />
                     </div>
-                    <div className="flex flex-col items-center gap-2">
+                    <div className={styles.specialistActions}>
                       <Badge
                         variant="outline"
                         className={getPriorityColor(specialist.priority)}
                       >
                         {specialist.priority} priority
                       </Badge>
-                      <div className="flex justify-end mt-2">
-                        <Link href={`/doctors/1`}>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex items-center gap-2"
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                            View Profile
-                          </Button>
-                        </Link>
-                      </div>
+                      <Link href={`/doctors/1`}>
+                        <Button variant="outlined" size="sm">
+                          <ExternalLink />
+                          View Profile
+                        </Button>
+                      </Link>
                     </div>
                   </div>
-
                   {index < result?.recommendedSpecialists?.length - 1 && (
-                    <Separator />
+                    <Separator className={styles.separator} />
                   )}
                 </div>
               )
@@ -242,51 +214,42 @@ const AnalysisResults = ({
         </Card>
 
         {/* Recommended Activities */}
-        <Card className="border-green-200">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-green-800">
-              <Activity className="h-5 w-5" />
-              Recommended Activities
-            </CardTitle>
-            <CardDescription>
-              Activities to support your recovery and well-being
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <Card className={`${styles.card} ${styles.cardGreen}`}>
+          <CardHeader
+            title="Recommended Activities"
+            subheader="Activities to support your recovery and well-being"
+            className={styles.cardHeader}
+          />
+          <CardContent className={styles.cardContent}>
             {result?.recommendedActivities?.map((activity: any, index: any) => (
-              <div key={index} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-gray-900">
-                    {activity.activity}
-                  </h4>
-                  <div className="flex items-center gap-1 text-sm text-gray-500">
-                    <Clock className="h-3 w-3" />
+              <div key={index} className={styles.activityItem}>
+                <div className={styles.activityHeader}>
+                  <h4>{activity.activity}</h4>
+                  <div className={styles.activityTime}>
+                    <Clock />
                     {activity.frequency}
                   </div>
                 </div>
-                <p className="text-sm text-gray-600">{activity.benefits}</p>
+                <Text value={activity.benefits} />
 
                 {activityVideos[activity.activity] && (
-                  <div className="mt-2">
-                    <Link
-                      href={`https://www.youtube.com/watch?v=${activityVideos[activity.activity]?.id}`}
-                      target="_blank"
-                      className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      <Image
-                        src={youtubeLogo}
-                        alt="Youtube"
-                        width={32}
-                        height={32}
-                        className="rounded-sm"
-                      />
-                      {activity.activity}
-                    </Link>
-                  </div>
+                  <Link
+                    href={`https://www.youtube.com/watch?v=${activityVideos[activity.activity]?.id}`}
+                    target="_blank"
+                    className={styles.youtubeLink}
+                  >
+                    <Image
+                      src={youtubeLogo}
+                      alt="Youtube"
+                      width={32}
+                      height={32}
+                    />
+                    {activity.activity}
+                  </Link>
                 )}
 
                 {index < result?.recommendedActivities?.length - 1 && (
-                  <Separator />
+                  <Separator className={styles.separator} />
                 )}
               </div>
             ))}
@@ -294,61 +257,47 @@ const AnalysisResults = ({
         </Card>
 
         {/* Medication Suggestions */}
-        <Card className="border-purple-200">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-purple-800">
-              <Pill className="h-5 w-5" />
-              Medication Suggestions
-            </CardTitle>
-            <CardDescription>
-              Over-the-counter medications that may help with symptoms
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <Card className={`${styles.card} ${styles.cardPurple}`}>
+          <CardHeader
+            title="Medication Suggestions"
+            subheader="Over-the-counter medications that may help with symptoms"
+            className={styles.cardHeader}
+          />
+          <CardContent className={styles.cardContent}>
             {result?.medicationSuggestions?.map(
               (medication: any, index: any) => (
-                <div key={index} className="space-y-3">
+                <div key={index} className={styles.medicationItem}>
                   <div>
                     <Link
                       href={medication.source}
                       target="_blank"
-                      className="flex items-center gap-2"
+                      className={styles.medicationHeader}
                     >
-                      <ExternalLink className="h-4 w-4 text-gray-500" />
-                      <h4 className="font-medium text-gray-900 hover:text-gray-600">
-                        {medication.name}
-                      </h4>
+                      <ExternalLink />
+                      <h4>{medication.name}</h4>
                     </Link>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className={styles.issueDescription}>
                       {medication.purpose}
                     </p>
                   </div>
-                  <div className="bg-gray-50 p-3 rounded-lg space-y-2">
-                    <div className="flex items-start gap-2">
-                      <Target className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">
-                          Dosage
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {medication.dosage}
-                        </p>
+                  <div className={styles.medicationInfo}>
+                    <div className={styles.infoItem}>
+                      <Target />
+                      <div className={styles.infoContent}>
+                        <p>Dosage</p>
+                        <p>{medication.dosage}</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-2">
-                      <Info className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">
-                          Important
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {medication.disclaimer}
-                        </p>
+                    <div className={styles.infoItem}>
+                      <Info />
+                      <div className={styles.infoContent}>
+                        <p>Important</p>
+                        <p>{medication.disclaimer}</p>
                       </div>
                     </div>
                   </div>
                   {index < result?.medicationSuggestions?.length - 1 && (
-                    <Separator />
+                    <Separator className={styles.separator} />
                   )}
                 </div>
               )
@@ -358,40 +307,36 @@ const AnalysisResults = ({
       </div>
 
       {/* Lifestyle Changes */}
-      <Card className="border-teal-200">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-teal-800">
-            <Heart className="h-5 w-5" />
-            Lifestyle Changes
-          </CardTitle>
-          <CardDescription>
-            Long-term changes to support your overall health and recovery
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <Card className={`${styles.card} ${styles.cardTeal}`}>
+        <CardHeader
+          title="Lifestyle Changes"
+          subheader="Long-term changes to support your overall health and recovery"
+          className={styles.cardHeader}
+        />
+        <CardContent className={styles.cardContent}>
           {result?.lifestyleChanges?.map((change: any, index: any) => (
-            <div key={index} className="space-y-2">
-              <h4 className="font-medium text-gray-900">{change.change}</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div key={index} className={styles.issueItem}>
+              <h4>{change.change}</h4>
+              <div className={styles.lifestyleGrid}>
                 <div>
-                  <span className="font-medium text-gray-700">Impact: </span>
-                  <span className="text-gray-600">{change.impact}</span>
+                  <span>Impact: </span>
+                  <span>{change.impact}</span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">
-                    How to implement:{" "}
-                  </span>
-                  <span className="text-gray-600">{change.implementation}</span>
+                  <span>How to implement: </span>
+                  <span>{change.implementation}</span>
                 </div>
               </div>
-              {index < result?.lifestyleChanges?.length - 1 && <Separator />}
+              {index < result?.lifestyleChanges?.length - 1 && (
+                <Separator className={styles.separator} />
+              )}
             </div>
           ))}
         </CardContent>
       </Card>
 
       {/* Footer Disclaimer */}
-      <div className="text-center text-sm text-gray-500 pt-4">
+      <div className={styles.footer}>
         <p>
           Generated suggestions • Always consult with healthcare professionals
           for medical advice

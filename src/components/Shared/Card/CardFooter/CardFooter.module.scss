@@ -1,0 +1,21 @@
+.cardFooter {
+  padding: 16px;
+  border-top: 1px solid var(--primary-main);
+  background: var(--primary-lighter);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  button {
+    background: var(--primary-main);
+    color: var(--true-white);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--primary-dark);
+    }
+  }
+}

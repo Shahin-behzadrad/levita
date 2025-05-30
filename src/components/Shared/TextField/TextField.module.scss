@@ -1,0 +1,182 @@
+.inputField {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  button {
+    padding: 4px !important;
+  }
+
+  .inputContainer {
+    min-width: 100px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    border-radius: 8px;
+    border: 1px solid var(--secondary-opaque-50);
+    background: none;
+    color: var(--white);
+
+    &.fullWidth {
+      width: 100% !important;
+    }
+
+    &.error {
+      border-color: var(--error-main);
+    }
+
+    &.focused {
+      border-color: var(--primary-main);
+    }
+
+    .label {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 12px;
+      font-size: 14px;
+      color: var(--gray); // Default color when not focused
+      transition: all 0.2s ease;
+      background-color: var(--primaryAlt-main);
+      line-height: 1;
+      padding-inline: 4px;
+      pointer-events: none;
+
+      &.textFieldOnModal {
+        background-color: var(--black) !important;
+      }
+    }
+
+    .labelFocused {
+      top: 0;
+      right: 8px;
+      transform: translate(0, -50%);
+      font-size: 12px;
+    }
+
+    .labelPrimary {
+      color: var(--primary-main); // Primary color when focused
+    }
+
+    .labelError {
+      color: var(--error-main); // Error color for label
+    }
+
+    &.startAdornment {
+      justify-content: flex-start;
+      align-items: center;
+
+      .startAdornmentItem {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    &.endAdornment {
+      justify-content: flex-end;
+      align-items: center;
+      .endAdornmentItem {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    //size
+    &.sm {
+      padding: 6px;
+    }
+
+    &.md {
+      padding: 8px;
+    }
+
+    &.lg {
+      padding: 10px;
+    }
+
+    &.xl {
+      padding: 12px;
+    }
+
+    &.xxl {
+      padding: 14px;
+    }
+    .input {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 8px 4px;
+      font: inherit;
+      color: var(--white);
+      border: none;
+      resize: none;
+      overflow: hidden;
+      background: transparent;
+
+      &.ltrDirection {
+        direction: ltr;
+
+        &::placeholder {
+          direction: ltr;
+          text-align: left !important;
+        }
+      }
+
+      &::placeholder {
+        font-weight: bold;
+        color: var(--gray);
+        line-height: normal;
+        position: relative;
+        padding: 0;
+        text-align: right;
+      }
+
+      &.multiline {
+        padding: 12px 8px;
+        width: 100%;
+      }
+
+      &.errorInput {
+        border-color: var(--error-main); // Error border color
+      }
+
+      &.fontSize_xxl {
+        font-size: 20px;
+      }
+      &.fontSize_xl {
+        font-size: 18px;
+      }
+      &.fontSize_lg {
+        font-size: 16px;
+      }
+      &.fontSize_md {
+        font-size: 14px;
+      }
+      &.fontSize_sm {
+        font-size: 12px;
+      }
+
+      &:focus {
+        border: none !important;
+        outline: none !important;
+      }
+    }
+  }
+  .helperText {
+    font-size: 12px;
+    margin-top: 4px;
+    color: var(--gray);
+    align-self: flex-start;
+
+    &.errorHelperText {
+      color: var(--error-main);
+    }
+
+    &.pointerHelperText {
+      cursor: pointer;
+    }
+  }
+}

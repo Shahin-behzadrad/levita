@@ -1,28 +1,21 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/Shared/Button/Button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+} from "@/components/Shared/Card";
+
 import { CircleX, Loader2, FileText } from "lucide-react";
 import { FileUploadSection } from "./FileUploadSection";
 import Image from "next/image";
 import LoadingModal from "@/components/LoadingModal/LoadingModal";
-
+import styles from "./HealthAnalysisForm.module.scss";
+import TextField from "../Shared/TextField";
+import Select from "../Shared/Select/Select";
+import Text from "../Shared/Text";
 export interface userProfileData {
   age?: string | number;
   sex?: string;
@@ -105,37 +98,29 @@ export function HealthAnalysisForm({
   const renderFilePreview = (preview: FilePreview, index: number) => {
     if (preview.type === "application/pdf") {
       return (
-        <div
-          key={index}
-          className="relative w-[120px] h-[120px] rounded-md border shadow-md bg-white flex flex-col items-center justify-center p-2"
-        >
+        <div key={index} className={styles.pdfPreview}>
           <CircleX
             color="red"
-            className="bg-white w-7 h-7 absolute top-[-10px] right-[-10px] z-10 rounded-full shadow-md cursor-pointer hover:opacity-80"
+            className={styles.removeButton}
             onClick={() => removeFile(index)}
           />
-          <FileText className="w-12 h-12 text-gray-400 mb-2" />
-          <p className="text-xs text-center text-gray-600 truncate w-full">
-            {preview.name}
-          </p>
+          <FileText className={styles.pdfIcon} />
+          <p className={styles.pdfName}>{preview.name}</p>
         </div>
       );
     }
 
     return (
-      <div
-        key={index}
-        className="relative w-[120px] h-[120px] rounded-md border shadow-md"
-      >
+      <div key={index} className={styles.filePreview}>
         <CircleX
           color="red"
-          className="bg-white w-7 h-7 absolute top-[-10px] right-[-10px] z-10 rounded-full shadow-md cursor-pointer hover:opacity-80"
+          className={styles.removeButton}
           onClick={() => removeFile(index)}
         />
         <Image
           src={preview.url}
           alt={`Preview ${index + 1}`}
-          className="object-cover"
+          className={styles.imagePreview}
           fill
           sizes="50px"
         />
@@ -148,38 +133,31 @@ export function HealthAnalysisForm({
       {isAnalyzing && (
         <LoadingModal content="Your health details are being analyzed, please be patient." />
       )}
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Health Analysis</CardTitle>
-          <CardDescription>
-            Describe your symptoms and optionally upload lab results for AI
-            analysis
-          </CardDescription>
-        </CardHeader>
+      <Card className={styles.form}>
+        <CardHeader
+          title="Health Analysis"
+          subheader="Describe your symptoms and optionally upload lab results for AI analysis"
+        />
         <form onSubmit={handleSubmit(onSubmitForm)}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="symptoms">
-                Describe your symptoms or health concerns
-              </Label>
-              <Textarea
-                id="symptoms"
+          <CardContent className={styles.formSection}>
+            <div className={styles.formGroup}>
+              <TextField
+                multiline
+                label="Describe your symptoms or health concerns"
                 placeholder="E.g., I've had a headache for 3 days, slight fever, and a sore throat..."
-                className="min-h-32"
                 {...register("symptoms", { required: true })}
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="age">Age</Label>
-                <input
+            <div className={styles.gridContainer}>
+              <div className={styles.formGroup}>
+                <TextField
                   type="number"
                   id="age"
                   min="0"
                   max="120"
                   step="1"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className={styles.input}
                   placeholder="Enter your age"
                   {...register("age", {
                     required: true,
@@ -190,50 +168,56 @@ export function HealthAnalysisForm({
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="sex">Sex</Label>
+              <div className={styles.formGroup}>
                 <Select
-                  onValueChange={(value) => setValue("sex", value)}
-                  value={watch("sex")}
-                  required
-                >
-                  <SelectTrigger id="sex">
-                    <SelectValue placeholder="Select sex" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
+                  onChange={(value) => setValue("sex", value as string)}
+                  value={watch("sex") ?? ""}
+                  label="Sex"
+                  options={[
+                    { label: "Male", value: "male" },
+                    { label: "Female", value: "female" },
+                    { label: "Other", value: "other" },
+                  ]}
+                />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="generalHealthStatus">Health Status</Label>
+              <div className={styles.formGroup}>
                 <Select
-                  onValueChange={(value) =>
-                    setValue("generalHealthStatus", value)
+                  label="Health Status"
+                  options={[
+                    { label: "Excellent", value: "excellent" },
+                    { label: "Good", value: "good" },
+                    { label: "Fair", value: "fair" },
+                    { label: "Poor", value: "poor" },
+                  ]}
+                  value={watch("generalHealthStatus") ?? ""}
+                  onChange={(value) =>
+                    setValue("generalHealthStatus", value as string)
                   }
-                  value={watch("generalHealthStatus")}
-                  required
-                >
-                  <SelectTrigger id="generalHealthStatus">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="excellent">Excellent</SelectItem>
-                    <SelectItem value="good">Good</SelectItem>
-                    <SelectItem value="fair">Fair</SelectItem>
-                    <SelectItem value="poor">Poor</SelectItem>
-                  </SelectContent>
-                </Select>
+                />
               </div>
             </div>
 
-            <div className="space-y-4">
-              <Label>Lab Results (Optional)</Label>
+            <div className={styles.formGroup}>
+              <Select
+                label="Health Status"
+                options={[
+                  { label: "Excellent", value: "excellent" },
+                  { label: "Good", value: "good" },
+                  { label: "Fair", value: "fair" },
+                  { label: "Poor", value: "poor" },
+                ]}
+                value={watch("generalHealthStatus") ?? ""}
+                onChange={(value) =>
+                  setValue("generalHealthStatus", value as string)
+                }
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <Text value="Lab Results (Optional)" />
               {filePreviews.length > 0 ? (
-                <div className="flex gap-5 flex-wrap">
+                <div className={styles.filePreviewContainer}>
                   {filePreviews.map((preview, index) =>
                     renderFilePreview(preview, index)
                   )}
@@ -246,12 +230,12 @@ export function HealthAnalysisForm({
           <CardFooter>
             <Button
               type="submit"
-              className="w-full bg-teal-600 hover:bg-teal-700"
+              className={styles.submitButton}
               disabled={isAnalyzing}
             >
               {isAnalyzing ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className={styles.loadingIcon} />
                   Analyzing...
                 </>
               ) : (

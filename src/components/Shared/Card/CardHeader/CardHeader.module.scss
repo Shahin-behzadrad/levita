@@ -1,0 +1,17 @@
+.cardHeader {
+  padding: 16px;
+  color: var(--true-white);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .title {
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .subheader {
+    font-size: 0.875rem;
+    color: var(--secondary-light);
+  }
+}

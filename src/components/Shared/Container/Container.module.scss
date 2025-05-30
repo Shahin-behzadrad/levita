@@ -1,0 +1,23 @@
+@import '/src/styles/variables.scss';
+
+.container {
+  width: 100%;
+  margin-inline: auto;
+  padding: 0 16px;
+
+  &.maxWidth-sm {
+    max-width: $breakpoint-sm;
+  }
+
+  &.maxWidth-md {
+    max-width: $breakpoint-md;
+  }
+
+  &.maxWidth-lg {
+    max-width: $breakpoint-lg;
+  }
+
+  &.maxWidth-xl {
+    max-width: $breakpoint-xl;
+  }
+}

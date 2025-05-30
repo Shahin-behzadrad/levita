@@ -1,8 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/Shared/Card";
+import { Button } from "@/components/Shared/Button/Button";
 import { MapPin, Phone, Mail, Calendar, Clock, Award } from "lucide-react";
 import Image from "next/image";
 import doctorImage from "../../../../public/DUMMY_DR_PROFILE.webp";
+import styles from "./page.module.scss";
 
 // Dummy data for doctors
 const doctorData = {
@@ -34,62 +35,62 @@ const doctorData = {
 
 export default function DoctorProfile() {
   return (
-    <div className="container mx-auto py-28 px-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className={styles.container}>
+      <div className={styles.grid}>
         {/* Doctor's Profile Card */}
-        <Card className="md:col-span-1">
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center space-y-4">
-              <div className="relative w-48 h-48 rounded-full overflow-hidden">
+        <Card className={styles.profileCard}>
+          <CardContent className={styles.profileContent}>
+            <div className={styles.profileSection}>
+              <div className={styles.imageContainer}>
                 <Image
                   src={doctorImage}
                   alt={doctorData["dr-smith"].name}
                   fill
-                  className="object-cover"
+                  className={styles.profileImage}
                 />
               </div>
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-gray-900">
+              <div className={styles.profileInfo}>
+                <h1 className={styles.profileName}>
                   {doctorData["dr-smith"].name}
                 </h1>
-                <p className="text-lg text-gray-600">
+                <p className={styles.profileSpecialty}>
                   {doctorData["dr-smith"].specialty}
                 </p>
               </div>
-              <div className="w-full space-y-3">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <MapPin className="h-5 w-5" />
-                  <span className="text-sm">
+              <div className={styles.contactInfo}>
+                <div className={styles.contactItem}>
+                  <MapPin className={styles.contactIcon} />
+                  <span className={styles.contactText}>
                     {doctorData["dr-smith"].address}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Phone className="h-5 w-5" />
-                  <span className="text-sm">
+                <div className={styles.contactItem}>
+                  <Phone className={styles.contactIcon} />
+                  <span className={styles.contactText}>
                     {doctorData["dr-smith"].phone}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Mail className="h-5 w-5" />
-                  <span className="text-sm">
+                <div className={styles.contactItem}>
+                  <Mail className={styles.contactIcon} />
+                  <span className={styles.contactText}>
                     {doctorData["dr-smith"].email}
                   </span>
                 </div>
               </div>
-              <Button className="w-full">Schedule Appointment</Button>
+              <Button className={styles.scheduleButton}>
+                Schedule Appointment
+              </Button>
             </div>
           </CardContent>
         </Card>
 
         {/* Doctor's Information */}
-        <div className="md:col-span-2 space-y-6">
+        <div className={styles.infoSection}>
           {/* Biography */}
           <Card>
-            <CardHeader>
-              <CardTitle>Biography</CardTitle>
-            </CardHeader>
+            <CardHeader title="Biography" />
             <CardContent>
-              <p className="text-gray-600">
+              <p className={styles.biography}>
                 {doctorData["dr-smith"].biography}
               </p>
             </CardContent>
@@ -97,15 +98,13 @@ export default function DoctorProfile() {
 
           {/* Education */}
           <Card>
-            <CardHeader>
-              <CardTitle>Education</CardTitle>
-            </CardHeader>
+            <CardHeader title="Education" />
             <CardContent>
-              <ul className="space-y-2">
+              <ul className={styles.educationList}>
                 {doctorData["dr-smith"].education.map((edu, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <Award className="h-5 w-5 text-gray-400 mt-0.5" />
-                    <span className="text-gray-600">{edu}</span>
+                  <li key={index} className={styles.listItem}>
+                    <Award className={styles.listIcon} />
+                    <span className={styles.listText}>{edu}</span>
                   </li>
                 ))}
               </ul>
@@ -114,15 +113,13 @@ export default function DoctorProfile() {
 
           {/* Certifications */}
           <Card>
-            <CardHeader>
-              <CardTitle>Certifications</CardTitle>
-            </CardHeader>
+            <CardHeader title="Certifications" />
             <CardContent>
-              <ul className="space-y-2">
+              <ul className={styles.certificationList}>
                 {doctorData["dr-smith"].certifications.map((cert, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <Award className="h-5 w-5 text-gray-400 mt-0.5" />
-                    <span className="text-gray-600">{cert}</span>
+                  <li key={index} className={styles.listItem}>
+                    <Award className={styles.listIcon} />
+                    <span className={styles.listText}>{cert}</span>
                   </li>
                 ))}
               </ul>
@@ -131,20 +128,18 @@ export default function DoctorProfile() {
 
           {/* Availability */}
           <Card>
-            <CardHeader>
-              <CardTitle>Availability</CardTitle>
-            </CardHeader>
+            <CardHeader title="Availability" />
             <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-gray-400" />
-                  <span className="text-gray-600">
+              <div className={styles.availabilitySection}>
+                <div className={styles.availabilityItem}>
+                  <Calendar className={styles.availabilityIcon} />
+                  <span className={styles.availabilityText}>
                     {doctorData["dr-smith"].availability.days}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-gray-400" />
-                  <span className="text-gray-600">
+                <div className={styles.availabilityItem}>
+                  <Clock className={styles.availabilityIcon} />
+                  <span className={styles.availabilityText}>
                     {doctorData["dr-smith"].availability.hours}
                   </span>
                 </div>

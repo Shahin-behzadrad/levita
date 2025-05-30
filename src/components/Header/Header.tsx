@@ -2,16 +2,16 @@
 
 import { useQuery } from "convex/react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/Shared/Button/Button";
 import { api } from "../../../convex/_generated/api";
-import SalSVG from "../svgs/Sal";
 import { useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
-import Sidebar from "../Sidebar/Sidebar";
-import clsx from "clsx";
-import { UserProfile } from "../Sidebar/Sidebar";
+import styles from "./Header.module.scss";
+import { UserProfile } from "../Shared/UserProfile/UserProfile";
+import Text from "../Shared/Text";
+import Sidebar from "../Shared/Sidebar/Sidebar";
 
 const Header = () => {
   const userData = useQuery(api.userProfiles.getUserProfile);
@@ -22,32 +22,24 @@ const Header = () => {
   const isLoading = userData === undefined;
 
   return (
-    <header className="fixed top-0 left-0 right-0 border-b backdrop-blur bg-white/70 z-50">
-      <div
-        className={clsx(
-          "container flex h-16 items-center justify-between py-4",
-          isMobile && "px-4"
-        )}
-      >
-        <div
-          className={clsx(
-            "flex items-end gap-1 cursor-pointer",
-            isMobile && "gap-0"
-          )}
-          onClick={() => router.push("/")}
-        >
-          <SalSVG width={isMobile ? 70 : 100} height={isMobile ? 28 : 40} />
-          <span className={clsx("font-bold", isMobile ? "text-sm" : "text-xl")}>
-            HealthAI
-          </span>
+    <header className={styles.header}>
+      <div className={`${styles.container} ${isMobile ? styles.mobile : ""}`}>
+        <div onClick={() => router.push("/")}>
+          <Text
+            fontSize="lg"
+            variant="h3"
+            fontWeight="bold"
+            color="black"
+            value="Levita"
+          />
         </div>
         {isLoading ? (
-          <div className="flex items-center gap-3">
-            <div className="animate-pulse flex space-x-2">
-              <div className="flex flex-col justify-center space-y-2">
-                <div className="h-3 w-24 rounded bg-slate-100"></div>
+          <div className={styles.loadingContainer}>
+            <div className={styles.loadingPulse}>
+              <div className={styles.loadingText}>
+                <div className={styles.loadingBar}></div>
               </div>
-              <div className="h-10 w-10 rounded-full bg-slate-100"></div>
+              <div className={styles.loadingAvatar}></div>
             </div>
           </div>
         ) : userData?._id ? (
@@ -55,7 +47,7 @@ const Header = () => {
             {isMobile ? (
               <>
                 <Menu
-                  className="w-6 h-6 text-muted-foreground dark:text-white cursor-pointer"
+                  className={styles.menuButton}
                   onClick={() => setIsSidebarOpen(true)}
                 />
                 <Sidebar
@@ -73,7 +65,7 @@ const Header = () => {
             {isMobile ? (
               <>
                 <Menu
-                  className="w-6 h-6 text-muted-foreground dark:text-white cursor-pointer"
+                  className={styles.menuButton}
                   onClick={() => setIsSidebarOpen(true)}
                 />
                 <Sidebar
@@ -83,9 +75,9 @@ const Header = () => {
                 />
               </>
             ) : (
-              <div className="flex items-center gap-4">
+              <div className={styles.authButtons}>
                 <Link href="/sign-in">
-                  <Button variant="outline">Sign In</Button>
+                  <Button variant="outlined">Sign In</Button>
                 </Link>
                 <Link href="/sign-up">
                   <Button>Sign Up</Button>

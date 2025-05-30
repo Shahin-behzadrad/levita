@@ -1,0 +1,27 @@
+.container {
+  @apply container max-w-4xl mx-auto py-8 mt-16;
+}
+
+.title {
+  @apply text-3xl font-bold;
+}
+
+.section {
+  @apply space-y-6;
+}
+
+.sectionTitle {
+  @apply text-2xl font-semibold mb-4;
+}
+
+.sectionText {
+  @apply text-gray-600 mb-4;
+}
+
+.list {
+  @apply list-disc pl-6 text-gray-600 space-y-2;
+}
+
+.backButton {
+  @apply pt-6;
+}

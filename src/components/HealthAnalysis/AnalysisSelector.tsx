@@ -1,4 +1,5 @@
 import { Id } from "convex/_generated/dataModel";
+import styles from "./AnalysisSelector.module.scss";
 
 interface AnalysisSelectorProps {
   analyses: any[];
@@ -16,18 +17,18 @@ const AnalysisSelector = ({
   if (!analyses || analyses.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Previous Analyses</h2>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Previous Analyses</h2>
         <button
           onClick={onNewAnalysis}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          className={styles.newButton}
         >
           New Analysis
         </button>
       </div>
       <select
-        className="p-2 border rounded"
+        className={styles.select}
         value={selectedAnalysisId || ""}
         onChange={(e) =>
           onAnalysisSelect(e.target.value as Id<"healthAnalyses">)

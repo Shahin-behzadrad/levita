@@ -1,0 +1,113 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 1rem;
+}
+
+.card {
+  width: 100%;
+  max-width: 24rem;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.description {
+  color: #6b7280;
+  text-align: center;
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.passwordInput {
+  position: relative;
+}
+
+.passwordError {
+  @apply border-red-500 focus-visible:ring-red-500;
+}
+
+.togglePassword {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.25rem;
+
+  &:hover {
+    color: #6b7280;
+  }
+}
+
+.passwordHint {
+  @apply text-xs text-gray-500;
+
+  &.error {
+    @apply text-red-500;
+  }
+}
+
+.termsContainer {
+  @apply flex items-center space-x-2;
+}
+
+.termsLabel {
+  @apply text-sm font-normal;
+}
+
+.termsLink {
+  @apply text-teal-600 hover:underline;
+}
+
+.footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.submitButton {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.signInText {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.signInLink {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

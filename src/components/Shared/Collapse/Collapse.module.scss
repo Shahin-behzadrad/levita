@@ -1,0 +1,42 @@
+.accordion {
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.header {
+  padding: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.3s ease;
+}
+
+.icon {
+  font-size: 1.2rem;
+  line-height: 1;
+  transform: rotate(180deg);
+  transition: transform 0.2s ease-in-out;
+}
+
+.rotateIcon {
+  transform: rotate(0deg);
+}
+
+.content {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  padding: 0 16px;
+  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.expanded {
+  max-height: 1000px;
+  opacity: 1;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}

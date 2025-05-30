@@ -5,18 +5,13 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/Shared/Button/Button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@/components/Shared/Card";
 import SalSVG from "@/components/svgs/Sal";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { toast } from "sonner";
@@ -24,6 +19,10 @@ import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Eye, EyeOff } from "lucide-react";
 import clsx from "clsx";
+import styles from "./SignUp.module.scss";
+import TextField from "@/components/Shared/TextField";
+import Checkbox from "@/components/Shared/CheckBox/CheckBox";
+import { Text } from "@/components/Shared/Text/Text";
 
 export default function SignUpClient() {
   const { signIn } = useAuthActions();
@@ -122,24 +121,18 @@ export default function SignUpClient() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
-      <Card className="w-full max-w-md mt-10">
-        <CardHeader className="space-y-1">
-          <div className="flex justify-center mb-4 pb-4 border-b">
-            <SalSVG />
-          </div>
-          <CardTitle className="text-2xl font-bold text-center">
-            Create an account
-          </CardTitle>
-          <CardDescription className="text-center">
-            Enter your information to create your HealthAI account
-          </CardDescription>
-        </CardHeader>
+    <div className={styles.container}>
+      <Card className={styles.card}>
+        <CardHeader
+          title="Create an account"
+          subheader="Enter your information to create your HealthAI account"
+          className={styles.header}
+        />
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
+          <CardContent className={styles.content}>
+            <div className={styles.formGroup}>
+              <TextField
+                label="Full Name"
                 id="name"
                 placeholder="Maria Johnson"
                 value={name}
@@ -147,9 +140,9 @@ export default function SignUpClient() {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
+            <div className={styles.formGroup}>
+              <TextField
+                label="Email"
                 id="email"
                 type="email"
                 placeholder="m.johnson@example.com"
@@ -158,10 +151,9 @@ export default function SignUpClient() {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
+            <div className={styles.formGroup}>
+              <div className={styles.passwordInput}>
+                <TextField
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -169,60 +161,50 @@ export default function SignUpClient() {
                     setPassword(e.target.value);
                     setPasswordError(false);
                   }}
-                  className={
-                    passwordError
-                      ? "border-red-500 focus-visible:ring-red-500"
-                      : ""
-                  }
+                  className={passwordError ? styles.passwordError : ""}
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  className={styles.togglePassword}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               <p
                 className={clsx(
-                  "text-xs text-gray-500",
-                  passwordError && "text-red-500"
+                  styles.passwordHint,
+                  passwordError && styles.error
                 )}
               >
                 Password must be at least 8 characters long and include a number
                 and special character.
               </p>
             </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="terms" required />
-              <Label htmlFor="terms" className="text-sm font-normal">
-                I agree to the{" "}
-                <Link href="/terms" className="text-teal-600 hover:underline">
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link href="/privacy" className="text-teal-600 hover:underline">
-                  Privacy Policy
-                </Link>
-              </Label>
+            <div className={styles.termsContainer}>
+              <Checkbox id="terms" name="terms" />
+              <Text className={styles.termsLabel} value="I agree to the" />
+              <Link href="/terms" className={styles.termsLink}>
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link href="/privacy" className={styles.termsLink}>
+                Privacy Policy
+              </Link>
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
+          <CardFooter className={styles.footer}>
             <Button
               type="submit"
-              className="w-full bg-teal-600 hover:bg-teal-700"
+              className={styles.submitButton}
               disabled={isLoading}
             >
               {isLoading ? "Creating account..." : "Create Account"}
             </Button>
-            <div className="text-center text-sm">
+            <div className={styles.signInText}>
               Already have an account?{" "}
-              <Link href="/sign-in" className="text-teal-600 hover:underline">
+              <Link href="/sign-in" className={styles.signInLink}>
                 Sign in
               </Link>
             </div>

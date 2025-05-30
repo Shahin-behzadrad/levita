@@ -1,0 +1,45 @@
+@mixin generate-color-variants($name, $color) {
+  :root {
+    --#{$name}-lighter: #{lighten($color, 20%)};
+    --#{$name}-light: #{lighten($color, 10%)};
+    --#{$name}-main: #{$color};
+    --#{$name}-dark: #{darken($color, 10%)};
+    --#{$name}-darker: #{darken($color, 20%)};
+
+    --#{$name}-opaque-5: #{rgba($color, 0.05)};
+    --#{$name}-opaque-10: #{rgba($color, 0.1)};
+    --#{$name}-opaque-20: #{rgba($color, 0.2)};
+    --#{$name}-opaque-30: #{rgba($color, 0.3)};
+    --#{$name}-opaque-40: #{rgba($color, 0.4)};
+    --#{$name}-opaque-50: #{rgba($color, 0.5)};
+    --#{$name}-opaque-60: #{rgba($color, 0.6)};
+    --#{$name}-opaque-70: #{rgba($color, 0.7)};
+    --#{$name}-opaque-80: #{rgba($color, 0.8)};
+    --#{$name}-opaque-90: #{rgba($color, 0.9)};
+  }
+}
+
+// Luxury light theme palette
+$primary: #4b3f72; // Regal purple
+$secondary: #b9b8c3; // Elegant soft silver
+$success: #6cbf84; // Soft mint green
+$warning: #e2b93b; // Rich golden yellow
+$error: #d64550; // Refined crimson
+$info: #5c91e4; // Muted royal blue
+$primary-alt: #fff8f2; // Soft cream background accent
+
+@include generate-color-variants(primary, $primary);
+@include generate-color-variants(secondary, $secondary);
+@include generate-color-variants(success, $success);
+@include generate-color-variants(warning, $warning);
+@include generate-color-variants(error, $error);
+@include generate-color-variants(info, $info);
+@include generate-color-variants(primaryAlt, $primary-alt);
+
+:root {
+  // Static global colors
+  --gray: #a1a1a1; // Polished light gray
+  --black: #1a1a1a; // Deep charcoal instead of true black
+  --white: #f5f5f5; // Slightly off-white, softer on eyes
+  --true-white: #ffffff; // True white for highlights
+}

@@ -1,6 +1,7 @@
 import MainPage from "@/components/MainPage/MainPage";
 import Footer from "../components/Footer/Footer";
 import type { Metadata } from "next";
+import styles from "./page.module.scss";
 
 export const metadata: Metadata = {
   title: "SAL - Home",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function HomeServerComponent() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className={styles.container}>
       <MainPage />
     </div>
   );

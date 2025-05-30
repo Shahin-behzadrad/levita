@@ -1,22 +1,20 @@
 import Link from "next/link";
+import styles from "./Footer.module.scss";
 
 const Footer = () => {
   return (
-    <footer className="border-t bg-gray-50">
-      <div className="container flex flex-col gap-2 py-6 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-col gap-2">
-          <p className="text-sm text-gray-500">
+    <footer className={styles.footer}>
+      <div className={styles.container}>
+        <div className={styles.copyright}>
+          <p className={styles.copyrightText}>
             © 2025 HealthAI. All rights reserved.
           </p>
         </div>
-        <div className="flex gap-4">
-          <Link href="/terms" className="text-sm text-gray-500 hover:underline">
+        <div className={styles.links}>
+          <Link href="/terms" className={styles.link}>
             Terms of Service
           </Link>
-          <Link
-            href="/privacy"
-            className="text-sm text-gray-500 hover:underline"
-          >
+          <Link href="/privacy" className={styles.link}>
             Privacy Policy
           </Link>
         </div>
