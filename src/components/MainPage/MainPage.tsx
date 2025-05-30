@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader } from "../Shared/Card";
 import HeroActions from "../HeroActions/HeroActions";
 import styles from "./MainPage.module.scss";
+import Text from "../Shared/Text";
 
 const FeatureCard = ({
   title,
@@ -14,7 +15,7 @@ const FeatureCard = ({
   <Card>
     <CardHeader title={title} subheader={description} />
     <CardContent>
-      <p className={styles.featureDescription}>{content}</p>
+      <Text value={content} color="gray" />
     </CardContent>
   </Card>
 );

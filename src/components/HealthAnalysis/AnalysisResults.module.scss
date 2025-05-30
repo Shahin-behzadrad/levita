@@ -1,8 +1,13 @@
+.cardContainer {
+  margin-inline: 16px;
+}
+
 .container {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding: 16px;
 }
 
 .header {
@@ -26,6 +31,7 @@
   border: 1px solid #bfdbfe;
   background-color: #eff6ff;
   padding: 16px;
+  // margin-inline: 16px;
   border-radius: 8px;
   display: flex;
   gap: 8px;
@@ -101,7 +107,7 @@
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: 16px;
 
   @media (min-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);

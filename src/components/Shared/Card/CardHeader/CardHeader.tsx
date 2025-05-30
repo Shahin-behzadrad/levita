@@ -1,7 +1,7 @@
-import { FC, ReactNode } from 'react';
-import classes from './CardHeader.module.scss';
-import Text from '../../Text';
-import clsx from 'clsx';
+import { FC, ReactNode } from "react";
+import styles from "./CardHeader.module.scss";
+import Text from "../../Text";
+import clsx from "clsx";
 
 interface CardHeaderProps {
   titleStartAdornment?: ReactNode;
@@ -21,20 +21,21 @@ export const CardHeader: FC<CardHeaderProps> = ({
   titleEndAdornment,
   titleStartAdornment,
   action,
-  titleFontSize,
-  titleClassName
+  titleFontSize = 23,
+  titleClassName,
 }) => (
-  <div className={`${classes.cardHeader} ${className || ''}`}>
+  <div className={`${styles.cardHeader} ${className || ""}`}>
     <div>
       <Text
         value={title}
-        variant="h3"
-        className={clsx(classes.title, titleClassName)}
+        variant="h4"
+        className={clsx(styles.title, titleClassName)}
         startAdornment={titleStartAdornment}
         endAdornment={titleEndAdornment}
+        fontWeight="bold"
         style={{ fontSize: titleFontSize }}
       />
-      {subheader && <Text value={subheader} className={classes.subheader} />}
+      {subheader && <Text value={subheader} className={styles.subheader} />}
     </div>
     {action && action}
   </div>

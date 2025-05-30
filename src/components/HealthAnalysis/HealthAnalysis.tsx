@@ -10,6 +10,7 @@ import AnalysisResults from "./AnalysisResults";
 import AnalysisSelector from "./AnalysisSelector";
 import { useHealthAnalysis } from "./useHealthAnalysis";
 import styles from "./HealthAnalysis.module.scss";
+import Button from "../Shared/Button";
 
 export default function HealthAnalysis() {
   const router = useRouter();
@@ -61,12 +62,13 @@ export default function HealthAnalysis() {
         ) : (
           <>
             {analyses && analyses.length > 0 && (
-              <button
+              <Button
+                variant="contained"
                 onClick={() => setShowNewAnalysis(!showNewAnalysis)}
                 className={styles.viewPreviousButton}
               >
                 View Previous Analyses
-              </button>
+              </Button>
             )}
             <HealthAnalysisForm
               onFileUploaded={setLabFiles}

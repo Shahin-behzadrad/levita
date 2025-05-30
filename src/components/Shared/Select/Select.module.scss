@@ -20,7 +20,7 @@
   .label {
     position: absolute;
     top: 27%;
-    right: 12px;
+    left: 12px;
     background-color: var(--primaryAlt-main);
     width: fit-content;
     transition: all 0.2s ease;
@@ -56,7 +56,7 @@
     .option {
       background-color: var(--primaryAlt-main);
       font-size: 14px;
-      color: var(--white);
+      color: var(--black);
     }
 
     &:focus {
@@ -67,7 +67,7 @@
 
   .arrow {
     position: absolute;
-    left: 4px;
+    right: 4px;
     top: 25%;
     color: var(--gray);
     display: flex;

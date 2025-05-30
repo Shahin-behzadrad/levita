@@ -19,11 +19,13 @@ interface UserProfileProps {
     name?: string;
   };
   isReadOnly?: boolean;
+  handleSignOut?: () => void;
 }
 
 export const UserProfile = ({
   userData,
   isReadOnly = false,
+  handleSignOut,
 }: UserProfileProps) => {
   const isMobile = useIsMobile();
   const updateUserProfile = useMutation(api.userProfiles.updateUserProfile);
@@ -103,7 +105,7 @@ export const UserProfile = ({
         tooltipContent={
           <div className={styles.popoverContent}>
             <ProfileContent />
-            <SignOutButton />
+            <SignOutButton handleSignOut={handleSignOut} />
           </div>
         }
       >

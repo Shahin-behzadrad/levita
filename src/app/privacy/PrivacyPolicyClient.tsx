@@ -4,6 +4,7 @@ import { Button } from "@/components/Shared/Button/Button";
 import { Card, CardContent, CardHeader } from "@/components/Shared/Card";
 import Link from "next/link";
 import styles from "./PrivacyPolicy.module.scss";
+import { Separator } from "@/components/Shared/Separator/Separator";
 
 export default function PrivacyPolicyClient() {
   return (
@@ -27,6 +28,8 @@ export default function PrivacyPolicyClient() {
             </ul>
           </section>
 
+          <Separator />
+
           <section>
             <h2 className={styles.sectionTitle}>
               2. How We Use Your Information
@@ -42,6 +45,8 @@ export default function PrivacyPolicyClient() {
             </ul>
           </section>
 
+          <Separator />
+
           <section>
             <h2 className={styles.sectionTitle}>3. Data Security</h2>
             <p className={styles.sectionText}>
@@ -51,6 +56,8 @@ export default function PrivacyPolicyClient() {
               secure, and we cannot guarantee absolute security.
             </p>
           </section>
+
+          <Separator />
 
           <section>
             <h2 className={styles.sectionTitle}>4. Your Rights</h2>

@@ -4,7 +4,7 @@ import { Button } from "@/components/Shared/Button/Button";
 import { Card, CardContent, CardHeader } from "@/components/Shared/Card";
 import Link from "next/link";
 import styles from "./TermsOfService.module.scss";
-
+import { Separator } from "@/components/Shared/Separator/Separator";
 export default function TermsOfServiceClient() {
   return (
     <div className={styles.container}>
@@ -23,6 +23,8 @@ export default function TermsOfServiceClient() {
               from using or accessing this site.
             </p>
           </section>
+
+          <Separator />
 
           <section>
             <h2 className={styles.sectionTitle}>2. Use License</h2>
@@ -46,6 +48,8 @@ export default function TermsOfServiceClient() {
             </ul>
           </section>
 
+          <Separator />
+
           <section>
             <h2 className={styles.sectionTitle}>3. Medical Disclaimer</h2>
             <p className={styles.sectionText}>
@@ -57,6 +61,8 @@ export default function TermsOfServiceClient() {
             </p>
           </section>
 
+          <Separator />
+
           <section>
             <h2 className={styles.sectionTitle}>4. Limitations</h2>
             <p className={styles.sectionText}>
@@ -66,6 +72,8 @@ export default function TermsOfServiceClient() {
               or inability to use the materials on HealthAI's website.
             </p>
           </section>
+
+          <Separator />
 
           <div className={styles.backButton}>
             <Link href="/">

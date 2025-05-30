@@ -36,7 +36,6 @@ export interface TextFieldProps {
   labelBackground?: "card" | "modal";
   needsNumberFormat?: boolean;
   helperTextClickHandler?: () => void;
-  direction?: "rtl" | "ltr";
 }
 
 export const TextField: React.FC<
@@ -64,7 +63,6 @@ export const TextField: React.FC<
   containerClassName,
   errors,
   helperText,
-  direction = "rtl",
   helperTextClickHandler,
   placeholder,
   needsNumberFormat,
@@ -203,7 +201,6 @@ export const TextField: React.FC<
           autoComplete="off"
           className={clsx(classes.input, inputClasses, {
             // direction
-            [classes.ltrDirection]: direction === "ltr",
             // Size
             [classes.fontSize_xxl]: inputSize === "2xl",
             [classes.fontSize_xl]: inputSize === "xl",

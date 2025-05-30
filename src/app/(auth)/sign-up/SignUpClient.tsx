@@ -12,7 +12,6 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/Shared/Card";
-import SalSVG from "@/components/svgs/Sal";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { toast } from "sonner";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
@@ -126,7 +125,6 @@ export default function SignUpClient() {
         <CardHeader
           title="Create an account"
           subheader="Enter your information to create your HealthAI account"
-          className={styles.header}
         />
         <form onSubmit={handleSubmit}>
           <CardContent className={styles.content}>
@@ -152,39 +150,36 @@ export default function SignUpClient() {
               />
             </div>
             <div className={styles.formGroup}>
-              <div className={styles.passwordInput}>
-                <TextField
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setPasswordError(false);
-                  }}
-                  className={passwordError ? styles.passwordError : ""}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className={styles.togglePassword}
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-              <p
-                className={clsx(
-                  styles.passwordHint,
-                  passwordError && styles.error
-                )}
-              >
-                Password must be at least 8 characters long and include a number
-                and special character.
-              </p>
+              <TextField
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordError(false);
+                }}
+                className={passwordError ? styles.passwordError : ""}
+                required
+                endAdornment={
+                  <Button onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </Button>
+                }
+              />
+              <Text
+                value="Password must be at least 8 characters long and include a number and special character."
+                color={passwordError ? "error" : "gray"}
+                fontSize="sm"
+                className={styles.passwordHint}
+              />
             </div>
             <div className={styles.termsContainer}>
               <Checkbox id="terms" name="terms" />
-              <Text className={styles.termsLabel} value="I agree to the" />
+              <Text
+                noWrap
+                className={styles.termsLabel}
+                value="I agree to the"
+              />
               <Link href="/terms" className={styles.termsLink}>
                 Terms of Service
               </Link>{" "}
@@ -197,7 +192,9 @@ export default function SignUpClient() {
           <CardFooter className={styles.footer}>
             <Button
               type="submit"
-              className={styles.submitButton}
+              size="lg"
+              variant="contained"
+              fullWidth
               disabled={isLoading}
             >
               {isLoading ? "Creating account..." : "Create Account"}

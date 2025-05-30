@@ -24,7 +24,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <div className={`${styles.container} ${isMobile ? styles.mobile : ""}`}>
-        <div onClick={() => router.push("/")}>
+        <div onClick={() => router.push("/")} className={styles.levita}>
           <Text
             fontSize="lg"
             variant="h3"
@@ -76,12 +76,18 @@ const Header = () => {
               </>
             ) : (
               <div className={styles.authButtons}>
-                <Link href="/sign-in">
-                  <Button variant="outlined">Sign In</Button>
-                </Link>
-                <Link href="/sign-up">
-                  <Button>Sign Up</Button>
-                </Link>
+                <Button
+                  variant="contained"
+                  onClick={() => router.push("/sign-up")}
+                >
+                  Sign Up
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => router.push("/sign-in")}
+                >
+                  Sign In
+                </Button>
               </div>
             )}
           </>

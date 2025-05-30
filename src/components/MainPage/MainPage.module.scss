@@ -8,6 +8,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background: linear-gradient(
+    to top,
+    var(--secondary-main),
+    var(--primaryAlt-main)
+  );
 }
 
 .heroContainer {
@@ -87,8 +92,4 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 48px;
   }
-}
-
-.featureDescription {
-  color: #6b7280;
 }

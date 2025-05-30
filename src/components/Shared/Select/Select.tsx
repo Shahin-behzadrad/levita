@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 export interface SelectOption {
   label: string;
   value: string;
+  disabled?: boolean;
 }
 
 interface CustomSelectProps {
@@ -66,6 +67,7 @@ const Select = ({
             className={classes.option}
             key={option.value}
             value={option.value}
+            disabled={option.disabled}
           >
             {option.label}
           </option>

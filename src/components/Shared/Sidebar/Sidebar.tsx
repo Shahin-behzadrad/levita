@@ -6,6 +6,7 @@ import { UserProfile } from "../UserProfile/UserProfile";
 import styles from "./Sidebar.module.scss";
 import clsx from "clsx";
 import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -17,6 +18,8 @@ interface SidebarProps {
 }
 
 const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
+  const router = useRouter();
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -37,29 +40,46 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
         className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}
         role="complementary"
       >
-        <Button size="sm" onClick={() => onOpenChange(false)}>
-          <X />
-        </Button>
         <div className={styles.sidebarContainer}>
+          <Button
+            className={styles.closeButton}
+            size="sm"
+            onClick={() => onOpenChange(false)}
+          >
+            <X />
+          </Button>
           {userData?._id ? (
             <>
               <div className={styles.profileSection}>
-                <UserProfile userData={userData} />
+                <UserProfile
+                  userData={userData}
+                  handleSignOut={() => onOpenChange(false)}
+                />
               </div>
               <div className={styles.profileSection}>
-                <SignOutButton />
+                <SignOutButton handleSignOut={() => onOpenChange(false)} />
               </div>
             </>
           ) : (
             <div className={styles.authSection}>
-              <Link href="/sign-in">
-                <Button variant="outlined" onClick={() => onOpenChange(false)}>
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/sign-up">
-                <Button onClick={() => onOpenChange(false)}>Sign Up</Button>
-              </Link>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  onOpenChange(false);
+                  router.push("/sign-in");
+                }}
+              >
+                Sign In
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  onOpenChange(false);
+                  router.push("/sign-up");
+                }}
+              >
+                Sign Up
+              </Button>
             </div>
           )}
         </div>

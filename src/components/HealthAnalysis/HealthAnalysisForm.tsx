@@ -145,26 +145,23 @@ export function HealthAnalysisForm({
                 multiline
                 label="Describe your symptoms or health concerns"
                 placeholder="E.g., I've had a headache for 3 days, slight fever, and a sore throat..."
-                {...register("symptoms", { required: true })}
+                value={watch("symptoms")?.[0] || ""}
+                onChangeText={(text) => setValue("symptoms", [text])}
               />
             </div>
 
             <div className={styles.gridContainer}>
               <div className={styles.formGroup}>
                 <TextField
+                  label="Age"
                   type="number"
                   id="age"
                   min="0"
                   max="120"
                   step="1"
-                  className={styles.input}
                   placeholder="Enter your age"
-                  {...register("age", {
-                    required: true,
-                    min: 0,
-                    max: 120,
-                    valueAsNumber: true,
-                  })}
+                  value={watch("age") ?? ""}
+                  onChangeText={(text) => setValue("age", text)}
                 />
               </div>
 
@@ -199,22 +196,6 @@ export function HealthAnalysisForm({
             </div>
 
             <div className={styles.formGroup}>
-              <Select
-                label="Health Status"
-                options={[
-                  { label: "Excellent", value: "excellent" },
-                  { label: "Good", value: "good" },
-                  { label: "Fair", value: "fair" },
-                  { label: "Poor", value: "poor" },
-                ]}
-                value={watch("generalHealthStatus") ?? ""}
-                onChange={(value) =>
-                  setValue("generalHealthStatus", value as string)
-                }
-              />
-            </div>
-
-            <div className={styles.formGroup}>
               <Text value="Lab Results (Optional)" />
               {filePreviews.length > 0 ? (
                 <div className={styles.filePreviewContainer}>
@@ -230,7 +211,8 @@ export function HealthAnalysisForm({
           <CardFooter>
             <Button
               type="submit"
-              className={styles.submitButton}
+              variant="contained"
+              fullWidth
               disabled={isAnalyzing}
             >
               {isAnalyzing ? (

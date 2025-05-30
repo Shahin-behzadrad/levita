@@ -19,6 +19,16 @@
     background: none;
     color: var(--white);
 
+    // Add autofill override styles
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px var(--primaryAlt-main) inset !important;
+      -webkit-text-fill-color: var(--black) !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
     &.fullWidth {
       width: 100% !important;
     }
@@ -35,7 +45,7 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      right: 12px;
+      left: 12px;
       font-size: 14px;
       color: var(--gray); // Default color when not focused
       transition: all 0.2s ease;
@@ -51,7 +61,7 @@
 
     .labelFocused {
       top: 0;
-      right: 8px;
+      left: 8px;
       transform: translate(0, -50%);
       font-size: 12px;
     }
@@ -108,22 +118,13 @@
     .input {
       box-sizing: border-box;
       width: 100%;
-      padding: 8px 4px;
+      padding: 4px;
       font: inherit;
-      color: var(--white);
+      color: var(--black);
       border: none;
       resize: none;
       overflow: hidden;
       background: transparent;
-
-      &.ltrDirection {
-        direction: ltr;
-
-        &::placeholder {
-          direction: ltr;
-          text-align: left !important;
-        }
-      }
 
       &::placeholder {
         font-weight: bold;
@@ -131,7 +132,6 @@
         line-height: normal;
         position: relative;
         padding: 0;
-        text-align: right;
       }
 
       &.multiline {
