@@ -1,3 +1,5 @@
+"use client";
+
 import classes from "./Button.module.scss";
 
 import { CSSProperties, forwardRef, ReactNode } from "react";
@@ -64,7 +66,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonType>(
   ) => {
     const router = useRouter();
 
-    const clickHandler = (e) => {
+    const clickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (href && href?.trim().length > 0) {
         router.push(href);
       } else {
