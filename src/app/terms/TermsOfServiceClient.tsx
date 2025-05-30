@@ -1,29 +1,22 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Button } from "@/components/Shared/Button/Button";
+import { Card, CardContent, CardHeader } from "@/components/Shared/Card";
 import Link from "next/link";
-
+import styles from "./TermsOfService.module.scss";
+import { Separator } from "@/components/Shared/Separator/Separator";
 export default function TermsOfServiceClient() {
   return (
-    <div className="container max-w-4xl mx-auto py-8 mt-16">
+    <div className={styles.container}>
       <Card>
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold">Terms of Service</CardTitle>
-          <CardDescription>Last updated: March 15, 2024</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <CardHeader
+          title="Terms of Service"
+          subheader="Last updated: March 15, 2024"
+        />
+        <CardContent className={styles.section}>
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
-              1. Acceptance of Terms
-            </h2>
-            <p className="text-gray-600 mb-4">
+            <h2 className={styles.sectionTitle}>1. Acceptance of Terms</h2>
+            <p className={styles.sectionText}>
               By accessing and using HealthAI's services, you agree to be bound
               by these Terms of Service and all applicable laws and regulations.
               If you do not agree with any of these terms, you are prohibited
@@ -31,15 +24,17 @@ export default function TermsOfServiceClient() {
             </p>
           </section>
 
+          <Separator />
+
           <section>
-            <h2 className="text-2xl font-semibold mb-4">2. Use License</h2>
-            <p className="text-gray-600 mb-4">
+            <h2 className={styles.sectionTitle}>2. Use License</h2>
+            <p className={styles.sectionText}>
               Permission is granted to temporarily use HealthAI's services for
               personal, non-commercial transitory viewing only. This is the
               grant of a license, not a transfer of title, and under this
               license you may not:
             </p>
-            <ul className="list-disc pl-6 text-gray-600 space-y-2">
+            <ul className={styles.list}>
               <li>Modify or copy the materials</li>
               <li>Use the materials for any commercial purpose</li>
               <li>
@@ -53,11 +48,11 @@ export default function TermsOfServiceClient() {
             </ul>
           </section>
 
+          <Separator />
+
           <section>
-            <h2 className="text-2xl font-semibold mb-4">
-              3. Medical Disclaimer
-            </h2>
-            <p className="text-gray-600 mb-4">
+            <h2 className={styles.sectionTitle}>3. Medical Disclaimer</h2>
+            <p className={styles.sectionText}>
               The information provided by HealthAI is for general informational
               purposes only and is not intended to be a substitute for
               professional medical advice, diagnosis, or treatment. Always seek
@@ -66,9 +61,11 @@ export default function TermsOfServiceClient() {
             </p>
           </section>
 
+          <Separator />
+
           <section>
-            <h2 className="text-2xl font-semibold mb-4">4. Limitations</h2>
-            <p className="text-gray-600 mb-4">
+            <h2 className={styles.sectionTitle}>4. Limitations</h2>
+            <p className={styles.sectionText}>
               In no event shall HealthAI or its suppliers be liable for any
               damages (including, without limitation, damages for loss of data
               or profit, or due to business interruption) arising out of the use
@@ -76,9 +73,11 @@ export default function TermsOfServiceClient() {
             </p>
           </section>
 
-          <div className="pt-6">
+          <Separator />
+
+          <div className={styles.backButton}>
             <Link href="/">
-              <Button variant="outline">Back to Home</Button>
+              <Button variant="outlined">Back to Home</Button>
             </Link>
           </div>
         </CardContent>

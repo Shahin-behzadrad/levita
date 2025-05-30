@@ -1,0 +1,79 @@
+.profileContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  background-color: var(--secondary-main);
+
+  &.mobile {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
+  }
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.nameContainer {
+  display: flex;
+  align-items: center;
+}
+
+.editContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  .buttonContainer {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+.editButton {
+  padding: 0.25rem;
+}
+
+.saveButton {
+  padding: 0.25rem 0.5rem;
+}
+
+.profileTrigger {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--background-hover);
+  }
+}
+
+.popoverContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  min-width: 200px;
+  padding: 24px;
+}

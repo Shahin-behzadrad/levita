@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { toast } from "sonner";
+import styles from "./FileUpload.module.scss";
 
 export function FileUpload() {
   const generateUploadUrl = useMutation(api.labResults.generateUploadUrl);
@@ -74,16 +75,11 @@ export function FileUpload() {
   };
 
   return (
-    <div className="space-y-6 bg-white p-8 shadow-lg rounded-lg mt-8">
-      <h2 className="text-2xl font-semibold text-gray-700 mb-6">
-        Upload Lab Results
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className={styles.container}>
+      <h2 className={styles.title}>Upload Lab Results</h2>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <div>
-          <label
-            htmlFor="file-upload"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="file-upload" className={styles.fileLabel}>
             Lab Test File (PDF or Text)
           </label>
           <input
@@ -92,35 +88,24 @@ export function FileUpload() {
             ref={fileInputRef}
             accept=".pdf,.txt,text/plain,application/pdf,.png,.webp"
             onChange={handleFileChange}
-            className="mt-1 block w-full text-sm text-gray-500
-                       file:mr-4 file:py-2 file:px-4
-                       file:rounded-md file:border-0
-                       file:text-sm file:font-semibold
-                       file:bg-indigo-50 file:text-indigo-700
-                       hover:file:bg-indigo-100"
+            className={styles.fileInput}
           />
         </div>
         {selectedFile && (
-          <p className="text-sm text-gray-500">Selected: {selectedFile.name}</p>
+          <p className={styles.selectedFile}>Selected: {selectedFile.name}</p>
         )}
         <button
           type="submit"
           disabled={isUploading || !selectedFile}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          className={styles.submitButton}
         >
           {isUploading ? "Uploading..." : "Upload File"}
         </button>
       </form>
 
-      {labResults === undefined && (
-        <div className="flex justify-center items-center pt-4">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
-        </div>
-      )}
+      {labResults === undefined && <div className={styles.loadingSpinner} />}
       {labResults && labResults.length === 0 && (
-        <p className="text-sm text-gray-500 mt-4">
-          No lab results uploaded yet.
-        </p>
+        <p className={styles.noResults}>No lab results uploaded yet.</p>
       )}
     </div>
   );

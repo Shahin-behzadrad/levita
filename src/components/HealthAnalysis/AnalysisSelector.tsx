@@ -1,4 +1,7 @@
 import { Id } from "convex/_generated/dataModel";
+import styles from "./AnalysisSelector.module.scss";
+import Button from "../Shared/Button";
+import Select, { SelectOption } from "../Shared/Select/Select";
 
 interface AnalysisSelectorProps {
   analyses: any[];
@@ -15,38 +18,38 @@ const AnalysisSelector = ({
 }: AnalysisSelectorProps) => {
   if (!analyses || analyses.length === 0) return null;
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Previous Analyses</h2>
-        <button
-          onClick={onNewAnalysis}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-        >
-          New Analysis
-        </button>
-      </div>
-      <select
-        className="p-2 border rounded"
-        value={selectedAnalysisId || ""}
-        onChange={(e) =>
-          onAnalysisSelect(e.target.value as Id<"healthAnalyses">)
+  const options: SelectOption[] = [
+    { label: "Select an analysis", value: "", disabled: true },
+    ...analyses.map((analysis) => ({
+      label: `Analysis from ${new Date(analysis._creationTime).toLocaleString(
+        undefined,
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
         }
-      >
-        <option value="">Select an analysis</option>
-        {analyses.map((analysis) => (
-          <option key={analysis._id} value={analysis._id}>
-            Analysis from{" "}
-            {new Date(analysis._creationTime).toLocaleString(undefined, {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </option>
-        ))}
-      </select>
+      )}`,
+      value: analysis._id,
+    })),
+  ];
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Previous Analyses</h2>
+        <Button variant="contained" onClick={onNewAnalysis}>
+          New Analysis
+        </Button>
+      </div>
+      <Select
+        options={options}
+        value={selectedAnalysisId || ""}
+        onChange={(value) => onAnalysisSelect(value as Id<"healthAnalyses">)}
+        label="Select Analysis"
+        fullwidth
+      />
     </div>
   );
 };

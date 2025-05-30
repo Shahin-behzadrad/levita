@@ -9,6 +9,8 @@ import { HealthAnalysisForm } from "./HealthAnalysisForm";
 import AnalysisResults from "./AnalysisResults";
 import AnalysisSelector from "./AnalysisSelector";
 import { useHealthAnalysis } from "./useHealthAnalysis";
+import styles from "./HealthAnalysis.module.scss";
+import Button from "../Shared/Button";
 
 export default function HealthAnalysis() {
   const router = useRouter();
@@ -48,8 +50,8 @@ export default function HealthAnalysis() {
     return <LoadingModal content="Loading your health analyses..." />;
 
   return (
-    <div className="min-h-screen max-w-screen-lg mx-auto">
-      <main className="flex flex-col container py-28 gap-6">
+    <div className={styles.container}>
+      <main className={styles.main}>
         {analyses && analyses.length > 0 && !showNewAnalysis ? (
           <AnalysisSelector
             analyses={analyses}
@@ -60,12 +62,13 @@ export default function HealthAnalysis() {
         ) : (
           <>
             {analyses && analyses.length > 0 && (
-              <button
+              <Button
+                variant="contained"
                 onClick={() => setShowNewAnalysis(!showNewAnalysis)}
-                className="self-start px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+                className={styles.viewPreviousButton}
               >
                 View Previous Analyses
-              </button>
+              </Button>
             )}
             <HealthAnalysisForm
               onFileUploaded={setLabFiles}

@@ -1,0 +1,93 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-bottom: 1px solid var(--secondary-opaque-30);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  padding-inline: 16px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+
+  .levita {
+    cursor: pointer;
+  }
+
+  &.mobile {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.logoContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  cursor: pointer;
+
+  &.mobile {
+    gap: 0;
+  }
+}
+
+.loadingPulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  display: flex;
+  gap: 8px;
+}
+
+.loadingText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.loadingBar {
+  height: 12px;
+  width: 96px;
+  border-radius: 4px;
+  background-color: var(--secondary-opaque-10);
+}
+
+.loadingAvatar {
+  height: 40px;
+  width: 40px;
+  border-radius: 9999px;
+  background-color: var(--secondary-opaque-10);
+}
+
+.menuButton {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+
+  :global(.dark) & {
+    color: var(--secondary-main);
+  }
+}
+
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

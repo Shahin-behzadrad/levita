@@ -1,0 +1,47 @@
+.customDrawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  height: 100%;
+  background-color: var(--primaryAlt-main);
+  transition: right 0.3s ease-in-out;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+  z-index: 6;
+
+  &.open {
+    right: 0;
+  }
+
+  .drawerContent {
+    height: 100%;
+    overflow-y: auto;
+
+    .closeBtn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 10px;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+  }
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0);
+  transition: background-color 0.3s ease-in-out,
+    backdrop-filter 0.3s ease-in-out;
+
+  &.openBackdrop {
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+  }
+}

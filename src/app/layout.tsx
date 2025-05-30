@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
+import "../styles/_colors.scss";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { convex } from "@/lib/convexClient";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import { Toaster } from "sonner";
+import styles from "./layout.module.scss";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={styles.layout}>
         <ConvexAuthProvider client={convex}>
           <Header />
           {children}
@@ -32,7 +34,7 @@ export default function RootLayout({
                 color: "black",
                 border: "1px solid #e5e7eb",
               },
-              className: "toast-custom",
+              className: styles.toastCustom,
             }}
           />
         </ConvexAuthProvider>

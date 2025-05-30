@@ -1,21 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "../ui/button";
 import { useConvexAuth } from "convex/react";
+import styles from "./HeroActions.module.scss";
+import Button from "../Shared/Button";
 
 const HeroActions = () => {
   const { isAuthenticated } = useConvexAuth();
 
   return (
-    <div className="space-x-4">
+    <div className={styles.container}>
       <Link href={isAuthenticated ? "/health-analysis" : "/sign-in"}>
-        <Button size="lg" className="bg-teal-600 hover:bg-teal-700">
+        <Button variant="contained" size="lg">
           Get Started
         </Button>
       </Link>
       <Link href="/learn-more">
-        <Button size="lg" variant="outline">
+        <Button size="lg" variant="outlined">
           Learn More
         </Button>
       </Link>

@@ -1,0 +1,80 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 8px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  margin: 80px auto;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.description {
+  color: #6b7280;
+  text-align: center;
+}
+
+.content {
+  padding: 24px 24px 0;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.passwordHint {
+  margin-left: -6px !important;
+  margin-top: 6px !important;
+}
+
+.termsContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-left: -16px;
+
+  .termsLink {
+    text-wrap: nowrap;
+    font-size: 14px;
+  }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.signInText {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.signInLink {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

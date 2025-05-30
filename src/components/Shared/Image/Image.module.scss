@@ -1,0 +1,42 @@
+.imageContainer {
+  background-position: center;
+  background-size: cover;
+  position: relative;
+
+  .image {
+    display: block;
+    object-position: center;
+    object-fit: cover;
+    animation: fadeInAnimation ease 0.3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+  }
+
+  .placeholder {
+    background-color: var(--primaryAlt-main);
+    position: absolute;
+    background-position: center;
+    background-size: cover;
+    background-image: url(/src/assets/images/placeholder.png);
+  }
+
+  .squarImage {
+    border-radius: 10px;
+  }
+
+  .circularImage {
+    border-radius: 50%;
+  }
+
+  .defaulImage {
+    border-radius: none;
+  }
+
+  .imageCaption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+  }
+}

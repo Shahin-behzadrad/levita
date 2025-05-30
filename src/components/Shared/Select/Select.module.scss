@@ -1,0 +1,90 @@
+.selectContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  &.fullwidth {
+    width: 100%;
+  }
+
+  &.error {
+    .select {
+      border-color: #ff4d4f;
+    }
+
+    .labelActive {
+      color: #ff4d4f;
+    }
+  }
+
+  .label {
+    position: absolute;
+    top: 27%;
+    left: 12px;
+    background-color: var(--primaryAlt-main);
+    width: fit-content;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    pointer-events: none;
+    text-wrap: nowrap;
+    color: var(--gray);
+
+    &.labelActive {
+      top: -8px;
+      left: 12px;
+      font-size: 12px;
+      color: var(--gray);
+      padding: 0 4px;
+    }
+
+    &.backgroundLabel {
+      background-color: var(--black);
+    }
+  }
+
+  .select {
+    background-color: transparent;
+    width: 100%;
+    min-width: 120px;
+    padding: 12px 8px 12px 24px;
+    border: 1px solid var(--secondary-opaque-50);
+    border-radius: 8px;
+    font-size: 14px;
+    appearance: none;
+    cursor: pointer;
+
+    .option {
+      background-color: var(--primaryAlt-main);
+      font-size: 14px;
+      color: var(--black);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-main);
+    }
+  }
+
+  .arrow {
+    position: absolute;
+    right: 4px;
+    top: 25%;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    rotate: 0;
+    transition: rotate 0.2s ease-in-out;
+
+    &.rotateArrow {
+      rotate: 180deg;
+      transform-origin: center;
+    }
+  }
+
+  .errorText {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #ff4d4f;
+  }
+}

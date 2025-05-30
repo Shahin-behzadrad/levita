@@ -1,0 +1,862 @@
+.button {
+  position: relative;
+  padding: 10px 14px;
+  color: var(--secondary-main);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: background-color 0.2s ease-out;
+  cursor: pointer;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+
+  &.shadowBox {
+    box-shadow: none;
+  }
+
+  // primary variants
+  &.containedPrimary {
+    background: var(--primary-main);
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--true-white);
+    }
+
+    &:hover:not(&:disabled) {
+      @media (hover: hover) and (pointer: fine) {
+        background: var(--primary-dark);
+      }
+    }
+
+    &:active:not(&:disabled) {
+      background: var(--primary-light);
+    }
+  }
+
+  &.outlinedPrimary {
+    border: 1px solid var(--primary-main);
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--primary-main);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover::before {
+        opacity: 0.3;
+      }
+    }
+
+    &:active::before {
+      opacity: 0.1;
+    }
+  }
+
+  &.textPrimary {
+    border: none;
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--primary-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-light);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover::before {
+      opacity: 0.1;
+    }
+
+    &:active::before {
+      opacity: 0.05;
+    }
+  }
+
+  // Secondary variant
+  &.containedSecondary {
+    background: var(--secondary-main);
+    color: var(--black);
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &:hover:not(&:disabled) {
+      @media (hover: hover) and (pointer: fine) {
+        background: var(--secondary-darker);
+      }
+    }
+
+    &:active:not(&:disabled) {
+      background: var(--secondary-dark);
+    }
+  }
+
+  &.outlinedSecondary {
+    border: 1px solid var(--secondary-main);
+    background: none;
+    position: relative;
+    color: var(--secondary-light);
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-main);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover::before {
+        opacity: 0.3;
+      }
+    }
+
+    &:active::before {
+      opacity: 0.1;
+    }
+  }
+
+  &.textSecondary {
+    border: none;
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--secondary-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-light);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover::before {
+      opacity: 0.1;
+    }
+
+    &:active::before {
+      opacity: 0.05;
+    }
+  }
+
+  // //error variant
+  &.containedError {
+    background: var(--error-main);
+    color: var(--true-white);
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &:hover:not(&:disabled) {
+      background: var(--error-light);
+    }
+
+    &:active:not(&:disabled) {
+      background: var(--error-dark);
+    }
+  }
+
+  &.outlinedError {
+    border: 1px solid var(--error-main);
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--error-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--error-main);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover::before {
+        opacity: 0.3;
+      }
+    }
+
+    &:active::before {
+      opacity: 0.1;
+    }
+  }
+
+  &.textError {
+    border: none;
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--error-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-light);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover::before {
+      opacity: 0.1;
+    }
+
+    &:active::before {
+      opacity: 0.05;
+    }
+  }
+
+  //gray variant
+  &.containedgray {
+    background: var(--secondary-main);
+    color: var(--black);
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &:hover:not(&:disabled) {
+      background: var(--secondary-light);
+    }
+
+    &:active:not(&:disabled) {
+      background: var(--secondary-dark);
+    }
+  }
+
+  &.outlinedgray {
+    border: 1px solid var(--secondary-opaque-50);
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--secondary-main);
+      transition: color 0.2s;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-main);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover::before {
+        opacity: 0.3;
+      }
+
+      &:hover .childrenColor {
+        color: var(--true-white) !important;
+      }
+    }
+
+    &:active::before {
+      opacity: 0.1;
+    }
+  }
+
+  &.textgray {
+    border: none;
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--secondary-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-light);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover::before {
+      opacity: 0.1;
+    }
+
+    &:active::before {
+      opacity: 0.05;
+    }
+  }
+
+  //white variant
+  &.containedWhite {
+    background: var(--white);
+    color: var(--black);
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &:hover:not(&:disabled) {
+      background: var(--secondary-dark);
+    }
+
+    &:active:not(&:disabled) {
+      background: var(--secondary-darker);
+    }
+  }
+
+  &.outlinedWhite {
+    border: 1px solid var(--white);
+    color: var(--white);
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-main);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover::before {
+        opacity: 0.3;
+      }
+    }
+
+    &:active::before {
+      opacity: 0.1;
+    }
+  }
+
+  &.textWhite {
+    border: none;
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--true-white);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-light);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover::before {
+      opacity: 0.1;
+    }
+
+    &:active::before {
+      opacity: 0.05;
+    }
+  }
+
+  //info variant
+  &.containedInfo {
+    background: var(--info-main);
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--black);
+    }
+
+    &:hover:not(&:disabled) {
+      @media (hover: hover) and (pointer: fine) {
+        background: var(--info-dark);
+      }
+    }
+
+    &:active:not(&:disabled) {
+      background: var(--info-light);
+    }
+  }
+
+  &.outlinedInfo {
+    border: 1px solid var(--info-main);
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--info-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--info-main);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover::before {
+        opacity: 0.3;
+      }
+    }
+
+    &:active::before {
+      opacity: 0.1;
+    }
+  }
+
+  &.textInfo {
+    border: none;
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--info-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-light);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover::before {
+      opacity: 0.1;
+    }
+
+    &:active::before {
+      opacity: 0.05;
+    }
+  }
+
+  //success variant
+  &.containedSuccess {
+    background: var(--success-main);
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--black);
+    }
+
+    &:hover:not(&:disabled) {
+      @media (hover: hover) and (pointer: fine) {
+        background: var(--success-dark);
+      }
+    }
+
+    &:active:not(&:disabled) {
+      background: var(--success-light);
+    }
+  }
+
+  &.outlinedSuccess {
+    border: 1px solid var(--success-main);
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--success-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--success-main);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover::before {
+        opacity: 0.3;
+      }
+    }
+
+    &:active::before {
+      opacity: 0.1;
+    }
+  }
+
+  &.textSuccess {
+    border: none;
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--success-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-light);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover::before {
+      opacity: 0.1;
+    }
+
+    &:active::before {
+      opacity: 0.05;
+    }
+  }
+
+  //warning variant
+  &.containedWarning {
+    background: var(--warning-main);
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--black);
+    }
+
+    &:hover:not(&:disabled) {
+      @media (hover: hover) and (pointer: fine) {
+        background: var(--warning-dark);
+      }
+    }
+
+    &:active:not(&:disabled) {
+      background: var(--warning-light);
+    }
+  }
+
+  &.outlinedWarning {
+    border: 1px solid var(--warning-main);
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--warning-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--warning-main);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover::before {
+        opacity: 0.3;
+      }
+    }
+
+    &:active::before {
+      opacity: 0.1;
+    }
+  }
+
+  &.textWarning {
+    border: none;
+    background: none;
+    position: relative;
+
+    .childrenColor {
+      gap: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--warning-main);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-light);
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover::before {
+      opacity: 0.1;
+    }
+
+    &:active::before {
+      opacity: 0.05;
+    }
+  }
+
+  //icon
+  .startIcon,
+  .endIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .endIcon {
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+  }
+
+  //size
+
+  &.xs {
+    padding: 2px 4px;
+    font-size: 8px;
+  }
+
+  &.sm {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  &.md {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  &.lg {
+    font-size: 16px;
+    padding: 10px 20px;
+    gap: 8px;
+  }
+
+  &.xl {
+    font-size: 18px;
+    padding: 12px 24px;
+  }
+
+  &.xxl {
+    font-size: 20px;
+    padding: 14px 28px;
+    gap: 12px;
+  }
+
+  &.fullWidth {
+    width: 100%;
+
+    .childrenColor {
+      width: 100%;
+    }
+  }
+
+  .loading {
+    background-color: transparent !important;
+    position: relative !important;
+  }
+
+  &.selected {
+    position: relative;
+
+    .childrenColor {
+      color: var(--true-white);
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      background-color: var(--secondary-light) !important;
+      border-radius: 7px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0.1;
+      transition: opacity 0.2s;
+    }
+  }
+}
