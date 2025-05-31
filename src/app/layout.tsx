@@ -7,6 +7,7 @@ import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import { Toaster } from "sonner";
 import styles from "./layout.module.scss";
+import { ProfileSetup } from "@/components/ProfileSetup/ProfileSetup";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,6 +26,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
+          <ProfileSetup />
           <Toaster
             theme="light"
             richColors

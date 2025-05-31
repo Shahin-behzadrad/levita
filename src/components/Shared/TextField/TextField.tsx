@@ -239,7 +239,8 @@ export const TextField: React.FC<
       {(helperText || errors) && (
         <Text
           onClick={helperTextClickHandler}
-          textAlign="right"
+          textAlign="left"
+          fontSize="sm"
           value={errors ?? helperText}
           className={clsx(classes.helperText, {
             [classes.errorHelperText]: error,

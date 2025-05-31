@@ -2,7 +2,7 @@
 
 import Button from "../Button";
 
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Check, Pencil, User, X } from "lucide-react";
 import { useState } from "react";
@@ -16,7 +16,7 @@ import Text from "../Text";
 interface UserProfileProps {
   userData: {
     _id: string;
-    name?: string;
+    fullName?: string;
   };
   isReadOnly?: boolean;
   handleSignOut?: () => void;
@@ -28,15 +28,15 @@ export const UserProfile = ({
   handleSignOut,
 }: UserProfileProps) => {
   const isMobile = useIsMobile();
-  const updateUserProfile = useMutation(api.userProfiles.updateUserProfile);
+  const updateFullName = useMutation(api.userProfiles.updateFullName);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(userData?.name || "");
+  const [editedName, setEditedName] = useState(userData?.fullName || "");
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
   const handleSaveName = async () => {
     if (editedName.trim() && userData?._id) {
-      await updateUserProfile({
-        name: editedName,
+      await updateFullName({
+        fullName: editedName,
       });
       setIsEditing(false);
     }
@@ -45,8 +45,8 @@ export const UserProfile = ({
   const ProfileContent = () => (
     <div className={styles.profileInfo}>
       <div className={styles.avatar}>
-        {userData?.name ? (
-          userData.name.slice(0, 2).toUpperCase()
+        {userData?.fullName ? (
+          userData?.fullName.slice(0, 2).toUpperCase()
         ) : (
           <User size={20} />
         )}
@@ -81,7 +81,7 @@ export const UserProfile = ({
         </div>
       ) : (
         <div className={styles.nameContainer}>
-          <Text noWrap value={userData.name} />
+          <Text noWrap value={userData.fullName} />
           {!isReadOnly && (
             <Button
               variant="text"
@@ -113,10 +113,10 @@ export const UserProfile = ({
           className={styles.profileTrigger}
           onClick={() => setIsTooltipOpen(!isTooltipOpen)}
         >
-          <Text fontWeight="bold" value={userData.name} />
+          <Text fontWeight="bold" value={userData.fullName} />
           <div className={styles.avatar}>
-            {userData?.name ? (
-              userData.name.slice(0, 2).toUpperCase()
+            {userData?.fullName ? (
+              userData.fullName.slice(0, 2).toUpperCase()
             ) : (
               <User size={20} />
             )}

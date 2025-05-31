@@ -14,10 +14,8 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as auth from "../auth.js";
-import type * as healthAnalysis from "../healthAnalysis.js";
-import type * as healthQueriesAndMutations from "../healthQueriesAndMutations.js";
+import type * as checkEmailExists from "../checkEmailExists.js";
 import type * as http from "../http.js";
-import type * as labResults from "../labResults.js";
 import type * as router from "../router.js";
 import type * as userProfiles from "../userProfiles.js";
 
@@ -31,10 +29,8 @@ import type * as userProfiles from "../userProfiles.js";
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
-  healthAnalysis: typeof healthAnalysis;
-  healthQueriesAndMutations: typeof healthQueriesAndMutations;
+  checkEmailExists: typeof checkEmailExists;
   http: typeof http;
-  labResults: typeof labResults;
   router: typeof router;
   userProfiles: typeof userProfiles;
 }>;
