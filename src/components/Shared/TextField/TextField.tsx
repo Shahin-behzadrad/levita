@@ -54,7 +54,7 @@ export const TextField: React.FC<
   handleSubmit,
   startAdornment,
   endAdornment,
-  fullWidth = true,
+  fullWidth = false,
   className,
   inputMode,
   inputClasses,

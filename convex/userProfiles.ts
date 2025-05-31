@@ -28,9 +28,6 @@ export const updateUserProfile = mutation({
     generalHealthStatus: v.optional(v.string()),
     // Doctor-specific fields
     specialization: v.optional(v.string()),
-    licenseNumber: v.optional(v.string()),
-    yearsOfExperience: v.optional(v.number()),
-    hospitalAffiliation: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);

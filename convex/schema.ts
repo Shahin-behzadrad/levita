@@ -14,9 +14,6 @@ const applicationTables = {
     generalHealthStatus: v.optional(v.string()), // e.g., "good", "fair", "poor"
     // Doctor-specific fields
     specialization: v.optional(v.string()),
-    licenseNumber: v.optional(v.string()),
-    yearsOfExperience: v.optional(v.number()),
-    hospitalAffiliation: v.optional(v.string()),
   }).index("by_userId", ["userId"]),
 
   labResults: defineTable({
