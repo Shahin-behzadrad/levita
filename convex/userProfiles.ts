@@ -19,11 +19,18 @@ export const getUserProfile = query({
 
 export const updateUserProfile = mutation({
   args: {
+    role: v.union(v.literal("doctor"), v.literal("patient")),
     name: v.optional(v.string()),
     age: v.optional(v.number()),
     sex: v.optional(v.string()),
+    // Patient-specific fields
     symptoms: v.optional(v.array(v.string())),
     generalHealthStatus: v.optional(v.string()),
+    // Doctor-specific fields
+    specialization: v.optional(v.string()),
+    licenseNumber: v.optional(v.string()),
+    yearsOfExperience: v.optional(v.number()),
+    hospitalAffiliation: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
