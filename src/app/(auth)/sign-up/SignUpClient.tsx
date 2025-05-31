@@ -15,12 +15,10 @@ import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import styles from "./SignUp.module.scss";
 import TextField from "@/components/Shared/TextField";
-import { ProfileForm } from "./ProfileForm";
 
 export default function SignUpClient() {
   const { signIn, signOut } = useAuthActions();
   const router = useRouter();
-  const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -61,7 +59,6 @@ export default function SignUpClient() {
       signUpFormData.set("flow", "signUp");
 
       await signIn("password", signUpFormData).then((res) => {});
-      setStep(2);
     } catch (error: any) {
       console.error("Sign-up error:", error);
       const errorMessage = error?.message || "";
@@ -148,24 +145,7 @@ export default function SignUpClient() {
 
   return (
     <div className={styles.container}>
-      <Card className={styles.card}>
-        {step === 1 ? (
-          <>{renderSignUpStep()}</>
-        ) : (
-          <>
-            <ProfileForm />
-            <div className={styles.backButton}>
-              <Button
-                variant="text"
-                onClick={() => setStep(1)}
-                disabled={isSubmitting}
-              >
-                Back to Sign Up
-              </Button>
-            </div>
-          </>
-        )}
-      </Card>
+      <Card className={styles.card}>{renderSignUpStep()}</Card>
     </div>
   );
 }
