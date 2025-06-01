@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { useMutation } from "convex/react";
+import React, { useState, useRef, useEffect } from "react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -17,32 +17,37 @@ export function ProfileImageUpload({
 }: ProfileImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  console.log(currentImageUrl);
+  console.log("[ProfileImageUpload] Initial props:", { currentImageUrl });
 
   const generateUploadUrl = useMutation(
     api.profileImage.generateProfileImageUploadUrl
   );
   const updateProfileImage = useMutation(api.profileImage.updateProfileImage);
   const deleteProfileImage = useMutation(api.profileImage.deleteProfileImage);
+  const imageUrl = useQuery(
+    api.profileImage.getProfileImageUrl,
+    currentImageUrl ? { storageId: currentImageUrl } : "skip"
+  );
 
-  // Function to get the proper image URL from storage ID
-  const getImageUrl = (storageId: string) => {
-    if (!storageId) return "";
-    // If it's already a full URL, return it
-    if (storageId.startsWith("http://") || storageId.startsWith("https://")) {
-      return storageId;
-    }
-    // Otherwise construct the URL using the Convex storage URL
-    return `${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${storageId}`;
-  };
+  // Reset error state when URL changes
+  useEffect(() => {
+    setImageError(false);
+  }, [currentImageUrl, previewUrl]);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    console.log("[handleFileChange] File details:", {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+    });
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
@@ -59,7 +64,12 @@ export function ProfileImageUpload({
     // Create preview
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPreviewUrl(reader.result as string);
+      const result = reader.result as string;
+      console.log(
+        "[handleFileChange] Preview URL generated:",
+        result.substring(0, 50) + "..."
+      );
+      setPreviewUrl(result);
     };
     reader.readAsDataURL(file);
 
@@ -67,6 +77,8 @@ export function ProfileImageUpload({
     setIsUploading(true);
     try {
       const uploadUrl = await generateUploadUrl();
+      console.log("[handleFileChange] Generated upload URL:", uploadUrl);
+
       const response = await fetch(uploadUrl, {
         method: "POST",
         headers: { "Content-Type": file.type },
@@ -78,11 +90,18 @@ export function ProfileImageUpload({
       }
 
       const { storageId } = await response.json();
+      console.log("[handleFileChange] Received storageId:", storageId);
+
       await updateProfileImage({ storageId });
+      console.log(
+        "[handleFileChange] Profile image updated with storageId:",
+        storageId
+      );
+
       toast.success("Profile image updated successfully");
       onImageUpdate?.();
     } catch (error) {
-      console.error("Failed to upload image:", error);
+      console.error("[handleFileChange] Failed to upload image:", error);
       toast.error("Failed to upload image");
     } finally {
       setIsUploading(false);
@@ -91,12 +110,13 @@ export function ProfileImageUpload({
 
   const handleDeleteImage = async () => {
     try {
+      console.log("[handleDeleteImage] Deleting profile image");
       await deleteProfileImage();
       setPreviewUrl(null);
       toast.success("Profile image removed");
       onImageUpdate?.();
     } catch (error) {
-      console.error("Failed to delete image:", error);
+      console.error("[handleDeleteImage] Failed to delete image:", error);
       toast.error("Failed to delete image");
     }
   };
@@ -105,17 +125,34 @@ export function ProfileImageUpload({
     fileInputRef.current?.click();
   };
 
+  // Log the final image URL that will be used
+  const finalImageUrl = previewUrl || imageUrl || "";
+  console.log("[ProfileImageUpload] Final image URL:", finalImageUrl);
+
   return (
     <div className={styles.container}>
       <div className={styles.imageContainer} onClick={handleClick}>
-        {previewUrl || currentImageUrl ? (
+        {previewUrl || imageUrl ? (
           <>
             <Image
-              src={previewUrl || getImageUrl(currentImageUrl || "")}
+              src={finalImageUrl}
               alt="Profile"
               fill
+              unoptimized
               className={styles.image}
+              onError={(e) => {
+                console.error("[ProfileImageUpload] Image load error:", e);
+                setImageError(true);
+                setPreviewUrl(null);
+              }}
+              priority
             />
+            {imageError && (
+              <div className={styles.placeholder}>
+                <Camera size={24} />
+                <span>Failed to load image</span>
+              </div>
+            )}
             <button
               className={styles.deleteButton}
               onClick={(e) => {
