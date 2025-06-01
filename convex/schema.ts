@@ -14,6 +14,7 @@ const applicationTables = {
     phoneNumber: v.string(), // used to generate WhatsApp link
     languages: v.optional(v.array(v.string())),
     bio: v.optional(v.string()), // subtext: "Share anything you're particularly passionate about, in regards to healthcare and not"
+    profileImage: v.optional(v.string()), // URL or storage ID for profile image
   }).index("by_userId", ["userId"]),
 
   // Patients
@@ -24,6 +25,7 @@ const applicationTables = {
     sex: v.string(),
     phoneNumber: v.string(),
     languages: v.optional(v.array(v.string())),
+    profileImage: v.optional(v.string()), // URL or storage ID for profile image
   }).index("by_userId", ["userId"]),
 };
 
