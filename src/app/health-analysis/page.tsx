@@ -1,9 +1,4 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
-
-const HealthAnalysis = dynamic(
-  () => import("@/components/HealthAnalysis/HealthAnalysis")
-);
 
 export const metadata: Metadata = {
   title: "SAL - Health Analysis",
@@ -18,5 +13,8 @@ export const metadata: Metadata = {
 };
 
 export default async function HealthAnalysisServerComponent() {
-  return <HealthAnalysis />;
+  return (
+    <div></div>
+    // <HealthAnalysis />
+  );
 }

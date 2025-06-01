@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useConvexAuth, useQuery } from "convex/react";
 import Link from "next/link";
 import { Button } from "@/components/Shared/Button/Button";
 import { api } from "../../../convex/_generated/api";
@@ -18,6 +18,8 @@ const Header = () => {
   const router = useRouter();
   const isMobile = useIsMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const { isAuthenticated } = useConvexAuth();
 
   const isLoading = userData === undefined;
 

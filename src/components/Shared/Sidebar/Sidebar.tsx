@@ -13,7 +13,7 @@ interface SidebarProps {
   onOpenChange: (open: boolean) => void;
   userData?: {
     _id: string;
-    name?: string;
+    fullName?: string;
   } | null;
 }
 

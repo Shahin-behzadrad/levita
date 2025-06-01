@@ -29,7 +29,7 @@ export default function SignInClient() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/health-analysis");
+      router.push("/");
     }
   }, [isAuthenticated, router]);
 

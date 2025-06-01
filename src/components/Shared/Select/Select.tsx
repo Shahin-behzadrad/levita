@@ -14,10 +14,11 @@ interface CustomSelectProps {
   value: string | number;
   onChange: (value: string | number) => void;
   label: string;
-  error?: string;
+  error?: boolean;
   labelBackground?: "card" | "background";
   fullwidth?: boolean;
   className?: string;
+  helperText?: string;
 }
 
 const Select = ({
@@ -29,6 +30,7 @@ const Select = ({
   fullwidth,
   className,
   labelBackground = "card",
+  helperText,
 }: CustomSelectProps) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
@@ -80,7 +82,7 @@ const Select = ({
       >
         <ChevronDown />
       </div>
-      {error && <div className={classes.errorText}>{error}</div>}
+      {error && <div className={classes.errorText}>{helperText}</div>}
     </div>
   );
 };
