@@ -20,8 +20,6 @@ export function ProfileImageUpload({
   const [imageError, setImageError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  console.log("[ProfileImageUpload] Initial props:", { currentImageUrl });
-
   const generateUploadUrl = useMutation(
     api.profileImage.generateProfileImageUploadUrl
   );
@@ -43,12 +41,6 @@ export function ProfileImageUpload({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    console.log("[handleFileChange] File details:", {
-      name: file.name,
-      type: file.type,
-      size: file.size,
-    });
-
     // Validate file type
     if (!file.type.startsWith("image/")) {
       toast.error("Please upload an image file");
@@ -65,10 +57,7 @@ export function ProfileImageUpload({
     const reader = new FileReader();
     reader.onloadend = () => {
       const result = reader.result as string;
-      console.log(
-        "[handleFileChange] Preview URL generated:",
-        result.substring(0, 50) + "..."
-      );
+
       setPreviewUrl(result);
     };
     reader.readAsDataURL(file);
@@ -77,7 +66,6 @@ export function ProfileImageUpload({
     setIsUploading(true);
     try {
       const uploadUrl = await generateUploadUrl();
-      console.log("[handleFileChange] Generated upload URL:", uploadUrl);
 
       const response = await fetch(uploadUrl, {
         method: "POST",
@@ -90,13 +78,8 @@ export function ProfileImageUpload({
       }
 
       const { storageId } = await response.json();
-      console.log("[handleFileChange] Received storageId:", storageId);
 
       await updateProfileImage({ storageId });
-      console.log(
-        "[handleFileChange] Profile image updated with storageId:",
-        storageId
-      );
 
       toast.success("Profile image updated successfully");
       onImageUpdate?.();
@@ -110,7 +93,6 @@ export function ProfileImageUpload({
 
   const handleDeleteImage = async () => {
     try {
-      console.log("[handleDeleteImage] Deleting profile image");
       await deleteProfileImage();
       setPreviewUrl(null);
       toast.success("Profile image removed");
@@ -127,7 +109,6 @@ export function ProfileImageUpload({
 
   // Log the final image URL that will be used
   const finalImageUrl = previewUrl || imageUrl || "";
-  console.log("[ProfileImageUpload] Final image URL:", finalImageUrl);
 
   return (
     <div className={styles.container}>

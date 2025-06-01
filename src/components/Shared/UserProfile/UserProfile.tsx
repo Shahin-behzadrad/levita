@@ -12,36 +12,58 @@ import Button from "../Button";
 import { UserType } from "@/types/userType";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import Image from "next/image";
+
 interface UserProfileProps {
-  userData: Pick<UserType, "fullName" | "role">;
-  handleSignOut?: () => void;
+  userData: Pick<UserType, "fullName" | "role" | "profileImage">;
+  onCloseSidebar?: () => void;
 }
 
-export const UserProfile = ({ userData, handleSignOut }: UserProfileProps) => {
+export const UserProfile = ({ userData, onCloseSidebar }: UserProfileProps) => {
   const router = useRouter();
   const isMobile = useIsMobile();
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const imageUrl = useQuery(
+    api.profileImage.getProfileImageUrl,
+    userData.profileImage ? { storageId: userData.profileImage } : "skip"
+  );
 
   const ProfileContent = () => (
     <div className={clsx(styles.profileInfo, isMobile && styles.mobile)}>
-      <div>
-        <Text
-          noWrap
-          value={userData.fullName}
-          fontWeight="bold"
-          className={styles.profileName}
-        />
-        <Text
-          noWrap
-          value={
-            userData?.role
-              ? userData?.role?.charAt(0).toUpperCase() +
-                userData?.role?.slice(1)
-              : ""
-          }
-          color="gray"
-          className={styles.profileRole}
-        />
+      <div className={styles.avatarContainer}>
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={userData.fullName || "Profile"}
+            width={50}
+            height={50}
+            className={styles.avatarImage}
+            loading="lazy"
+          />
+        ) : (
+          <User size={20} />
+        )}
+        <div>
+          <Text
+            noWrap
+            value={userData.fullName}
+            fontWeight="bold"
+            className={styles.profileName}
+          />
+          <Text
+            noWrap
+            value={
+              userData?.role
+                ? userData?.role?.charAt(0).toUpperCase() +
+                  userData?.role?.slice(1)
+                : ""
+            }
+            color="gray"
+            className={styles.profileRole}
+          />
+        </div>
       </div>
       <Separator />
       <Button
@@ -51,9 +73,11 @@ export const UserProfile = ({ userData, handleSignOut }: UserProfileProps) => {
         startIcon={<User size={20} />}
         onClick={() => {
           router.push("/profile");
+          onCloseSidebar?.();
+          setIsTooltipOpen(false);
         }}
       >
-        View Profile
+        Visit Profile
       </Button>
       <Separator />
     </div>
@@ -67,7 +91,7 @@ export const UserProfile = ({ userData, handleSignOut }: UserProfileProps) => {
         tooltipContent={
           <div className={styles.popoverContent}>
             <ProfileContent />
-            <SignOutButton handleSignOut={handleSignOut} />
+            <SignOutButton handleSignOut={() => onCloseSidebar?.()} />
           </div>
         }
       >
@@ -77,7 +101,16 @@ export const UserProfile = ({ userData, handleSignOut }: UserProfileProps) => {
         >
           <Text fontWeight="bold" value={userData.fullName} />
           <div className={styles.avatar}>
-            {userData?.fullName ? (
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={userData.fullName || "Profile"}
+                width={40}
+                height={40}
+                className={styles.avatarImage}
+                unoptimized
+              />
+            ) : userData?.fullName ? (
               userData.fullName.slice(0, 2).toUpperCase()
             ) : (
               <User size={20} />
