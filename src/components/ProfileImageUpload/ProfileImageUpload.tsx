@@ -19,11 +19,24 @@ export function ProfileImageUpload({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  console.log(currentImageUrl);
+
   const generateUploadUrl = useMutation(
     api.profileImage.generateProfileImageUploadUrl
   );
   const updateProfileImage = useMutation(api.profileImage.updateProfileImage);
   const deleteProfileImage = useMutation(api.profileImage.deleteProfileImage);
+
+  // Function to get the proper image URL from storage ID
+  const getImageUrl = (storageId: string) => {
+    if (!storageId) return "";
+    // If it's already a full URL, return it
+    if (storageId.startsWith("http://") || storageId.startsWith("https://")) {
+      return storageId;
+    }
+    // Otherwise construct the URL using the Convex storage URL
+    return `${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${storageId}`;
+  };
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -98,7 +111,7 @@ export function ProfileImageUpload({
         {previewUrl || currentImageUrl ? (
           <>
             <Image
-              src={previewUrl || currentImageUrl || ""}
+              src={previewUrl || getImageUrl(currentImageUrl || "")}
               alt="Profile"
               fill
               className={styles.image}

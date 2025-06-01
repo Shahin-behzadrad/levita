@@ -1,7 +1,7 @@
 export type UserType = {
   _id: string;
   fullName?: string;
-  profilePicture?: string;
+  profileImage?: string;
   role?: string;
   age?: number;
   sex?: string;
