@@ -3,6 +3,8 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth } from "convex/react";
 import { useRouter } from "next/navigation";
 import Button from "../Shared/Button";
+import { LogOut } from "lucide-react";
+import styles from "./SignOutButton.module.scss";
 
 export function SignOutButton({
   handleSignOut,
@@ -19,13 +21,16 @@ export function SignOutButton({
 
   return (
     <Button
-      variant="contained"
+      variant="text"
       fullWidth
+      color="error"
+      childrenCLassName={styles.signOutButton}
       onClick={async () => {
         await signOut();
         router.push("/");
         handleSignOut?.();
       }}
+      startIcon={<LogOut size={20} />}
     >
       Sign out
     </Button>

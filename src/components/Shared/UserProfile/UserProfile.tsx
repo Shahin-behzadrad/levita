@@ -1,99 +1,61 @@
 "use client";
 
-import Button from "../Button";
-
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { Check, Pencil, User, X } from "lucide-react";
+import { User } from "lucide-react";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import styles from "./UserProfile.module.scss";
-import TextField from "../TextField";
 import Tooltip from "../Tooltip/Tooltip";
 import { SignOutButton } from "../../SignOutButton/SignOutButton";
 import Text from "../Text";
-
+import { Separator } from "../Separator/Separator";
+import Button from "../Button";
+import { UserType } from "@/types/userType";
+import clsx from "clsx";
+import { useRouter } from "next/navigation";
 interface UserProfileProps {
-  userData: {
-    _id: string;
-    fullName?: string;
-  };
-  isReadOnly?: boolean;
+  userData: Pick<UserType, "fullName" | "role">;
   handleSignOut?: () => void;
 }
 
-export const UserProfile = ({
-  userData,
-  isReadOnly = false,
-  handleSignOut,
-}: UserProfileProps) => {
+export const UserProfile = ({ userData, handleSignOut }: UserProfileProps) => {
+  const router = useRouter();
   const isMobile = useIsMobile();
-  const updateFullName = useMutation(api.userProfiles.updateFullName);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(userData?.fullName || "");
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
-  const handleSaveName = async () => {
-    if (editedName.trim() && userData?._id) {
-      await updateFullName({
-        fullName: editedName,
-      });
-      setIsEditing(false);
-    }
-  };
-
   const ProfileContent = () => (
-    <div className={styles.profileInfo}>
-      <div className={styles.avatar}>
-        {userData?.fullName ? (
-          userData?.fullName.slice(0, 2).toUpperCase()
-        ) : (
-          <User size={20} />
-        )}
+    <div className={clsx(styles.profileInfo, isMobile && styles.mobile)}>
+      <div>
+        <Text
+          noWrap
+          value={userData.fullName}
+          fontWeight="bold"
+          className={styles.profileName}
+        />
+        <Text
+          noWrap
+          value={
+            userData?.role
+              ? userData?.role?.charAt(0).toUpperCase() +
+                userData?.role?.slice(1)
+              : ""
+          }
+          color="gray"
+          className={styles.profileRole}
+        />
       </div>
-      {isEditing ? (
-        <div className={styles.editContainer}>
-          <TextField
-            value={editedName}
-            onChange={(e) => setEditedName(e.target.value)}
-            autoFocus
-            fullWidth={false}
-          />
-          <div className={styles.buttonContainer}>
-            <Button
-              variant="text"
-              color="error"
-              size="sm"
-              onClick={() => setIsEditing(false)}
-            >
-              <X size={20} />
-            </Button>
-            <Button
-              variant="text"
-              size="sm"
-              color="success"
-              onClick={handleSaveName}
-              className={styles.saveButton}
-            >
-              <Check size={20} />
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className={styles.nameContainer}>
-          <Text noWrap value={userData.fullName} />
-          {!isReadOnly && (
-            <Button
-              variant="text"
-              size="sm"
-              className={styles.editButton}
-              onClick={() => setIsEditing(true)}
-            >
-              <Pencil size={20} />
-            </Button>
-          )}
-        </div>
-      )}
+      <Separator />
+      <Button
+        fullWidth
+        childrenCLassName={styles.profileButton}
+        variant="text"
+        startIcon={<User size={20} />}
+        onClick={() => {
+          router.push("/profile");
+        }}
+      >
+        View Profile
+      </Button>
+      <Separator />
     </div>
   );
 
