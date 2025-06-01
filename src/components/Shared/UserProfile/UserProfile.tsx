@@ -1,99 +1,85 @@
 "use client";
 
-import Button from "../Button";
-
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { Check, Pencil, User, X } from "lucide-react";
+import { User } from "lucide-react";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import styles from "./UserProfile.module.scss";
-import TextField from "../TextField";
 import Tooltip from "../Tooltip/Tooltip";
 import { SignOutButton } from "../../SignOutButton/SignOutButton";
 import Text from "../Text";
+import { Separator } from "../Separator/Separator";
+import Button from "../Button";
+import { UserType } from "@/types/userType";
+import clsx from "clsx";
+import { useRouter } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import Image from "next/image";
 
 interface UserProfileProps {
-  userData: {
-    _id: string;
-    fullName?: string;
-  };
-  isReadOnly?: boolean;
-  handleSignOut?: () => void;
+  userData: Pick<UserType, "fullName" | "role" | "profileImage">;
+  onCloseSidebar?: () => void;
 }
 
-export const UserProfile = ({
-  userData,
-  isReadOnly = false,
-  handleSignOut,
-}: UserProfileProps) => {
+export const UserProfile = ({ userData, onCloseSidebar }: UserProfileProps) => {
+  const router = useRouter();
   const isMobile = useIsMobile();
-  const updateFullName = useMutation(api.userProfiles.updateFullName);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(userData?.fullName || "");
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-
-  const handleSaveName = async () => {
-    if (editedName.trim() && userData?._id) {
-      await updateFullName({
-        fullName: editedName,
-      });
-      setIsEditing(false);
-    }
-  };
+  const imageUrl = useQuery(
+    api.profileImage.getProfileImageUrl,
+    userData.profileImage ? { storageId: userData.profileImage } : "skip"
+  );
 
   const ProfileContent = () => (
-    <div className={styles.profileInfo}>
-      <div className={styles.avatar}>
-        {userData?.fullName ? (
-          userData?.fullName.slice(0, 2).toUpperCase()
+    <div className={clsx(styles.profileInfo, isMobile && styles.mobile)}>
+      <div className={styles.avatarContainer}>
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={userData.fullName || "Profile"}
+            width={50}
+            height={50}
+            className={styles.avatarImage}
+            loading="lazy"
+          />
         ) : (
           <User size={20} />
         )}
-      </div>
-      {isEditing ? (
-        <div className={styles.editContainer}>
-          <TextField
-            value={editedName}
-            onChange={(e) => setEditedName(e.target.value)}
-            autoFocus
-            fullWidth={false}
+        <div>
+          <Text
+            noWrap
+            value={userData.fullName}
+            fontWeight="bold"
+            className={styles.profileName}
           />
-          <div className={styles.buttonContainer}>
-            <Button
-              variant="text"
-              color="error"
-              size="sm"
-              onClick={() => setIsEditing(false)}
-            >
-              <X size={20} />
-            </Button>
-            <Button
-              variant="text"
-              size="sm"
-              color="success"
-              onClick={handleSaveName}
-              className={styles.saveButton}
-            >
-              <Check size={20} />
-            </Button>
-          </div>
+          <Text
+            noWrap
+            value={
+              userData?.role
+                ? userData?.role?.charAt(0).toUpperCase() +
+                  userData?.role?.slice(1)
+                : ""
+            }
+            color="gray"
+            className={styles.profileRole}
+          />
         </div>
-      ) : (
-        <div className={styles.nameContainer}>
-          <Text noWrap value={userData.fullName} />
-          {!isReadOnly && (
-            <Button
-              variant="text"
-              size="sm"
-              className={styles.editButton}
-              onClick={() => setIsEditing(true)}
-            >
-              <Pencil size={20} />
-            </Button>
-          )}
-        </div>
-      )}
+      </div>
+      <Separator />
+      <Button
+        fullWidth
+        childrenCLassName={styles.profileButton}
+        variant="text"
+        startIcon={<User size={20} />}
+        onClick={() => {
+          router.push("/profile");
+          onCloseSidebar?.();
+          setIsTooltipOpen(false);
+        }}
+      >
+        Visit Profile
+      </Button>
+      <Separator />
     </div>
   );
 
@@ -105,7 +91,7 @@ export const UserProfile = ({
         tooltipContent={
           <div className={styles.popoverContent}>
             <ProfileContent />
-            <SignOutButton handleSignOut={handleSignOut} />
+            <SignOutButton handleSignOut={() => onCloseSidebar?.()} />
           </div>
         }
       >
@@ -115,7 +101,16 @@ export const UserProfile = ({
         >
           <Text fontWeight="bold" value={userData.fullName} />
           <div className={styles.avatar}>
-            {userData?.fullName ? (
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={userData.fullName || "Profile"}
+                width={40}
+                height={40}
+                className={styles.avatarImage}
+                unoptimized
+              />
+            ) : userData?.fullName ? (
               userData.fullName.slice(0, 2).toUpperCase()
             ) : (
               <User size={20} />

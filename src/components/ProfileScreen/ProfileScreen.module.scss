@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 100px auto;
+  padding: 0 24px;
+
+  .gridContainer {
+    width: 80vw;
+  }
+
+  .sidebarContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 32px;
+
+    .profileImageMargin {
+      margin-bottom: 16px;
+    }
+
+    .specialization {
+      padding: 4px 8px;
+      background-color: var(--secondary-light);
+      border-radius: 16px;
+      color: var(--white);
+    }
+  }
+
+  .mainContent {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .title {
+    width: fit-content;
+  }
+
+  .fieldsContainer {
+    margin-top: 16px;
+  }
+
+  .saveButton {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid var(--border-color);
+  }
+}

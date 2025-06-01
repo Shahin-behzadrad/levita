@@ -45,6 +45,7 @@ export const updateUserProfile = mutation({
     specialization: v.optional(v.string()),
     licenseNumber: v.optional(v.string()),
     bio: v.optional(v.string()),
+    profileImage: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     console.log("Starting updateUserProfile with args:", args); // Debug log

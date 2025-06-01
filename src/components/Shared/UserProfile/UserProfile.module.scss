@@ -14,6 +14,7 @@
   justify-content: center;
   font-weight: 500;
   background-color: var(--secondary-main);
+  overflow: hidden;
 
   &.mobile {
     width: 32px;
@@ -22,17 +23,39 @@
   }
 }
 
+.avatarImage {
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 .profileInfo {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  gap: 8px;
-}
+  align-items: flex-start;
+  width: 100%;
 
-.nameContainer {
-  display: flex;
-  align-items: center;
+  &.mobile {
+    margin-top: 24px;
+  }
+
+  .profileName {
+    margin: 8px 0;
+  }
+
+  .profileButton {
+    justify-content: flex-start !important;
+  }
+
+  .profileRole {
+    margin-top: -5px;
+  }
+
+  .avatarContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 }
 
 .editContainer {
@@ -73,7 +96,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
   min-width: 200px;
-  padding: 24px;
+  padding: 12px;
 }

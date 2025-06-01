@@ -53,7 +53,7 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
               <div className={styles.profileSection}>
                 <UserProfile
                   userData={userData}
-                  handleSignOut={() => onOpenChange(false)}
+                  onCloseSidebar={() => onOpenChange(false)}
                 />
               </div>
               <div className={styles.profileSection}>
