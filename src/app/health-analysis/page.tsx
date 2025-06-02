@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HealthAnalysis } from "./healthAnalysisClient";
 
 export const metadata: Metadata = {
   title: "SAL - Health Analysis",
@@ -13,8 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default async function HealthAnalysisServerComponent() {
-  return (
-    <div></div>
-    // <HealthAnalysis />
-  );
+  return <HealthAnalysis />;
 }
