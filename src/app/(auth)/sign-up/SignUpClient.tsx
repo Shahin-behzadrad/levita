@@ -43,7 +43,7 @@ export default function SignUpClient() {
         );
         signOut();
 
-        router.push("/");
+        router.push("/sign-in");
         return;
       } catch (error: any) {
         const errorMessage = error?.message || "";

@@ -84,7 +84,7 @@ export const useProfileForm = () => {
 
       await updateUserProfile(profileData);
       toast("Profile completed successfully!");
-      router.push("/health-analysis");
+      router.push("/");
     } catch (error: any) {
       console.error("Profile update error:", error);
       toast.error("Failed to update profile. Please try again.");
