@@ -12,13 +12,17 @@ import {
 import Grid from "@/components/Shared/Grid/Grid";
 import Select from "@/components/Shared/Select/Select";
 import { useState } from "react";
-import { Upload, X, FileText, Image as ImageIcon } from "lucide-react";
+import { Upload, X, FileText } from "lucide-react";
 import {
   useHealthAnalysisForm,
   type HealthAnalysisFormData,
   healthStatusOptions,
   genderOptions,
 } from "./useHealthAnalysisForm";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import styles from "./healthAnalysisClient.module.scss";
 import Image from "@/components/Shared/Image/Image";
@@ -26,18 +30,80 @@ import Image from "@/components/Shared/Image/Image";
 export const HealthAnalysis = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { control, handleSubmit, errors } = useHealthAnalysisForm();
+  const router = useRouter();
+  const updateHealthAnalysis = useMutation(
+    api.healthAnalysis.updateHealthAnalysis
+  );
+  const existingAnalysis = useQuery(api.healthAnalysis.getHealthAnalysis);
+  const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
+
+  console.log("existingAnalysis", existingAnalysis);
 
   const onSubmit = async (data: HealthAnalysisFormData) => {
     setIsSubmitting(true);
     try {
-      // TODO: Implement form submission logic
-      console.log("Form data:", data);
+      // Upload files to Convex storage
+      const uploadedFiles = await Promise.all(
+        data.documents
+          .filter((file): file is File => file instanceof File)
+          .map(async (file) => {
+            const storageId = await uploadFile(file);
+            return {
+              storageId,
+              fileName: file.name,
+              fileType: file.type,
+              uploadedAt: Date.now(),
+            };
+          })
+      );
+
+      // Update health analysis in Convex
+      await updateHealthAnalysis({
+        symptoms: data.symptoms,
+        currentConditions: data.currentConditions,
+        healthStatus: data.healthStatus,
+        additionalInfo: data.additionalInfo,
+        documents: uploadedFiles,
+      });
+
+      toast.success("Health analysis submitted successfully");
+      router.push("/profile");
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error("Failed to submit health analysis");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // Helper function to upload a file to Convex storage
+  const uploadFile = async (file: File): Promise<string> => {
+    // Get the upload URL
+    const uploadUrl = await generateUploadUrl();
+
+    // Upload the file
+    const result = await fetch(uploadUrl, {
+      method: "POST",
+      headers: { "Content-Type": file.type },
+      body: file,
+    });
+
+    if (!result.ok) {
+      throw new Error(`Failed to upload file: ${result.statusText}`);
+    }
+
+    // Get the storage ID from the response
+    const { storageId } = await result.json();
+    return storageId;
+  };
+
+  if (existingAnalysis) {
+    return (
+      <div style={{ textAlign: "center", marginTop: "200px" }}>
+        you already have analysis in the database
+      </div>
+    );
+  }
 
   return (
     <Card className={styles.card}>
@@ -45,7 +111,11 @@ export const HealthAnalysis = () => {
         title="Health Analysis Form"
         subheader="Please provide detailed information about your health concerns"
       />
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={handleSubmit(onSubmit, (errors) => {
+          console.log("errors", errors);
+        })}
+      >
         <CardContent>
           <Grid container spacing={8}>
             <Grid item xs={12}>
@@ -153,80 +223,105 @@ export const HealthAnalysis = () => {
               <Controller
                 name="documents"
                 control={control}
-                render={({ field: { value, onChange, ...field } }) => (
-                  <div>
-                    <input
-                      type="file"
-                      multiple
-                      accept=".pdf,.txt,text/plain,application/pdf,.png,.webp"
-                      onChange={(e) => onChange(e.target.files)}
-                      {...field}
-                      style={{ display: "none" }}
-                      id="document-upload"
-                    />
-                    <Button
-                      type="button"
-                      variant="outlined"
-                      startIcon={<Upload size={20} />}
-                      onClick={() =>
-                        document.getElementById("document-upload")?.click()
-                      }
-                    >
-                      Upload Medical Documents
-                    </Button>
-                    {value && value.length > 0 && (
-                      <div className={styles.filePreviews}>
-                        {Array.from(value).map((file, index) => {
-                          const isImage = file.type.startsWith("image/");
-                          const isPDF = file.type === "application/pdf";
+                render={({ field: { value, onChange, ...field } }) => {
+                  // Ensure value is always an array
+                  const currentFiles = Array.isArray(value) ? value : [];
 
-                          return (
-                            <div key={index} className={styles.filePreview}>
-                              {isImage ? (
-                                <div className={styles.imagePreview}>
-                                  <Image
-                                    shape="square"
-                                    width={200}
-                                    height={200}
-                                    src={URL.createObjectURL(file)}
-                                    alt={file.name}
-                                    className={styles.previewImage}
-                                  />
-                                </div>
-                              ) : (
-                                <div className={styles.fileIcon}>
-                                  {isPDF ? (
-                                    <FileText size={40} />
+                  return (
+                    <div>
+                      <input
+                        type="file"
+                        multiple
+                        accept=".pdf,.png,.jpg,.jpeg,.webp,application/pdf,image/*"
+                        onChange={(e) => {
+                          const files = e.target.files;
+                          if (files) {
+                            // Convert FileList to Array and validate each file
+                            const newFiles = Array.from(files).filter(
+                              (file) => {
+                                const isValidType =
+                                  file.type.startsWith("image/") ||
+                                  file.type === "application/pdf";
+                                const isValidSize =
+                                  file.size <= 10 * 1024 * 1024; // 10MB limit
+                                return isValidType && isValidSize;
+                              }
+                            );
+                            onChange([...currentFiles, ...newFiles]);
+                          }
+                        }}
+                        {...field}
+                        style={{ display: "none" }}
+                        id="document-upload"
+                      />
+                      <Button
+                        type="button"
+                        variant="outlined"
+                        startIcon={<Upload size={20} />}
+                        onClick={() =>
+                          document.getElementById("document-upload")?.click()
+                        }
+                      >
+                        Upload Medical Documents
+                      </Button>
+                      {currentFiles.length > 0 && (
+                        <div className={styles.filePreviews}>
+                          {currentFiles
+                            .filter(
+                              (file): file is File => file instanceof File
+                            )
+                            .map((file: File, index: number) => {
+                              const isImage = file.type.startsWith("image/");
+                              const isPDF = file.type === "application/pdf";
+
+                              return (
+                                <div key={index} className={styles.filePreview}>
+                                  {isImage ? (
+                                    <div className={styles.imagePreview}>
+                                      <Image
+                                        shape="square"
+                                        width={200}
+                                        height={200}
+                                        src={URL.createObjectURL(file)}
+                                        alt={file.name}
+                                        className={styles.previewImage}
+                                      />
+                                    </div>
                                   ) : (
-                                    <FileText size={40} />
+                                    <div className={styles.fileIcon}>
+                                      {isPDF ? (
+                                        <FileText size={40} />
+                                      ) : (
+                                        <FileText size={40} />
+                                      )}
+                                    </div>
                                   )}
+                                  <div className={styles.fileInfo}>
+                                    <span className={styles.fileName}>
+                                      {file.name}
+                                    </span>
+                                    <Button
+                                      type="button"
+                                      variant="text"
+                                      size="xs"
+                                      onClick={() => {
+                                        const newFiles = [...currentFiles];
+                                        newFiles.splice(index, 1);
+                                        onChange(newFiles);
+                                      }}
+                                      className={styles.removeButton}
+                                    >
+                                      <X size={16} />
+                                    </Button>
+                                  </div>
                                 </div>
-                              )}
-                              <div className={styles.fileInfo}>
-                                <span className={styles.fileName}>
-                                  {file.name}
-                                </span>
-                                <Button
-                                  type="button"
-                                  variant="text"
-                                  size="xs"
-                                  onClick={() => {
-                                    const newFiles = Array.from(value);
-                                    newFiles.splice(index, 1);
-                                    onChange(newFiles);
-                                  }}
-                                  className={styles.removeButton}
-                                >
-                                  <X size={16} />
-                                </Button>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                )}
+                              );
+                            })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }}
               />
             </Grid>
           </Grid>

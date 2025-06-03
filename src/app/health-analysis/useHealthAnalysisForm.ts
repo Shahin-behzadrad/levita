@@ -9,7 +9,7 @@ export interface HealthAnalysisFormData {
   gender: string;
   healthStatus: string;
   additionalInfo: string;
-  documents: FileList | null;
+  documents: (File | undefined)[];
 }
 
 export const schema = yup.object().shape({
@@ -26,12 +26,13 @@ export const schema = yup.object().shape({
   healthStatus: yup.string().required("Health status is required"),
   additionalInfo: yup.string().required("Additional information is required"),
   documents: yup
-    .mixed<FileList>()
-    .nullable()
-    .defined()
-    .test("is-filelist", "Invalid file(s)", (value) => {
-      return value === null || value instanceof FileList;
-    }),
+    .array()
+    .of(
+      yup
+        .mixed<File>()
+        .test("is-file", "Invalid file", (value) => value instanceof File)
+    )
+    .default([]),
 });
 
 export const healthStatusOptions = [
@@ -61,7 +62,7 @@ export const useHealthAnalysisForm = () => {
       gender: "",
       healthStatus: "",
       additionalInfo: "",
-      documents: null,
+      documents: [],
     },
   });
 
