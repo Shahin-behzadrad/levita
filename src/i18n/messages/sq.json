@@ -1,0 +1,238 @@
+{
+  "common": {
+    "language": "Gjuha",
+    "english": "Anglisht",
+    "albanian": "Shqip",
+    "loading": "Duke u ngarkuar...",
+    "error": "Gabim",
+    "success": "Sukses",
+    "save": "Ruaj",
+    "cancel": "Anulo",
+    "delete": "Fshi",
+    "edit": "Ndrysho",
+    "continue": "Vazhdo",
+    "submit": "Dërgo"
+  },
+  "nav": {
+    "home": "Ballina",
+    "about": "Rreth nesh",
+    "contact": "Kontakt",
+    "profile": "Profili",
+    "settings": "Cilësimet",
+    "logout": "Dilni"
+  },
+  "hero": {
+    "title": "Asistenti Shëndetësor i Mundësuar nga AI",
+    "description": "Merrni njohuri të personalizuara shëndetësore bazuar në simptomat dhe rezultatet tuaja laboratorike duke përdorur teknologjinë e avancuar të AI.",
+    "getStarted": "Filloni",
+    "learnMore": "Mëso më shumë"
+  },
+  "features": {
+    "title": "Veçoritë",
+    "description": "Platforma jonë ofron një gamë veçorish për t'ju ndihmuar të menaxhoni shëndetin dhe mirëqenien tuaj.",
+    "aiAnalysis": "Analiza AI",
+    "personalizedInsights": "Njohuri të Personalizuara",
+    "labResults": "Rezultatet Laboratorike",
+    "healthTracking": "Gjurmimi i Shëndetit"
+  },
+  "auth": {
+    "signIn": "Hyni",
+    "signUp": "Regjistrohu",
+    "email": "Email",
+    "password": "Fjalëkalimi",
+    "forgotPassword": "Keni harruar fjalëkalimin?",
+    "rememberMe": "Më mbaj mend",
+    "createAccount": "Krijo një llogari",
+    "enterCredentials": "Vendosni email-in dhe fjalëkalimin tuaj për të filluar",
+    "alreadyHaveAccount": "Keni tashmë një llogari?",
+    "dontHaveAccount": "Nuk keni llogari?",
+    "signingIn": "Duke hyrë...",
+    "creatingAccount": "Duke krijuar llogarinë...",
+    "signInSuccess": "Hyrja u krye me sukses!",
+    "signUpSuccess": "Llogaria u krijua me sukses!",
+    "emailExists": "Një llogari me këtë email ekziston tashmë. Ju lutemi hyni në llogarinë tuaj.",
+    "invalidEmail": "Adresë email-i e pavlefshme. Ju lutemi provoni përsëri.",
+    "invalidPassword": "Fjalëkalimi duhet të ketë të paktën 8 karaktere dhe të përfshijë një numër dhe një karakter special.",
+    "unexpectedError": "Ndodhi një gabim i papritur. Ju lutemi provoni përsëri më vonë.",
+    "noAccount": "Nuk u gjet asnjë llogari me këtë email. Ju lutemi regjistrohuni fillimisht.",
+    "incorrectPassword": "Fjalëkalim i pasaktë. Ju lutemi provoni përsëri.",
+    "signUpForm": {
+      "completeProfile": "Plotëso Profilin Tënd",
+      "createProfile": "Krijo Profilin Tënd",
+      "completeProfileSubheader": "Ju lutemi jepni informacionin tuaj për të përfunduar konfigurimin e llogarisë",
+      "createProfileSubheader": "Ju lutemi jepni informacionin tuaj për të krijuar llogarinë tuaj",
+      "signUpAs": "Regjistrohu si:",
+      "patient": "Pacient",
+      "doctor": "Doktor",
+      "fullName": "Emri i Plotë",
+      "fullNamePlaceholder": "Maria Johnson",
+      "phoneNumber": "Numri i Telefonit",
+      "phoneNumberPlaceholder": "+355123456789",
+      "age": "Mosha",
+      "agePlaceholder": "Vendosni moshën tuaj",
+      "sex": "Gjinia",
+      "male": "Mashkull",
+      "female": "Femër",
+      "other": "Tjetër",
+      "specialization": "Specializimi",
+      "specializationPlaceholder": "Kardiologji",
+      "licenseNumber": "Numri i Licencës",
+      "licenseNumberPlaceholder": "Vendosni numrin tuaj të licencës mjekësore",
+      "languages": "Gjuhët",
+      "languagesPlaceholder": "Shqip, Anglisht, Italisht",
+      "bio": "Bio",
+      "bioPlaceholder": "Ndani çdo gjë për të cilën jeni veçanërisht i pasionuar, në lidhje me kujdesin shëndetësor dhe jo vetëm",
+      "saving": "Duke ruajtur..."
+    }
+  },
+  "profile": {
+    "title": "Profili",
+    "personalInfo": "Informacioni Personal",
+    "medicalHistory": "Historia Mjekësore",
+    "preferences": "Preferencat",
+    "updateProfile": "Përditëso Profilin",
+    "manageProfile": "menaxhoni informacionin tuaj të profilit",
+    "basicInfo": "Informacioni juaj bazë personal dhe i kontaktit",
+    "firstName": "Emri",
+    "lastName": "Mbiemri",
+    "phone": "Telefoni",
+    "age": "Mosha",
+    "sex": "Gjinia",
+    "languages": "Gjuhët",
+    "bio": "Bio",
+    "specialization": "Specializimi",
+    "licenseNumber": "Numri i Licencës",
+    "male": "Mashkull",
+    "female": "Femër",
+    "other": "Tjetër",
+    "updateSuccess": "Profili u përditësua me sukses",
+    "updateError": "Dështoi përditësimi i profilit. Ju lutemi provoni përsëri.",
+    "requiredField": "Kjo fushë është e detyrueshme",
+    "invalidAge": "Ju lutemi vendosni një moshë të vlefshme",
+    "ageRange": "Mosha duhet të jetë midis 0 dhe 120"
+  },
+  "errors": {
+    "required": "Kjo fushë është e detyrueshme",
+    "invalidEmail": "Adresë email-i e pavlefshme",
+    "passwordLength": "Fjalëkalimi duhet të ketë të paktën 8 karaktere",
+    "somethingWentWrong": "Diçka shkoi keq"
+  },
+  "footer": {
+    "copyright": "© 2025 HealthAI. Të gjitha të drejtat e rezervuara.",
+    "terms": "Kushtet e Shërbimit",
+    "privacy": "Politika e Privatësisë"
+  },
+  "learnMore": {
+    "title": "Rreth Analizës HealthAI",
+    "subheader": "Kuptimi i shërbimit tonë të analizës shëndetësore të mundësuar nga AI",
+    "howItWorks": {
+      "title": "Si Funksionon",
+      "description": "Sistemi ynë i analizës shëndetësore i mundësuar nga AI përdor algoritme të avancuara të të mësuarit të makinerisë për të analizuar simptomat dhe të dhënat tuaja shëndetësore. Ja se si funksionon procesi:",
+      "steps": [
+        "Ju jepni simptomat dhe informacionin tuaj shëndetësor",
+        "Opsionalisht ngarkoni rezultatet laboratorike ose dokumentet mjekësore",
+        "AI ynë analizon të dhënat duke përdorur një bazë gjithëpërfshirëse të njohurive mjekësore",
+        "Ju merrni njohuri dhe rekomandime të personalizuara"
+      ]
+    },
+    "technology": {
+      "title": "Teknologjia Jonë",
+      "description": "HealthAI përdor teknologji të përparuara të përpunimit të gjuhës natyrore dhe të mësuarit të makinerisë për të kuptuar dhe analizuar informacionin shëndetësor. Sistemi ynë është trajnuar në:",
+      "points": [
+        "Literatura mjekësore dhe punime kërkimore",
+        "Udhëzime klinike dhe praktikat më të mira",
+        "Modele nga të dhëna të anonimizuara shëndetësore",
+        "Njohuri mjekësore eksperte"
+      ]
+    },
+    "privacy": {
+      "title": "Privatësia dhe Siguria",
+      "description": "Ne e marrim seriozisht privatësinë dhe sigurinë e të dhënave tuaja. Të gjitha informacionet janë:",
+      "points": [
+        "Të enkriptuara gjatë transmetimit dhe ruajtjes",
+        "Të përpunuara në përputhje me rregulloret e kujdesit shëndetësor",
+        "Kurrë nuk ndahen me palë të treta pa pëlqimin tuaj",
+        "Të mbrojtura nga kontrolle të rrepta të aksesit"
+      ]
+    },
+    "disclaimer": {
+      "title": "Shënim i Rëndësishëm",
+      "description": "Ndërsa analiza jonë AI mund të ofrojë njohuri të vlefshme, ajo nuk është zëvendësim për këshilla profesionale mjekësore. Gjithmonë konsultohuni me profesionistë të kujdesit shëndetësor për:",
+      "points": [
+        "Diagnozë dhe trajtim mjekësor",
+        "Situata emergjente",
+        "Shqetësime serioze shëndetësore",
+        "Medikamente me recetë"
+      ]
+    },
+    "buttons": {
+      "tryHealthAnalysis": "Provo Analizën Shëndetësore",
+      "backToHome": "Kthehu në Ballina"
+    }
+  },
+  "privacyPolicy": {
+    "title": "Politika e Privatësisë",
+    "lastUpdated": "Përditësuar së fundmi: 15 Mars, 2024",
+    "informationWeCollect": {
+      "title": "1. Informacioni që Mbledhim",
+      "description": "Ne mbledhim informacion që ju na jepni drejtpërdrejt, përfshirë:",
+      "points": [
+        "Informacion personal (emri, adresa e emailit, mosha, gjinia)",
+        "Informacion shëndetësor që zgjidhni të ndani",
+        "Rezultatet laboratorike dhe dokumentet mjekësore që ngarkoni",
+        "Të dhënat e përdorimit dhe preferencat"
+      ]
+    },
+    "howWeUse": {
+      "title": "2. Si e Përdorim Informacionin Tuaj",
+      "description": "Ne përdorim informacionin që mbledhim për të:",
+      "points": [
+        "Ofruar dhe përmirësuar shërbimet tona të analizës shëndetësore AI",
+        "Personalizuar përvojën tuaj",
+        "Komunikuar me ju rreth shërbimeve tona",
+        "Siguruar sigurinë e platformës sonë"
+      ]
+    },
+    "dataSecurity": {
+      "title": "3. Siguria e të Dhënave",
+      "description": "Ne zbatojmë masa të përshtatshme teknike dhe organizative për të mbrojtur informacionin tuaj personal. Megjithatë, asnjë metodë transmetimi në Internet ose ruajtje elektronike nuk është 100% e sigurt dhe ne nuk mund të garantojmë siguri absolute."
+    },
+    "yourRights": {
+      "title": "4. Të Drejtat Tuaja",
+      "description": "Ju keni të drejtë të:",
+      "points": [
+        "Aksesoni informacionin tuaj personal",
+        "Korrigjoni të dhënat e pasakta",
+        "Kërkoni fshirjen e të dhënave tuaja",
+        "Kundërshtoni përpunimin e të dhënave tuaja",
+        "Portabilitetin e të dhënave"
+      ]
+    }
+  },
+  "termsOfService": {
+    "title": "Kushtet e Shërbimit",
+    "lastUpdated": "Përditësuar së fundmi: 15 Mars, 2024",
+    "acceptance": {
+      "title": "1. Pranimi i Kushteve",
+      "description": "Duke aksesuar dhe përdorur shërbimet e HealthAI, ju pranoni të jeni të lidhur nga këto Kushte të Shërbimit dhe të gjitha ligjet dhe rregulloret e aplikueshme. Nëse nuk jeni dakord me ndonjë nga këto kushte, ju ndalohet të përdorni ose të aksesoni këtë faqe."
+    },
+    "license": {
+      "title": "2. Licenca e Përdorimit",
+      "description": "Jepet leje për të përdorur përkohësisht shërbimet e HealthAI vetëm për shikimin personal, jo-komercial kalimtar. Kjo është dhënia e një licence, jo një transferim i titullit, dhe sipas kësaj licence ju nuk mund të:",
+      "points": [
+        "Modifikoni ose kopjoni materialet",
+        "Përdorni materialet për qëllime komerciale",
+        "Përpiqeni të dekompiloni ose të zbërtheni ndonjë softuer të përfshirë në HealthAI",
+        "Hiqni ndonjë shënim të të drejtave të autorit ose pronësore nga materialet"
+      ]
+    },
+    "medicalDisclaimer": {
+      "title": "3. Shënim Mjekësor",
+      "description": "Informacioni i ofruar nga HealthAI është vetëm për qëllime të përgjithshme informative dhe nuk ka për qëllim të zëvendësojë këshillat profesionale mjekësore, diagnozën ose trajtimin. Gjithmonë kërkoni këshillën e mjekut tuaj ose të ofruesit tjetër të kualifikuar të kujdesit shëndetësor për çdo pyetje që mund të keni në lidhje me një gjendje mjekësore."
+    },
+    "limitations": {
+      "title": "4. Kufizimet",
+      "description": "Në asnjë rast HealthAI ose furnizuesit e saj nuk do të jenë përgjegjës për dëmet (përfshirë, pa kufizim, dëmet për humbjen e të dhënave ose fitimit, ose për shkak të ndërprerjes së biznesit) që rrjedhin nga përdorimi ose pamundësia për të përdorur materialet në faqen e internetit të HealthAI."
+    }
+  }
+}

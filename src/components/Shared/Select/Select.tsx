@@ -13,12 +13,13 @@ interface CustomSelectProps {
   options: SelectOption[];
   value: string | number;
   onChange: (value: string | number) => void;
-  label: string;
+  label?: string;
   error?: boolean;
   labelBackground?: "card" | "background";
   fullwidth?: boolean;
   className?: string;
   helperText?: string;
+  small?: boolean;
 }
 
 const Select = ({
@@ -29,6 +30,7 @@ const Select = ({
   error,
   fullwidth,
   className,
+  small,
   labelBackground = "card",
   helperText,
 }: CustomSelectProps) => {
@@ -52,11 +54,13 @@ const Select = ({
           [classes.backgroundLabel]: labelBackground === "background",
         })}
       >
-        {label}
+        {label ?? ""}
       </label>
 
       <select
-        className={classes.select}
+        className={clsx(classes.select, {
+          [classes.smallSelect]: small,
+        })}
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
         onFocus={handleFocus}
@@ -80,7 +84,7 @@ const Select = ({
           [classes.rotateArrow]: isFocused,
         })}
       >
-        <ChevronDown />
+        <ChevronDown size={small ? 14 : 24} />
       </div>
       {error && <div className={classes.errorText}>{helperText}</div>}
     </div>

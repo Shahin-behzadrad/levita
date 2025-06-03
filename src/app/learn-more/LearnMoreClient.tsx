@@ -4,84 +4,91 @@ import { Button } from "@/components/Shared/Button/Button";
 import { Card, CardContent, CardHeader } from "@/components/Shared/Card";
 import Link from "next/link";
 import styles from "./LearnMore.module.scss";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function LearnMoreClient() {
+  const { messages } = useLanguage();
+
   return (
     <div className={styles.container}>
       <Card>
         <CardHeader
-          title="About HealthAI Analysis"
-          subheader="Understanding our AI-powered health analysis service"
+          title={messages.learnMore.title}
+          subheader={messages.learnMore.subheader}
         />
         <CardContent className={styles.section}>
           <section>
-            <h2 className={styles.sectionTitle}>How It Works</h2>
+            <h2 className={styles.sectionTitle}>
+              {messages.learnMore.howItWorks.title}
+            </h2>
             <p className={styles.sectionText}>
-              Our AI-powered health analysis system uses advanced machine
-              learning algorithms to analyze your symptoms and health data.
-              Here's how the process works:
+              {messages.learnMore.howItWorks.description}
             </p>
             <ol className={styles.orderedList}>
-              <li>You provide your symptoms and health information</li>
-              <li>Optionally upload lab results or medical documents</li>
-              <li>
-                Our AI analyzes the data using a comprehensive medical knowledge
-                base
-              </li>
-              <li>You receive personalized insights and recommendations</li>
+              {messages.learnMore.howItWorks.steps.map(
+                (step: string, index: number) => (
+                  <li key={index}>{step}</li>
+                )
+              )}
             </ol>
           </section>
 
           <section>
-            <h2 className={styles.sectionTitle}>Our Technology</h2>
+            <h2 className={styles.sectionTitle}>
+              {messages.learnMore.technology.title}
+            </h2>
             <p className={styles.sectionText}>
-              HealthAI uses state-of-the-art natural language processing and
-              machine learning technologies to understand and analyze health
-              information. Our system is trained on:
+              {messages.learnMore.technology.description}
             </p>
             <ul className={styles.unorderedList}>
-              <li>Medical literature and research papers</li>
-              <li>Clinical guidelines and best practices</li>
-              <li>Patterns from anonymized health data</li>
-              <li>Expert medical knowledge</li>
+              {messages.learnMore.technology.points.map(
+                (point: string, index: number) => (
+                  <li key={index}>{point}</li>
+                )
+              )}
             </ul>
           </section>
 
           <section>
-            <h2 className={styles.sectionTitle}>Privacy and Security</h2>
+            <h2 className={styles.sectionTitle}>
+              {messages.learnMore.privacy.title}
+            </h2>
             <p className={styles.sectionText}>
-              We take your privacy and data security seriously. All information
-              is:
+              {messages.learnMore.privacy.description}
             </p>
             <ul className={styles.unorderedList}>
-              <li>Encrypted during transmission and storage</li>
-              <li>Processed in compliance with healthcare regulations</li>
-              <li>Never shared with third parties without your consent</li>
-              <li>Protected by strict access controls</li>
+              {messages.learnMore.privacy.points.map(
+                (point: string, index: number) => (
+                  <li key={index}>{point}</li>
+                )
+              )}
             </ul>
           </section>
 
           <section>
-            <h2 className={styles.sectionTitle}>Important Disclaimer</h2>
+            <h2 className={styles.sectionTitle}>
+              {messages.learnMore.disclaimer.title}
+            </h2>
             <p className={styles.sectionText}>
-              While our AI analysis can provide valuable insights, it is not a
-              substitute for professional medical advice. Always consult with
-              healthcare professionals for:
+              {messages.learnMore.disclaimer.description}
             </p>
             <ul className={styles.unorderedList}>
-              <li>Medical diagnosis and treatment</li>
-              <li>Emergency situations</li>
-              <li>Serious health concerns</li>
-              <li>Prescription medications</li>
+              {messages.learnMore.disclaimer.points.map(
+                (point: string, index: number) => (
+                  <li key={index}>{point}</li>
+                )
+              )}
             </ul>
           </section>
 
           <div className={styles.buttonContainer}>
             <Link href="/health-analysis">
-              <Button>Try Health Analysis</Button>
+              <Button>{messages.learnMore.buttons.tryHealthAnalysis}</Button>
             </Link>
             <Link href="/">
-              <Button variant="outlined">Back to Home</Button>
+              <Button variant="outlined">
+                {messages.learnMore.buttons.backToHome}
+              </Button>
             </Link>
           </div>
         </CardContent>

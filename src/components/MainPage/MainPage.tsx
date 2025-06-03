@@ -1,7 +1,10 @@
+"use client";
+
 import { Card, CardContent, CardHeader } from "../Shared/Card";
 import HeroActions from "../HeroActions/HeroActions";
 import styles from "./MainPage.module.scss";
 import Text from "../Shared/Text";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const FeatureCard = ({
   title,
@@ -20,46 +23,51 @@ const FeatureCard = ({
   </Card>
 );
 
-const HeroSection = () => (
-  <section className={styles.hero}>
-    <div className={styles.heroContainer}>
-      <div className={styles.heroContent}>
-        <div>
-          <h1 className={styles.heroTitle}>AI-Powered Healthcare Assistant</h1>
-          <p className={styles.heroDescription}>
-            Get personalized health insights based on your symptoms and lab
-            results using advanced AI technology.
-          </p>
+const HeroSection = () => {
+  const { messages } = useLanguage();
+  return (
+    <section className={styles.hero}>
+      <div className={styles.heroContainer}>
+        <div className={styles.heroContent}>
+          <div>
+            <h1 className={styles.heroTitle}>{messages.hero.title}</h1>
+            <p className={styles.heroDescription}>
+              {messages.hero.description}
+            </p>
+          </div>
+          <HeroActions />
         </div>
-        <HeroActions />
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
-const FeaturesSection = () => (
-  <section className={styles.features}>
-    <div className={styles.featuresContainer}>
-      <div className={styles.featuresGrid}>
-        <FeatureCard
-          title="Symptom Analysis"
-          description="Describe your symptoms and get AI-powered insights"
-          content="Our advanced AI analyzes your symptoms and provides potential causes and recommendations."
-        />
-        <FeatureCard
-          title="Lab Result Interpretation"
-          description="Upload your lab results for AI analysis"
-          content="Get easy-to-understand explanations of your lab test results and what they mean for your health."
-        />
-        <FeatureCard
-          title="Personalized Health Insights"
-          description="Receive tailored health recommendations"
-          content="Based on your profile, symptoms, and lab results, get personalized health recommendations."
-        />
+const FeaturesSection = () => {
+  const { messages } = useLanguage();
+  return (
+    <section className={styles.features}>
+      <div className={styles.featuresContainer}>
+        <div className={styles.featuresGrid}>
+          <FeatureCard
+            title={messages.features.aiAnalysis}
+            description={messages.features.personalizedInsights}
+            content={messages.features.description}
+          />
+          <FeatureCard
+            title={messages.features.labResults}
+            description={messages.features.personalizedInsights}
+            content={messages.features.description}
+          />
+          <FeatureCard
+            title={messages.features.healthTracking}
+            description={messages.features.personalizedInsights}
+            content={messages.features.description}
+          />
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 const MainPage = () => {
   return (

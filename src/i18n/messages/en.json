@@ -1,0 +1,238 @@
+{
+  "common": {
+    "language": "Language",
+    "english": "English",
+    "albanian": "Albanian",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "continue": "Continue",
+    "submit": "Submit"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "hero": {
+    "title": "AI-Powered Healthcare Assistant",
+    "description": "Get personalized health insights based on your symptoms and lab results using advanced AI technology.",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More"
+  },
+  "features": {
+    "title": "Features",
+    "description": "Our platform offers a range of features to help you manage your health and well-being.",
+    "aiAnalysis": "AI Analysis",
+    "personalizedInsights": "Personalized Insights",
+    "labResults": "Lab Results",
+    "healthTracking": "Health Tracking"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "createAccount": "Create an account",
+    "enterCredentials": "Enter your email and password to get started",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "signingIn": "Signing in...",
+    "creatingAccount": "Creating account...",
+    "signInSuccess": "Signed in successfully!",
+    "signUpSuccess": "Account created successfully!",
+    "emailExists": "An account with this email already exists. Please sign in instead.",
+    "invalidEmail": "Invalid email address. Please try again.",
+    "invalidPassword": "Password must be at least 8 characters long and include a number and special character.",
+    "unexpectedError": "An unexpected error occurred. Please try again later.",
+    "noAccount": "No account found with this email. Please sign up first.",
+    "incorrectPassword": "Incorrect password. Please try again.",
+    "signUpForm": {
+      "completeProfile": "Complete Your Profile",
+      "createProfile": "Create Your Profile",
+      "completeProfileSubheader": "Please provide your information to complete your account setup",
+      "createProfileSubheader": "Please provide your information to create your account",
+      "signUpAs": "Sign up as:",
+      "patient": "Patient",
+      "doctor": "Doctor",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Maria Johnson",
+      "phoneNumber": "Phone Number",
+      "phoneNumberPlaceholder": "+1234567890",
+      "age": "Age",
+      "agePlaceholder": "Enter your age",
+      "sex": "Sex",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "specialization": "Specialization",
+      "specializationPlaceholder": "Cardiology",
+      "licenseNumber": "License Number",
+      "licenseNumberPlaceholder": "Enter your medical license number",
+      "languages": "Languages",
+      "languagesPlaceholder": "English, Spanish, French",
+      "bio": "Bio",
+      "bioPlaceholder": "Share anything you're particularly passionate about, in regards to healthcare and not",
+      "saving": "Saving..."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "personalInfo": "Personal Information",
+    "medicalHistory": "Medical History",
+    "preferences": "Preferences",
+    "updateProfile": "Update Profile",
+    "manageProfile": "manage your profile information",
+    "basicInfo": "Your basic personal and contact information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "age": "Age",
+    "sex": "Sex",
+    "languages": "Languages",
+    "bio": "Bio",
+    "specialization": "Specialization",
+    "licenseNumber": "License Number",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "updateSuccess": "Profile updated successfully",
+    "updateError": "Failed to update profile. Please try again.",
+    "requiredField": "This field is required",
+    "invalidAge": "Please enter a valid age",
+    "ageRange": "Age must be between 0 and 120"
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "passwordLength": "Password must be at least 8 characters",
+    "somethingWentWrong": "Something went wrong"
+  },
+  "footer": {
+    "copyright": "© 2025 HealthAI. All rights reserved.",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
+  },
+  "learnMore": {
+    "title": "About HealthAI Analysis",
+    "subheader": "Understanding our AI-powered health analysis service",
+    "howItWorks": {
+      "title": "How It Works",
+      "description": "Our AI-powered health analysis system uses advanced machine learning algorithms to analyze your symptoms and health data. Here's how the process works:",
+      "steps": [
+        "You provide your symptoms and health information",
+        "Optionally upload lab results or medical documents",
+        "Our AI analyzes the data using a comprehensive medical knowledge base",
+        "You receive personalized insights and recommendations"
+      ]
+    },
+    "technology": {
+      "title": "Our Technology",
+      "description": "HealthAI uses state-of-the-art natural language processing and machine learning technologies to understand and analyze health information. Our system is trained on:",
+      "points": [
+        "Medical literature and research papers",
+        "Clinical guidelines and best practices",
+        "Patterns from anonymized health data",
+        "Expert medical knowledge"
+      ]
+    },
+    "privacy": {
+      "title": "Privacy and Security",
+      "description": "We take your privacy and data security seriously. All information is:",
+      "points": [
+        "Encrypted during transmission and storage",
+        "Processed in compliance with healthcare regulations",
+        "Never shared with third parties without your consent",
+        "Protected by strict access controls"
+      ]
+    },
+    "disclaimer": {
+      "title": "Important Disclaimer",
+      "description": "While our AI analysis can provide valuable insights, it is not a substitute for professional medical advice. Always consult with healthcare professionals for:",
+      "points": [
+        "Medical diagnosis and treatment",
+        "Emergency situations",
+        "Serious health concerns",
+        "Prescription medications"
+      ]
+    },
+    "buttons": {
+      "tryHealthAnalysis": "Try Health Analysis",
+      "backToHome": "Back to Home"
+    }
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: March 15, 2024",
+    "informationWeCollect": {
+      "title": "1. Information We Collect",
+      "description": "We collect information that you provide directly to us, including:",
+      "points": [
+        "Personal information (name, email address, age, sex)",
+        "Health-related information you choose to share",
+        "Lab results and medical documents you upload",
+        "Usage data and preferences"
+      ]
+    },
+    "howWeUse": {
+      "title": "2. How We Use Your Information",
+      "description": "We use the information we collect to:",
+      "points": [
+        "Provide and improve our AI health analysis services",
+        "Personalize your experience",
+        "Communicate with you about our services",
+        "Ensure the security of our platform"
+      ]
+    },
+    "dataSecurity": {
+      "title": "3. Data Security",
+      "description": "We implement appropriate technical and organizational measures to protect your personal information. However, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security."
+    },
+    "yourRights": {
+      "title": "4. Your Rights",
+      "description": "You have the right to:",
+      "points": [
+        "Access your personal information",
+        "Correct inaccurate data",
+        "Request deletion of your data",
+        "Object to processing of your data",
+        "Data portability"
+      ]
+    }
+  },
+  "termsOfService": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: March 15, 2024",
+    "acceptance": {
+      "title": "1. Acceptance of Terms",
+      "description": "By accessing and using HealthAI's services, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site."
+    },
+    "license": {
+      "title": "2. Use License",
+      "description": "Permission is granted to temporarily use HealthAI's services for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:",
+      "points": [
+        "Modify or copy the materials",
+        "Use the materials for any commercial purpose",
+        "Attempt to decompile or reverse engineer any software contained on HealthAI",
+        "Remove any copyright or other proprietary notations from the materials"
+      ]
+    },
+    "medicalDisclaimer": {
+      "title": "3. Medical Disclaimer",
+      "description": "The information provided by HealthAI is for general informational purposes only and is not intended to be a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition."
+    },
+    "limitations": {
+      "title": "4. Limitations",
+      "description": "In no event shall HealthAI or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on HealthAI's website."
+    }
+  }
+}
