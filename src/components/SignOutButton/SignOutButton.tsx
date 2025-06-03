@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Button from "../Shared/Button";
 import { LogOut } from "lucide-react";
 import styles from "./SignOutButton.module.scss";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export function SignOutButton({
   handleSignOut,
@@ -14,6 +15,7 @@ export function SignOutButton({
   const { isAuthenticated } = useConvexAuth();
   const { signOut } = useAuthActions();
   const router = useRouter();
+  const { messages } = useLanguage();
 
   if (!isAuthenticated) {
     return null;
@@ -32,7 +34,7 @@ export function SignOutButton({
       }}
       startIcon={<LogOut size={20} />}
     >
-      Sign out
+      {messages.nav.logout}
     </Button>
   );
 }

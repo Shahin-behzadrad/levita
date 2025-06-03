@@ -1,3 +1,5 @@
+"use client";
+
 import { UserType } from "@/types/userType";
 import { TextField } from "../Shared/TextField/TextField";
 import { useForm, Controller } from "react-hook-form";
@@ -12,6 +14,7 @@ import { Button } from "../Shared/Button/Button";
 import styles from "./ProfileScreen.module.scss";
 import { useState } from "react";
 import Select from "../Shared/Select/Select";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface BaseProfileFormData {
   firstName: string;
@@ -30,56 +33,62 @@ interface DoctorProfileFormData extends BaseProfileFormData {
 
 type ProfileFormData = DoctorProfileFormData | BaseProfileFormData;
 
-const doctorSchema = yup.object().shape({
-  firstName: yup.string().required("First name is required"),
-  lastName: yup.string().required("Last name is required"),
-  phoneNumber: yup.string().required("Phone number is required"),
-  sex: yup.string().required("Sex is required"),
-  languages: yup.string().required("Languages are required"),
-  specialization: yup.string().required("Specialization is required"),
-  licenseNumber: yup.string().required("License number is required"),
-  bio: yup.string(),
-  age: yup
-    .number()
-    .transform((value) => (isNaN(value) ? null : value))
-    .nullable()
-    .min(0, "Age must be positive")
-    .max(120, "Age must be less than 120")
-    .typeError("Please enter a valid age"),
-});
+const createDoctorSchema = (messages: any) =>
+  yup.object().shape({
+    firstName: yup.string().required(messages.profile.requiredField),
+    lastName: yup.string().required(messages.profile.requiredField),
+    phoneNumber: yup.string().required(messages.profile.requiredField),
+    sex: yup.string().required(messages.profile.requiredField),
+    languages: yup.string().required(messages.profile.requiredField),
+    specialization: yup.string().required(messages.profile.requiredField),
+    licenseNumber: yup.string().required(messages.profile.requiredField),
+    bio: yup.string(),
+    age: yup
+      .number()
+      .transform((value) => (isNaN(value) ? null : value))
+      .nullable()
+      .min(0, messages.profile.ageRange)
+      .max(120, messages.profile.ageRange)
+      .typeError(messages.profile.invalidAge),
+  });
 
-const patientSchema = yup.object().shape({
-  firstName: yup.string().required("First name is required"),
-  lastName: yup.string().required("Last name is required"),
-  phoneNumber: yup.string().required("Phone number is required"),
-  sex: yup.string().required("Sex is required"),
-  languages: yup.string().required("Languages are required"),
-  bio: yup.string(),
-  age: yup
-    .number()
-    .transform((value) => (isNaN(value) ? null : value))
-    .nullable()
-    .min(0, "Age must be positive")
-    .max(120, "Age must be less than 120")
-    .typeError("Please enter a valid age"),
-});
+const createPatientSchema = (messages: any) =>
+  yup.object().shape({
+    firstName: yup.string().required(messages.profile.requiredField),
+    lastName: yup.string().required(messages.profile.requiredField),
+    phoneNumber: yup.string().required(messages.profile.requiredField),
+    sex: yup.string().required(messages.profile.requiredField),
+    languages: yup.string().required(messages.profile.requiredField),
+    bio: yup.string(),
+    age: yup
+      .number()
+      .transform((value) => (isNaN(value) ? null : value))
+      .nullable()
+      .min(0, messages.profile.ageRange)
+      .max(120, messages.profile.ageRange)
+      .typeError(messages.profile.invalidAge),
+  });
 
 interface ProfileFormProps {
   userData: UserType;
   onSuccess?: () => void;
 }
 
-const sexOptions = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-  { value: "other", label: "Other" },
-];
-
 export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const updateUserProfile = useMutation(api.userProfiles.updateUserProfile);
+  const { messages } = useLanguage();
 
-  const schema = userData.role === "doctor" ? doctorSchema : patientSchema;
+  const sexOptions = [
+    { value: "male", label: messages.profile.male },
+    { value: "female", label: messages.profile.female },
+    { value: "other", label: messages.profile.other },
+  ];
+
+  const schema =
+    userData.role === "doctor"
+      ? createDoctorSchema(messages)
+      : createPatientSchema(messages);
   const isDoctor = userData.role === "doctor";
 
   const [firstName, ...lastNameArr] = (userData.fullName || "").split(" ");
@@ -126,12 +135,12 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
         }),
       };
       await updateUserProfile(profileData);
-      toast.success("Profile updated successfully");
+      toast.success(messages.profile.updateSuccess);
       reset(data);
       onSuccess?.();
     } catch (error) {
       console.error("Failed to update profile:", error);
-      toast.error("Failed to update profile. Please try again.");
+      toast.error(messages.profile.updateError);
     } finally {
       setIsSubmitting(false);
     }
@@ -150,7 +159,7 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
             control={control}
             render={({ field }) => (
               <TextField
-                label="First Name"
+                label={messages.profile.firstName}
                 {...field}
                 error={!!errors.firstName}
                 errors={errors.firstName?.message}
@@ -164,7 +173,7 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
             control={control}
             render={({ field }) => (
               <TextField
-                label="Last Name"
+                label={messages.profile.lastName}
                 {...field}
                 error={!!errors.lastName}
                 errors={errors.lastName?.message}
@@ -178,7 +187,7 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
             control={control}
             render={({ field }) => (
               <TextField
-                label="Phone"
+                label={messages.profile.phone}
                 {...field}
                 error={!!errors.phoneNumber}
                 errors={errors.phoneNumber?.message}
@@ -192,7 +201,7 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
             control={control}
             render={({ field }) => (
               <TextField
-                label="Age"
+                label={messages.profile.age}
                 {...field}
                 value={field.value || ""}
                 onChange={(e) => {
@@ -200,15 +209,11 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
                   if (value === "") {
                     field.onChange(null);
                   } else {
-                    const numValue = parseInt(value);
-                    if (!isNaN(numValue)) {
-                      field.onChange(numValue);
-                    }
+                    field.onChange(parseInt(value, 10));
                   }
                 }}
                 error={!!errors.age}
                 errors={errors.age?.message}
-                inputMode="numeric"
               />
             )}
           />
@@ -219,10 +224,9 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
             control={control}
             render={({ field }) => (
               <Select
-                label="Sex"
+                label={messages.profile.sex}
                 options={sexOptions}
-                value={field.value}
-                onChange={field.onChange}
+                {...field}
                 error={!!errors.sex}
                 helperText={errors.sex?.message}
               />
@@ -235,7 +239,7 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
             control={control}
             render={({ field }) => (
               <TextField
-                label="Languages"
+                label={messages.profile.languages}
                 {...field}
                 error={!!errors.languages}
                 errors={errors.languages?.message}
@@ -251,7 +255,7 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    label="Specialization"
+                    label={messages.profile.specialization}
                     {...field}
                     error={!!doctorErrors.specialization}
                     errors={doctorErrors.specialization?.message}
@@ -265,7 +269,7 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    label="License Number"
+                    label={messages.profile.licenseNumber}
                     {...field}
                     error={!!doctorErrors.licenseNumber}
                     errors={doctorErrors.licenseNumber?.message}
@@ -273,37 +277,32 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Controller
-                name="bio"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="Bio"
-                    {...field}
-                    error={!!errors.bio}
-                    errors={errors.bio?.message}
-                    multiline
-                  />
-                )}
-              />
-            </Grid>
           </>
         )}
+        <Grid item xs={12}>
+          <Controller
+            name="bio"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label={messages.profile.bio}
+                {...field}
+                multiline
+                error={!!errors.bio}
+                errors={errors.bio?.message}
+              />
+            )}
+          />
+        </Grid>
       </Grid>
-      {isDirty && (
-        <div className={styles.saveButton}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={isSubmitting}
-          >
-            <Save size={20} style={{ marginRight: 8 }} />
-            {isSubmitting ? "Saving..." : "Save Changes"}
-          </Button>
-        </div>
-      )}
+      <Button
+        type="submit"
+        variant="contained"
+        disabled={!isDirty || isSubmitting}
+        startIcon={<Save size={20} />}
+      >
+        {messages.profile.updateProfile}
+      </Button>
     </form>
   );
 };

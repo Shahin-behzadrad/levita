@@ -11,12 +11,15 @@ import styles from "./Header.module.scss";
 import { UserProfile } from "../Shared/UserProfile/UserProfile";
 import Text from "../Shared/Text";
 import Sidebar from "../Shared/Sidebar/Sidebar";
+import { LanguageSwitcher } from "../Shared/LanguageSwitcher/LanguageSwitcher";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Header = () => {
   const userData = useQuery(api.userProfiles.getUserProfile);
   const router = useRouter();
   const isMobile = useIsMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { messages } = useLanguage();
 
   const isLoading = userData === undefined;
 
@@ -45,10 +48,13 @@ const Header = () => {
           <>
             {isMobile ? (
               <>
-                <Menu
-                  className={styles.menuButton}
-                  onClick={() => setIsSidebarOpen(true)}
-                />
+                <div className={styles.rightSection}>
+                  <LanguageSwitcher />
+                  <Menu
+                    className={styles.menuButton}
+                    onClick={() => setIsSidebarOpen(true)}
+                  />
+                </div>
                 <Sidebar
                   isOpen={isSidebarOpen}
                   onOpenChange={setIsSidebarOpen}
@@ -56,17 +62,23 @@ const Header = () => {
                 />
               </>
             ) : (
-              <UserProfile userData={userData} />
+              <div className={styles.rightSection}>
+                <LanguageSwitcher />
+                <UserProfile userData={userData} />
+              </div>
             )}
           </>
         ) : (
           <>
             {isMobile ? (
               <>
-                <Menu
-                  className={styles.menuButton}
-                  onClick={() => setIsSidebarOpen(true)}
-                />
+                <div className={styles.rightSection}>
+                  <LanguageSwitcher />
+                  <Menu
+                    className={styles.menuButton}
+                    onClick={() => setIsSidebarOpen(true)}
+                  />
+                </div>
                 <Sidebar
                   isOpen={isSidebarOpen}
                   onOpenChange={setIsSidebarOpen}
@@ -74,19 +86,22 @@ const Header = () => {
                 />
               </>
             ) : (
-              <div className={styles.authButtons}>
-                <Button
-                  variant="contained"
-                  onClick={() => router.push("/sign-up")}
-                >
-                  Sign Up
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => router.push("/sign-in")}
-                >
-                  Sign In
-                </Button>
+              <div className={styles.rightSection}>
+                <LanguageSwitcher />
+                <div className={styles.authButtons}>
+                  <Button
+                    variant="contained"
+                    onClick={() => router.push("/sign-up")}
+                  >
+                    {messages.auth.signUp}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => router.push("/sign-in")}
+                  >
+                    {messages.auth.signIn}
+                  </Button>
+                </div>
               </div>
             )}
           </>

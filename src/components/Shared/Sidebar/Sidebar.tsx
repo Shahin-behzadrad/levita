@@ -7,6 +7,7 @@ import styles from "./Sidebar.module.scss";
 import clsx from "clsx";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ interface SidebarProps {
 
 const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
   const router = useRouter();
+  const { messages } = useLanguage();
 
   useEffect(() => {
     if (isOpen) {
@@ -48,6 +50,7 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
           >
             <X />
           </Button>
+
           {userData?._id ? (
             <>
               <div className={styles.profileSection}>
@@ -69,7 +72,7 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
                   router.push("/sign-in");
                 }}
               >
-                Sign In
+                {messages.auth.signIn}
               </Button>
               <Button
                 variant="contained"
@@ -78,7 +81,7 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
                   router.push("/sign-up");
                 }}
               >
-                Sign Up
+                {messages.auth.signUp}
               </Button>
             </div>
           )}

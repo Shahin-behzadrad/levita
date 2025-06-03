@@ -8,6 +8,7 @@ import Footer from "@/components/Footer/Footer";
 import { Toaster } from "sonner";
 import styles from "./layout.module.scss";
 import { ProfileSetup } from "@/components/ProfileSetup/ProfileSetup";
+import { LanguageProvider } from "@/i18n/LanguageContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,22 +24,24 @@ export default function RootLayout({
     <html lang="en">
       <body className={styles.layout}>
         <ConvexAuthProvider client={convex}>
-          <Header />
-          {children}
-          <Footer />
-          <ProfileSetup />
-          <Toaster
-            theme="light"
-            richColors
-            toastOptions={{
-              style: {
-                background: "white",
-                color: "black",
-                border: "1px solid #e5e7eb",
-              },
-              className: styles.toastCustom,
-            }}
-          />
+          <LanguageProvider>
+            <Header />
+            {children}
+            <Footer />
+            <ProfileSetup />
+            <Toaster
+              theme="light"
+              richColors
+              toastOptions={{
+                style: {
+                  background: "white",
+                  color: "black",
+                  border: "1px solid #e5e7eb",
+                },
+                className: styles.toastCustom,
+              }}
+            />
+          </LanguageProvider>
         </ConvexAuthProvider>
       </body>
     </html>

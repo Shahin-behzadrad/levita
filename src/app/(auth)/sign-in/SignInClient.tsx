@@ -17,6 +17,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useConvexAuth } from "convex/react";
 import styles from "./SignIn.module.scss";
 import TextField from "@/components/Shared/TextField";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function SignInClient() {
   const { signIn } = useAuthActions();
@@ -26,6 +27,7 @@ export default function SignInClient() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { messages } = useLanguage();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -44,19 +46,19 @@ export default function SignInClient() {
 
     try {
       await signIn("password", formData).then(() => {
-        toast.success("Signed in successfully!");
+        toast.success(messages.auth.signInSuccess);
       });
     } catch (error: any) {
       console.error("Sign-in error:", error);
       const errorMessage = error?.message || "";
 
       if (errorMessage.includes("InvalidAccountId")) {
-        toast.error("No account found with this email. Please sign up first.");
+        toast.error(messages.auth.noAccount);
         router.push("/sign-up");
       } else if (errorMessage.includes("InvalidSecret")) {
-        toast.error("Incorrect password. Please try again.");
+        toast.error(messages.auth.incorrectPassword);
       } else {
-        toast.error("An unexpected error occurred. Please try again later.");
+        toast.error(messages.auth.unexpectedError);
       }
     } finally {
       setIsLoading(false);
@@ -66,12 +68,12 @@ export default function SignInClient() {
   return (
     <div className={styles.container}>
       <Card className={styles.card}>
-        <CardHeader title="Sign In" />
+        <CardHeader title={messages.auth.signIn} />
         <form onSubmit={handleSubmit}>
           <CardContent className={styles.content}>
             <div className={styles.formGroup}>
               <TextField
-                label="Email"
+                label={messages.auth.email}
                 name="email"
                 type="email"
                 placeholder="m.johnson@example.com"
@@ -83,7 +85,7 @@ export default function SignInClient() {
             <div className={styles.formGroup}>
               <div className={styles.passwordInput}>
                 <TextField
-                  label="Password"
+                  label={messages.auth.password}
                   name="password"
                   type={showPassword ? "text" : "password"}
                   required
@@ -106,12 +108,12 @@ export default function SignInClient() {
               fullWidth
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : "Sign In"}
+              {isLoading ? messages.auth.signingIn : messages.auth.signIn}
             </Button>
             <div className={styles.signUpText}>
-              Don&apos;t have an account?{" "}
+              {messages.auth.dontHaveAccount}{" "}
               <Link href="/sign-up" className={styles.signUpLink}>
-                Sign up
+                {messages.auth.signUp}
               </Link>
             </div>
           </CardFooter>

@@ -6,24 +6,27 @@ import styles from "./ProfileScreen.module.scss";
 import Grid from "../Shared/Grid/Grid";
 import { User } from "lucide-react";
 import { ProfileFormPage } from "./ProfileFormPage";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface ProfileScreenProps {
   userData?: UserType | null;
 }
 
 const ProfileScreen = ({ userData }: ProfileScreenProps) => {
+  const { messages } = useLanguage();
+
   if (!userData) return null;
 
   return (
     <div className={styles.container}>
       <div>
         <Text
-          value={`${userData?.role ? userData?.role?.charAt(0).toUpperCase() + userData?.role?.slice(1) : ""} Profile`}
+          value={`${userData?.role ? userData?.role?.charAt(0).toUpperCase() + userData?.role?.slice(1) : ""} ${messages.profile.title}`}
           variant="h4"
           fontWeight="bold"
         />
         <Text
-          value="manage your profile information"
+          value={messages.profile.manageProfile}
           color="gray"
           fontSize="sm"
         />
@@ -53,13 +56,13 @@ const ProfileScreen = ({ userData }: ProfileScreenProps) => {
             <CardContent>
               <Text
                 className={styles.title}
-                value="Personal Information"
+                value={messages.profile.personalInfo}
                 fontWeight="bold"
                 fontSize="xl"
                 startAdornment={<User size={20} />}
               />
               <Text
-                value="Your basic personal and contact information"
+                value={messages.profile.basicInfo}
                 color="gray"
                 fontSize="sm"
               />

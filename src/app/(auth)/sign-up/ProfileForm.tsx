@@ -13,12 +13,14 @@ import Grid from "@/components/Shared/Grid/Grid";
 import Link from "next/link";
 import { useProfileForm } from "./useProfileForm";
 import { toast } from "sonner";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface ProfileFormProps {
   isSetup?: boolean;
 }
 
 export function ProfileForm({ isSetup = false }: ProfileFormProps) {
+  const { messages } = useLanguage();
   const {
     control,
     handleSubmit,
@@ -31,18 +33,22 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
   return (
     <>
       <CardHeader
-        title={isSetup ? "Complete Your Profile" : "Create Your Profile"}
+        title={
+          isSetup
+            ? messages.auth.signUpForm.completeProfile
+            : messages.auth.signUpForm.createProfile
+        }
         subheader={
           isSetup
-            ? "Please provide your information to complete your account setup"
-            : "Please provide your information to create your account"
+            ? messages.auth.signUpForm.completeProfileSubheader
+            : messages.auth.signUpForm.createProfileSubheader
         }
       />
       <form onSubmit={handleSubmit(handleProfileSubmit)}>
         <CardContent>
           <Grid container spacing={8}>
             <Grid item xs={12}>
-              <Text value="Sign up as:" fontSize="sm" />
+              <Text value={messages.auth.signUpForm.signUpAs} fontSize="sm" />
               <Controller
                 name="role"
                 control={control}
@@ -52,8 +58,14 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
                     value={field.value}
                     onChange={field.onChange}
                     options={[
-                      { value: "patient", label: "Patient" },
-                      { value: "doctor", label: "Doctor" },
+                      {
+                        value: "patient",
+                        label: messages.auth.signUpForm.patient,
+                      },
+                      {
+                        value: "doctor",
+                        label: messages.auth.signUpForm.doctor,
+                      },
                     ]}
                   />
                 )}
@@ -66,9 +78,9 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    label="Full Name"
+                    label={messages.auth.signUpForm.fullName}
                     id="fullName"
-                    placeholder="Maria Johnson"
+                    placeholder={messages.auth.signUpForm.fullNamePlaceholder}
                     {...field}
                     error={Boolean(errors.fullName?.message)}
                     helperText={errors.fullName?.message}
@@ -83,9 +95,11 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    label="Phone Number"
+                    label={messages.auth.signUpForm.phoneNumber}
                     id="phoneNumber"
-                    placeholder="+1234567890"
+                    placeholder={
+                      messages.auth.signUpForm.phoneNumberPlaceholder
+                    }
                     {...field}
                     error={Boolean(errors.phoneNumber?.message)}
                     helperText={errors.phoneNumber?.message}
@@ -100,13 +114,13 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    label="Age"
+                    label={messages.auth.signUpForm.age}
                     type="number"
                     id="age"
                     min="0"
                     max="120"
                     step="1"
-                    placeholder="Enter your age"
+                    placeholder={messages.auth.signUpForm.agePlaceholder}
                     {...field}
                     error={Boolean(errors.age?.message)}
                     helperText={errors.age?.message}
@@ -121,12 +135,15 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
                 control={control}
                 render={({ field }) => (
                   <Select
-                    label="Sex"
+                    label={messages.auth.signUpForm.sex}
                     {...field}
                     options={[
-                      { label: "Male", value: "male" },
-                      { label: "Female", value: "female" },
-                      { label: "Other", value: "other" },
+                      { label: messages.auth.signUpForm.male, value: "male" },
+                      {
+                        label: messages.auth.signUpForm.female,
+                        value: "female",
+                      },
+                      { label: messages.auth.signUpForm.other, value: "other" },
                     ]}
                     error={Boolean(errors.sex?.message)}
                     helperText={errors.sex?.message}
@@ -143,9 +160,11 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
                     control={control}
                     render={({ field }) => (
                       <TextField
-                        label="Specialization"
+                        label={messages.auth.signUpForm.specialization}
                         id="specialization"
-                        placeholder="Cardiology"
+                        placeholder={
+                          messages.auth.signUpForm.specializationPlaceholder
+                        }
                         {...field}
                         error={Boolean(errors.specialization?.message)}
                         helperText={errors.specialization?.message}
@@ -159,9 +178,11 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
                     control={control}
                     render={({ field }) => (
                       <TextField
-                        label="License Number"
+                        label={messages.auth.signUpForm.licenseNumber}
                         id="licenseNumber"
-                        placeholder="Enter your medical license number"
+                        placeholder={
+                          messages.auth.signUpForm.licenseNumberPlaceholder
+                        }
                         {...field}
                         error={Boolean(errors.licenseNumber?.message)}
                         helperText={errors.licenseNumber?.message}
@@ -175,9 +196,11 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
                     control={control}
                     render={({ field }) => (
                       <TextField
-                        label="Languages"
+                        label={messages.auth.signUpForm.languages}
                         id="languages"
-                        placeholder="English, Spanish, French"
+                        placeholder={
+                          messages.auth.signUpForm.languagesPlaceholder
+                        }
                         {...field}
                         error={Boolean(errors.languages?.message)}
                         helperText={errors.languages?.message}
@@ -191,9 +214,9 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
                     control={control}
                     render={({ field }) => (
                       <TextField
-                        label="Bio"
+                        label={messages.auth.signUpForm.bio}
                         id="bio"
-                        placeholder="Share anything you're particularly passionate about, in regards to healthcare and not"
+                        placeholder={messages.auth.signUpForm.bioPlaceholder}
                         multiline
                         {...field}
                         error={Boolean(errors.bio?.message)}
@@ -215,10 +238,10 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
             disabled={isSubmitting}
           >
             {isSubmitting
-              ? "Saving..."
+              ? messages.auth.signUpForm.saving
               : isSetup
-                ? "Complete Profile"
-                : "Create Profile"}
+                ? messages.auth.signUpForm.completeProfile
+                : messages.auth.signUpForm.createProfile}
           </Button>
         </CardFooter>
       </form>
