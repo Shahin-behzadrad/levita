@@ -1,7 +1,10 @@
+"use client";
+
 import { Card, CardContent, CardHeader } from "../Shared/Card";
 import HeroActions from "../HeroActions/HeroActions";
 import styles from "./MainPage.module.scss";
 import Text from "../Shared/Text";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const FeatureCard = ({
   title,
@@ -20,22 +23,24 @@ const FeatureCard = ({
   </Card>
 );
 
-const HeroSection = () => (
+const HeroSection = () => {
+  const { messages } = useLanguage();
+  return (
   <section className={styles.hero}>
     <div className={styles.heroContainer}>
       <div className={styles.heroContent}>
         <div>
-          <h1 className={styles.heroTitle}>AI-Powered Healthcare Assistant</h1>
+          <h1 className={styles.heroTitle}>{messages.hero.title}</h1>
           <p className={styles.heroDescription}>
-            Get personalized health insights based on your symptoms and lab
-            results using advanced AI technology.
+            {messages.hero.description}
           </p>
         </div>
         <HeroActions />
       </div>
     </div>
   </section>
-);
+  );
+};
 
 const FeaturesSection = () => (
   <section className={styles.features}>
@@ -62,6 +67,7 @@ const FeaturesSection = () => (
 );
 
 const MainPage = () => {
+  const { messages } = useLanguage();
   return (
     <main className={styles.main}>
       <HeroSection />

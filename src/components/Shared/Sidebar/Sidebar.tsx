@@ -48,6 +48,7 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
           >
             <X />
           </Button>
+
           {userData?._id ? (
             <>
               <div className={styles.profileSection}>

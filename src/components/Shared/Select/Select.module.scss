@@ -2,6 +2,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 
   &.fullwidth {
     width: 100%;
@@ -52,6 +53,13 @@
     font-size: 14px;
     appearance: none;
     cursor: pointer;
+
+    &.smallSelect {
+      width: 45px;
+      height: 28px;
+      padding: 4px;
+      min-width: unset;
+    }
 
     .option {
       background-color: var(--primaryAlt-main);
