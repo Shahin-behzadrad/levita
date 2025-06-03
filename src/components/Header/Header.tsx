@@ -12,12 +12,14 @@ import { UserProfile } from "../Shared/UserProfile/UserProfile";
 import Text from "../Shared/Text";
 import Sidebar from "../Shared/Sidebar/Sidebar";
 import { LanguageSwitcher } from "../Shared/LanguageSwitcher/LanguageSwitcher";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Header = () => {
   const userData = useQuery(api.userProfiles.getUserProfile);
   const router = useRouter();
   const isMobile = useIsMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { messages } = useLanguage();
 
   const isLoading = userData === undefined;
 
@@ -91,13 +93,13 @@ const Header = () => {
                     variant="contained"
                     onClick={() => router.push("/sign-up")}
                   >
-                    Sign Up
+                    {messages.auth.signUp}
                   </Button>
                   <Button
                     variant="outlined"
                     onClick={() => router.push("/sign-in")}
                   >
-                    Sign In
+                    {messages.auth.signIn}
                   </Button>
                 </div>
               </div>

@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import Image from "next/image";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 interface UserProfileProps {
   userData: Pick<UserType, "fullName" | "role" | "profileImage">;
@@ -25,6 +26,7 @@ export const UserProfile = ({ userData, onCloseSidebar }: UserProfileProps) => {
   const router = useRouter();
   const isMobile = useIsMobile();
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const { messages } = useLanguage();
   const imageUrl = useQuery(
     api.profileImage.getProfileImageUrl,
     userData.profileImage ? { storageId: userData.profileImage } : "skip"
@@ -36,7 +38,7 @@ export const UserProfile = ({ userData, onCloseSidebar }: UserProfileProps) => {
         {imageUrl ? (
           <Image
             src={imageUrl}
-            alt={userData.fullName || "Profile"}
+            alt={userData.fullName || messages.profile.title}
             width={50}
             height={50}
             className={styles.avatarImage}
@@ -77,7 +79,7 @@ export const UserProfile = ({ userData, onCloseSidebar }: UserProfileProps) => {
           setIsTooltipOpen(false);
         }}
       >
-        Visit Profile
+        {messages.nav.profile}
       </Button>
       <Separator />
     </div>
@@ -104,7 +106,7 @@ export const UserProfile = ({ userData, onCloseSidebar }: UserProfileProps) => {
             {imageUrl ? (
               <Image
                 src={imageUrl}
-                alt={userData.fullName || "Profile"}
+                alt={userData.fullName || messages.profile.title}
                 width={40}
                 height={40}
                 className={styles.avatarImage}

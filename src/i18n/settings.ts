@@ -9,5 +9,5 @@ export const localeNames: Record<ValidLocale, string> = {
 
 // Use type assertion since we know these values exist
 export function getMessages(locale: ValidLocale) {
-  return require(`../messages/${locale}.json`);
+  return require(`./messages/${locale}.json`);
 }
