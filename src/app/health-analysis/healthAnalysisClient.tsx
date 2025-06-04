@@ -23,6 +23,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useAction } from "convex/react";
 
 import styles from "./healthAnalysisClient.module.scss";
 import Image from "@/components/Shared/Image/Image";
@@ -30,6 +31,7 @@ import LoadingModal from "@/components/LoadingModal/LoadingModal";
 
 export const HealthAnalysis = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [processingOCR, setProcessingOCR] = useState(false);
   const { control, handleSubmit, errors } = useHealthAnalysisForm();
   const router = useRouter();
   const updateHealthAnalysis = useMutation(
@@ -37,6 +39,7 @@ export const HealthAnalysis = () => {
   );
   const existingAnalysis = useQuery(api.healthAnalysis.getHealthAnalysis);
   const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
+  const processDocumentOCR = useAction(api.ocr.processDocumentOCR);
 
   // Get all file URLs at once
   const fileUrls = useQuery(
@@ -47,8 +50,6 @@ export const HealthAnalysis = () => {
         }
       : "skip"
   );
-
-  console.log("existingAnalysis", existingAnalysis);
 
   const onSubmit = async (data: HealthAnalysisFormData) => {
     setIsSubmitting(true);
@@ -187,20 +188,45 @@ export const HealthAnalysis = () => {
                       {new Date(doc.uploadedAt).toLocaleDateString()}
                     </p>
                     {fileUrl && (
-                      <a
-                        href={fileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: "inline-block",
-                          marginTop: "8px",
-                          fontSize: "14px",
-                          color: "#0066cc",
-                          textDecoration: "none",
-                        }}
-                      >
-                        View File
-                      </a>
+                      <div style={{ marginTop: "8px" }}>
+                        <a
+                          href={fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: "inline-block",
+                            marginRight: "8px",
+                            fontSize: "14px",
+                            color: "#0066cc",
+                            textDecoration: "none",
+                          }}
+                        >
+                          View File
+                        </a>
+                        <Button
+                          variant="text"
+                          size="xs"
+                          onClick={async () => {
+                            try {
+                              setProcessingOCR(true);
+                              const result = await processDocumentOCR({
+                                storageId: doc.storageId,
+                                fileType: doc.fileType,
+                              });
+                              toast.success("OCR processing completed");
+                              console.log("OCR Result:", result);
+                            } catch (error) {
+                              console.error("OCR processing error:", error);
+                              toast.error("Failed to process document OCR");
+                            } finally {
+                              setProcessingOCR(false);
+                            }
+                          }}
+                          disabled={processingOCR}
+                        >
+                          {processingOCR ? "Processing..." : "Extract Text"}
+                        </Button>
+                      </div>
                     )}
                   </div>
                 </div>

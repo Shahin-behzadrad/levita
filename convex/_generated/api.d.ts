@@ -18,6 +18,7 @@ import type * as checkEmailExists from "../checkEmailExists.js";
 import type * as fileStorage from "../fileStorage.js";
 import type * as healthAnalysis from "../healthAnalysis.js";
 import type * as http from "../http.js";
+import type * as ocr from "../ocr.js";
 import type * as profileImage from "../profileImage.js";
 import type * as router from "../router.js";
 import type * as userProfiles from "../userProfiles.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   fileStorage: typeof fileStorage;
   healthAnalysis: typeof healthAnalysis;
   http: typeof http;
+  ocr: typeof ocr;
   profileImage: typeof profileImage;
   router: typeof router;
   userProfiles: typeof userProfiles;
