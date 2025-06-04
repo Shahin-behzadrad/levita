@@ -33,14 +33,7 @@ export const HealthAnalysis = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [processingOCR, setProcessingOCR] = useState(false);
   const [ocrResult, setOcrResult] = useState<{
-    t: string;
-    p: number;
-    c: number;
-    d: Array<{
-      p: number;
-      c: number;
-      t: string;
-    }>;
+    text: string;
   } | null>(null);
   const [showOcrModal, setShowOcrModal] = useState(false);
   const { control, handleSubmit, errors } = useHealthAnalysisForm();
@@ -222,12 +215,9 @@ export const HealthAnalysis = () => {
                                 });
                                 console.log(result);
 
-                                if (result.t) {
+                                if (result.text) {
                                   setOcrResult({
-                                    t: result.t,
-                                    p: result.p,
-                                    c: result.c,
-                                    d: result.d,
+                                    text: result.text,
                                   });
                                   setShowOcrModal(true);
                                   toast.success("OCR processing completed");
@@ -285,52 +275,18 @@ export const HealthAnalysis = () => {
             >
               <h3 style={{ marginTop: 0 }}>Extracted Text</h3>
               <div style={{ marginBottom: "16px" }}>
-                <p style={{ margin: "0 0 8px 0", fontSize: "14px" }}>
-                  Total Pages: {ocrResult.p} | Overall Confidence:{" "}
-                  {(ocrResult.c * 100).toFixed(1)}%
-                </p>
-                {ocrResult.d.map((page, index) => (
-                  <div key={index} style={{ marginBottom: "24px" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: "8px",
-                        padding: "8px",
-                        backgroundColor: "#f0f0f0",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      <h4 style={{ margin: 0 }}>Page {page.p}</h4>
-                      <span
-                        style={{
-                          fontSize: "14px",
-                          color:
-                            page.c > 0.8
-                              ? "#2e7d32"
-                              : page.c > 0.6
-                                ? "#ed6c02"
-                                : "#d32f2f",
-                        }}
-                      >
-                        Confidence: {(page.c * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        backgroundColor: "#f5f5f5",
-                        padding: "16px",
-                        borderRadius: "4px",
-                        whiteSpace: "pre-wrap",
-                        fontFamily: "monospace",
-                        fontSize: "14px",
-                      }}
-                    >
-                      {page.t}
-                    </div>
-                  </div>
-                ))}
+                <div
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    padding: "16px",
+                    borderRadius: "4px",
+                    whiteSpace: "pre-wrap",
+                    fontFamily: "monospace",
+                    fontSize: "14px",
+                  }}
+                >
+                  {ocrResult.text}
+                </div>
               </div>
               <Button
                 variant="contained"

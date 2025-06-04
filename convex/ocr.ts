@@ -214,47 +214,20 @@ export const processDocumentOCR = action({
         })),
       });
 
-      // Extract detailed page info
-      const pages = fullTextAnnotation.pages?.map(
-        (page: protos.google.cloud.vision.v1.IPage, index: number) => {
-          // Combine all text from blocks into a single string for each page
-          const pageText = page.blocks
-            ?.map((block) => {
-              return block.paragraphs
-                ?.flatMap((p: protos.google.cloud.vision.v1.IParagraph) =>
-                  p.words
-                    ?.map((w: protos.google.cloud.vision.v1.IWord) =>
-                      w.symbols
-                        ?.map(
-                          (s: protos.google.cloud.vision.v1.ISymbol) => s.text
-                        )
-                        .join("")
-                    )
-                    .join(" ")
-                )
-                .join(" ");
-            })
-            .filter(Boolean)
-            .join("\n");
+      // Extract text from all pages
+      const fullText = fullTextAnnotation.text || "";
 
-          return {
-            p: index + 1, // page number
-            c: page.confidence || 0, // confidence
-            t: pageText || "", // text
-          };
-        }
-      );
-
-      // Calculate average confidence across all pages
-      const avgConfidence =
-        (pages || []).reduce((acc, page) => acc + page.c, 0) /
-        (pages?.length || 1);
+      // Future structure for when you need per-page data:
+      // {
+      //   pages: [
+      //     { text: "Page 1 text..." },
+      //     { text: "Page 2 text..." },
+      //   ],
+      //   fullText: "All pages concatenated"
+      // }
 
       return {
-        t: fullTextAnnotation.text || "", // full text
-        p: pages?.length || 0, // page count
-        c: avgConfidence, // average confidence
-        d: pages || [], // pages data
+        text: fullText,
       };
     } catch (error: any) {
       console.error("OCR processing error details:", {
