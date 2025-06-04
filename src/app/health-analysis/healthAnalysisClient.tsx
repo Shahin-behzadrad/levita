@@ -33,15 +33,13 @@ export const HealthAnalysis = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [processingOCR, setProcessingOCR] = useState(false);
   const [ocrResult, setOcrResult] = useState<{
-    text: string;
-    pageCount: number;
-    pages: Array<{
-      pageNumber: number;
-      confidence: number;
-      blocks: Array<{
-        confidence: number;
-        text: string;
-      }>;
+    t: string;
+    p: number;
+    c: number;
+    d: Array<{
+      p: number;
+      c: number;
+      t: string;
     }>;
   } | null>(null);
   const [showOcrModal, setShowOcrModal] = useState(false);
@@ -224,17 +222,12 @@ export const HealthAnalysis = () => {
                                 });
                                 console.log(result);
 
-                                if (result.text) {
+                                if (result.t) {
                                   setOcrResult({
-                                    text: result.text,
-                                    pageCount: result.pageCount,
-                                    pages: (result.pages || []).map((page) => ({
-                                      ...page,
-                                      blocks: page.blocks.map((block) => ({
-                                        ...block,
-                                        text: block.text || "",
-                                      })),
-                                    })),
+                                    t: result.t,
+                                    p: result.p,
+                                    c: result.c,
+                                    d: result.d,
                                   });
                                   setShowOcrModal(true);
                                   toast.success("OCR processing completed");
@@ -293,9 +286,10 @@ export const HealthAnalysis = () => {
               <h3 style={{ marginTop: 0 }}>Extracted Text</h3>
               <div style={{ marginBottom: "16px" }}>
                 <p style={{ margin: "0 0 8px 0", fontSize: "14px" }}>
-                  Total Pages: {ocrResult.pageCount}
+                  Total Pages: {ocrResult.p} | Overall Confidence:{" "}
+                  {(ocrResult.c * 100).toFixed(1)}%
                 </p>
-                {ocrResult.pages.map((page, index) => (
+                {ocrResult.d.map((page, index) => (
                   <div key={index} style={{ marginBottom: "24px" }}>
                     <div
                       style={{
@@ -308,19 +302,19 @@ export const HealthAnalysis = () => {
                         borderRadius: "4px",
                       }}
                     >
-                      <h4 style={{ margin: 0 }}>Page {page.pageNumber}</h4>
+                      <h4 style={{ margin: 0 }}>Page {page.p}</h4>
                       <span
                         style={{
                           fontSize: "14px",
                           color:
-                            page.confidence > 0.8
+                            page.c > 0.8
                               ? "#2e7d32"
-                              : page.confidence > 0.6
+                              : page.c > 0.6
                                 ? "#ed6c02"
                                 : "#d32f2f",
                         }}
                       >
-                        Confidence: {(page.confidence * 100).toFixed(1)}%
+                        Confidence: {(page.c * 100).toFixed(1)}%
                       </span>
                     </div>
                     <div
@@ -333,30 +327,7 @@ export const HealthAnalysis = () => {
                         fontSize: "14px",
                       }}
                     >
-                      {page.blocks.map((block, blockIndex) => (
-                        <div
-                          key={blockIndex}
-                          style={{
-                            marginBottom: "8px",
-                            padding: "8px",
-                            backgroundColor: "#ffffff",
-                            borderRadius: "4px",
-                            border: "1px solid #e0e0e0",
-                          }}
-                        >
-                          <div
-                            style={{
-                              fontSize: "12px",
-                              color: "#666",
-                              marginBottom: "4px",
-                            }}
-                          >
-                            Block Confidence:{" "}
-                            {(block.confidence * 100).toFixed(1)}%
-                          </div>
-                          {block.text}
-                        </div>
-                      ))}
+                      {page.t}
                     </div>
                   </div>
                 ))}

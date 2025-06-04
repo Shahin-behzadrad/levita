@@ -217,51 +217,44 @@ export const processDocumentOCR = action({
       // Extract detailed page info
       const pages = fullTextAnnotation.pages?.map(
         (page: protos.google.cloud.vision.v1.IPage, index: number) => {
-          console.log(`Processing page ${index + 1}:`, {
-            confidence: page.confidence,
-            blockCount: page.blocks?.length,
-          });
+          // Combine all text from blocks into a single string for each page
+          const pageText = page.blocks
+            ?.map((block) => {
+              return block.paragraphs
+                ?.flatMap((p: protos.google.cloud.vision.v1.IParagraph) =>
+                  p.words
+                    ?.map((w: protos.google.cloud.vision.v1.IWord) =>
+                      w.symbols
+                        ?.map(
+                          (s: protos.google.cloud.vision.v1.ISymbol) => s.text
+                        )
+                        .join("")
+                    )
+                    .join(" ")
+                )
+                .join(" ");
+            })
+            .filter(Boolean)
+            .join("\n");
+
           return {
-            pageNumber: index + 1,
-            confidence: page.confidence || 0,
-            blocks:
-              page.blocks?.map((block) => {
-                const text = block.paragraphs
-                  ?.flatMap((p: protos.google.cloud.vision.v1.IParagraph) =>
-                    p.words
-                      ?.map((w: protos.google.cloud.vision.v1.IWord) =>
-                        w.symbols
-                          ?.map(
-                            (s: protos.google.cloud.vision.v1.ISymbol) => s.text
-                          )
-                          .join("")
-                      )
-                      .join(" ")
-                  )
-                  .join(" ");
-                console.log(`Block text length: ${text?.length}`);
-                return {
-                  confidence: block.confidence || 0,
-                  text,
-                };
-              }) || [],
+            p: index + 1, // page number
+            c: page.confidence || 0, // confidence
+            t: pageText || "", // text
           };
         }
       );
 
-      console.log(
-        "Final processed pages:",
-        pages?.map((page: any) => ({
-          pageNumber: page.pageNumber,
-          confidence: page.confidence,
-          blockCount: page.blocks?.length,
-        }))
-      );
+      // Calculate average confidence across all pages
+      const avgConfidence =
+        (pages || []).reduce((acc, page) => acc + page.c, 0) /
+        (pages?.length || 1);
 
       return {
-        text: fullTextAnnotation.text, // full text across all pages
-        pageCount: fullTextAnnotation.pages?.length || 0,
-        pages, // structured page-level data
+        t: fullTextAnnotation.text || "", // full text
+        p: pages?.length || 0, // page count
+        c: avgConfidence, // average confidence
+        d: pages || [], // pages data
       };
     } catch (error: any) {
       console.error("OCR processing error details:", {
