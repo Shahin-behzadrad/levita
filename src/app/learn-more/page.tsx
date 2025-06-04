@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import LearnMoreClient from "./LearnMoreClient";
 
 export const metadata: Metadata = {
-  title: "SAL - Learn More",
+  title: "Levita - Learn More",
   description:
     "Learn about our AI-powered health analysis technology and how it works",
   keywords: [

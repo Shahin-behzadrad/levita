@@ -1,0 +1,292 @@
+"use client";
+
+import { Controller } from "react-hook-form";
+import { TextField } from "@/components/Shared/TextField/TextField";
+import { Button } from "@/components/Shared/Button/Button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/Shared/Card";
+import Grid from "@/components/Shared/Grid/Grid";
+import Select from "@/components/Shared/Select/Select";
+import { useState } from "react";
+import { Upload, X, FileText } from "lucide-react";
+import {
+  useHealthAnalysisForm,
+  type HealthAnalysisFormData,
+  healthStatusOptions,
+  genderOptions,
+} from "./useHealthAnalysisForm";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { toast } from "sonner";
+
+import { useAction } from "convex/react";
+
+import styles from "./healthAnalysisClient.module.scss";
+import LoadingModal from "@/components/LoadingModal/LoadingModal";
+import DocumentUploadField from "./DocumentUploadField";
+import { HealthAnalysisPreview } from "../HealthAnalysisPreview/HealthAnalysisPreview";
+
+// Helper function to upload a file to Convex storage
+const uploadFile = async (
+  file: File,
+  generateUploadUrl: any
+): Promise<string> => {
+  const uploadUrl = await generateUploadUrl();
+  const result = await fetch(uploadUrl, {
+    method: "POST",
+    headers: { "Content-Type": file.type },
+    body: file,
+  });
+  if (!result.ok) {
+    throw new Error(`Failed to upload file: ${result.statusText}`);
+  }
+  const { storageId } = await result.json();
+  return storageId;
+};
+
+export const HealthAnalysis = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [processingOCR, setProcessingOCR] = useState(false);
+  const [ocrResult, setOcrResult] = useState<{ text: string } | null>(null);
+  const [showOcrModal, setShowOcrModal] = useState(false);
+  const { control, handleSubmit, errors } = useHealthAnalysisForm();
+
+  const updateHealthAnalysis = useMutation(
+    api.healthAnalysis.updateHealthAnalysis
+  );
+  const analysisData = useQuery(api.healthAnalysis.getHealthAnalysis);
+  const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
+  const patientProfile = useQuery(api.userProfiles.getUserProfile);
+  const processDocumentOCR = useAction(api.ocr.processDocumentOCR);
+  const fileUrls = useQuery(
+    api.fileStorage.getFileUrls,
+    analysisData?.documents
+      ? { storageIds: analysisData.documents.map((doc) => doc.storageId) }
+      : "skip"
+  );
+
+  const onSubmit = async (data: HealthAnalysisFormData) => {
+    setIsSubmitting(true);
+    try {
+      const uploadedFiles = await Promise.all(
+        data.documents
+          .filter((file): file is File => file instanceof File)
+          .map(async (file) => {
+            const storageId = await uploadFile(file, generateUploadUrl);
+            return {
+              storageId,
+              fileName: file.name,
+              fileType: file.type,
+              uploadedAt: Date.now(),
+            };
+          })
+      );
+      await updateHealthAnalysis({
+        symptoms: data.symptoms,
+        currentConditions: data.currentConditions,
+        healthStatus: data.healthStatus,
+        additionalInfo: data.additionalInfo,
+        documents: uploadedFiles,
+      });
+      toast.success("Health analysis submitted successfully");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to submit health analysis");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // OCR handler
+  const handleExtractText = async (doc: any) => {
+    try {
+      setProcessingOCR(true);
+      const result = await processDocumentOCR({
+        storageId: doc.storageId,
+        fileType: doc.fileType,
+      });
+      if (result.text) {
+        setOcrResult({ text: result.text });
+        setShowOcrModal(true);
+        toast.success("OCR processing completed");
+      } else {
+        toast.error("No text detected in the document");
+      }
+    } catch (error) {
+      console.error("OCR processing error:", error);
+      toast.error("Failed to process document OCR");
+    } finally {
+      setProcessingOCR(false);
+    }
+  };
+
+  if (analysisData === undefined) {
+    return <LoadingModal />;
+  }
+
+  if (analysisData) {
+    return (
+      <HealthAnalysisPreview
+        patientProfile={patientProfile}
+        analysisData={analysisData}
+        fileUrls={fileUrls || []}
+        processingOCR={processingOCR}
+        handleExtractText={handleExtractText}
+        showOcrModal={showOcrModal}
+        ocrResult={ocrResult}
+        setShowOcrModal={setShowOcrModal}
+      />
+    );
+  }
+
+  return (
+    <Card className={styles.card}>
+      <CardHeader
+        title="Health Analysis Form"
+        subheader="Please provide detailed information about your health concerns"
+      />
+      <form
+        onSubmit={handleSubmit(onSubmit, (errors) => {
+          console.log("errors", errors);
+        })}
+      >
+        <CardContent>
+          <Grid container spacing={8}>
+            <Grid item xs={12}>
+              <Controller
+                name="symptoms"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="Symptoms and Concerns"
+                    multiline
+                    {...field}
+                    error={Boolean(errors.symptoms?.message)}
+                    helperText={errors.symptoms?.message}
+                    placeholder="Please describe your symptoms and concerns in detail"
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Controller
+                name="currentConditions"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="Current Conditions, Illness, and Medication"
+                    multiline
+                    {...field}
+                    error={Boolean(errors.currentConditions?.message)}
+                    helperText={errors.currentConditions?.message}
+                    placeholder="List any current conditions, illnesses, or medications you're taking"
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Controller
+                name="age"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="Age"
+                    type="number"
+                    inputMode="numeric"
+                    {...field}
+                    error={Boolean(errors.age?.message)}
+                    helperText={errors.age?.message}
+                    placeholder="Enter your age"
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Controller
+                name="gender"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    label="Gender"
+                    options={genderOptions}
+                    {...field}
+                    error={Boolean(errors.gender?.message)}
+                    helperText={errors.gender?.message}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Controller
+                name="healthStatus"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    label="General Health Status"
+                    options={healthStatusOptions}
+                    {...field}
+                    error={Boolean(errors.healthStatus?.message)}
+                    helperText={errors.healthStatus?.message}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Controller
+                name="additionalInfo"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="Additional Information"
+                    multiline
+                    {...field}
+                    error={Boolean(errors.additionalInfo?.message)}
+                    helperText={errors.additionalInfo?.message}
+                    placeholder="Share any additional information that might help the doctor"
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Controller
+                name="documents"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <DocumentUploadField
+                    value={
+                      Array.isArray(value)
+                        ? value.filter((f): f is File => f instanceof File)
+                        : []
+                    }
+                    onChange={onChange}
+                    error={errors.documents?.message}
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+        <CardFooter>
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Health Analysis"}
+          </Button>
+        </CardFooter>
+      </form>
+    </Card>
+  );
+};

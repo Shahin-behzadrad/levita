@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import styles from "./page.module.scss";
 
 export const metadata: Metadata = {
-  title: "SAL - Home",
-  description: "Welcome to SAL - Your AI-powered health analysis platform",
+  title: "Levita - Home",
+  description: "Welcome to Levita - Your AI-powered health analysis platform",
   keywords: ["health", "AI", "analysis", "wellness"],
 };
 
