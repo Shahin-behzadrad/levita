@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "levita-461908",
+  "private_key_id": "641c40a5df3695ef0bdf2aac703797721a03441d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCccWZvv92EbsfG\nawASqhQ/ZFkr5vp/RmfovWJmlr4R2bS66OPl/6Z1H5cdMYMMbal37lZ54ZySq4y3\nG2qYa1Oe3uJa6DtKFVoJT4e/wmBicRiHZcIao7hcWFY0uDGwyvkoMYrnnUo9Wvrg\nRFNuAFTkmSZcXvW9pAGdjlv/FbC2rWyjIzXkocycf5iYVdAKMUpPVKx/F9TBaBv+\nbcNMDxK6DSq0rRJ67EwNKBV15vPZEVU84lR1OM9PmY8Ix8GpVQ4s4SI0xF0j8mFo\nUvR2TAVLvLyJfA1QyShC+8yJ5ySQXRsXzbZSDpNimqWUN4yo1UDQKMLNxvv7B+hO\nXjw5FadTAgMBAAECggEATNyuToM+y50+C+9wRrtHXWnpIdfHBRdLYB8EJJE1a0HC\nOP7JUaxMVUkjDpXP5CBQ3fq8g/9j1O/yH9iZg69fkzPAlJd64cghx2dKs91FS7hz\nK7rEJiCAKObB2/8PcuQWjDfjHi66VfDIR71qHCaPjwzruwBwzi6xGH7kFizK+MTx\nay3nK3KZVPINeVnLX9XVwhkcCLuRYadX9stDoyl/JwbGY7gZLlkHOdxJE17cbRGh\nggocJh0cifTwIxcyF4Z3JmBnWjMECjuHBRgkU6T+S7oeWESbtUmDOPZJ0YITUSmn\nCFphwkxXjdM+1CiSYtzVIlh0NpnfNTnMXAgNjIMhGQKBgQDK9ecKCy06fH/Wv63w\nO+cJVW4H/GjlYGuxUj4D5qPolG6fi+dNX24ag1Kzx/UYivYVBBi2VGKPl90k25Fa\nJ7FWhCdu/Har8ueLBWGW3SzDfA5KEVHhzZRCb1oxYT4lDX0f9iT4BQPzOr4wM2P4\nHDTOR+3XWhw6YtMRrYESG5aVvwKBgQDFU3Z2RZWz2NCNKadmPqdThn3gh86BfhA5\nfUbC1dq1XXDVIJhx0l64e+6PvWKe/BqcOGiy6s2Hp2C+e+2nv8bSW7pQfjnINNql\nqRjmgB989So+pQOiQUNQ5qktQH8r7dmUSHRfRT2/tcvOCiV1b3JLX84KVNN9C0hg\nTz1/LoNbbQKBgQDKH9iGbRkO3Pwnbt8Xl2CAMB8TPvFsNfkqL8Bo/CGSN3hv1dF1\ngatSJiSPvHw/g+yMg3bk5eb+H/xxf2UjBtKaWaQ36J96oL6s+Z/1sbCpwfstElCc\ncrLK8sA82x4bonJRCT5J7hy/92l+8T8G0XhZUtLvm+Lu1opjWYpn8SenWwKBgFpA\nhWMtCn6awTB/h8A9Ed0jG3nRw8L4fMU+plnA5GqllVD1uqP8uzQYAxIdZfkfh7BC\nIKkMufq8tIQLPLTIA1D9gWcFhLosaoDwqaHroftOSwciBFp3DSn4hhJbeI8IF8c5\nqHhWvBpuNQxFGcLvuU/+Psf86ko8GdtrAs6j4JK1AoGBAJCy8Ohdmv5sJlIyWgej\nKYehuDuzdJFNVVuBWCV05Jsiw2wEARlfWSBBHc6Gu54Yojat9hP1b/vcIOiKBSNE\n7wFe1t4Jqiz8D7/K5TkyaiRBVtdmFcMfcK0yssOGqT82dMcLg79dbreYRVLtUq1T\n0dFoNo/1Es/u2CxETJ/rwRGf\n-----END PRIVATE KEY-----\n",
+  "client_email": "levita-cloud-vision@levita-461908.iam.gserviceaccount.com",
+  "client_id": "106488813579361355084",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/levita-cloud-vision%40levita-461908.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

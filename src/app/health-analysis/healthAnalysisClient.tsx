@@ -32,6 +32,19 @@ import LoadingModal from "@/components/LoadingModal/LoadingModal";
 export const HealthAnalysis = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [processingOCR, setProcessingOCR] = useState(false);
+  const [ocrResult, setOcrResult] = useState<{
+    text: string;
+    pageCount: number;
+    pages: Array<{
+      pageNumber: number;
+      confidence: number;
+      blocks: Array<{
+        confidence: number;
+        text: string;
+      }>;
+    }>;
+  } | null>(null);
+  const [showOcrModal, setShowOcrModal] = useState(false);
   const { control, handleSubmit, errors } = useHealthAnalysisForm();
   const router = useRouter();
   const updateHealthAnalysis = useMutation(
@@ -109,132 +122,256 @@ export const HealthAnalysis = () => {
     return storageId;
   };
 
-  if (generateUploadUrl === undefined || fileUrls === undefined) {
-    return <LoadingModal />;
-  }
-
   if (existingAnalysis) {
     return (
-      <div style={{ padding: "20px" }}>
-        <h2>Your Health Analysis</h2>
-        <div style={{ marginTop: "20px" }}>
-          <h3>Documents</h3>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              gap: "20px",
-              marginTop: "10px",
-            }}
-          >
-            {existingAnalysis.documents?.map((doc, index) => {
-              const isImage = doc.fileType.startsWith("image/");
-              const isPDF = doc.fileType === "application/pdf";
-              const fileUrl = fileUrls?.[index];
+      <>
+        <div style={{ padding: "20px" }}>
+          <h2>Your Health Analysis</h2>
+          <div style={{ marginTop: "20px" }}>
+            <h3>Documents</h3>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gap: "20px",
+                marginTop: "10px",
+              }}
+            >
+              {existingAnalysis.documents?.map((doc, index) => {
+                const isImage = doc.fileType.startsWith("image/");
+                const isPDF = doc.fileType === "application/pdf";
+                const fileUrl = fileUrls?.[index];
 
-              return (
-                <div
-                  key={doc.storageId}
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "10px",
-                    borderRadius: "8px",
-                  }}
-                >
-                  {isImage ? (
-                    <img
-                      src={fileUrl || undefined}
-                      alt={doc.fileName}
-                      style={{
-                        width: "100%",
-                        height: "150px",
-                        objectFit: "cover",
-                        borderRadius: "4px",
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        height: "150px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        backgroundColor: "#f5f5f5",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      <FileText size={40} />
-                    </div>
-                  )}
-                  <div style={{ marginTop: "8px" }}>
-                    <p
-                      style={{
-                        margin: "0",
-                        fontSize: "14px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {doc.fileName}
-                    </p>
-                    <p
-                      style={{
-                        margin: "4px 0 0",
-                        fontSize: "12px",
-                        color: "#666",
-                      }}
-                    >
-                      {new Date(doc.uploadedAt).toLocaleDateString()}
-                    </p>
-                    {fileUrl && (
-                      <div style={{ marginTop: "8px" }}>
-                        <a
-                          href={fileUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            display: "inline-block",
-                            marginRight: "8px",
-                            fontSize: "14px",
-                            color: "#0066cc",
-                            textDecoration: "none",
-                          }}
-                        >
-                          View File
-                        </a>
-                        <Button
-                          variant="text"
-                          size="xs"
-                          onClick={async () => {
-                            try {
-                              setProcessingOCR(true);
-                              const result = await processDocumentOCR({
-                                storageId: doc.storageId,
-                                fileType: doc.fileType,
-                              });
-                              toast.success("OCR processing completed");
-                              console.log("OCR Result:", result);
-                            } catch (error) {
-                              console.error("OCR processing error:", error);
-                              toast.error("Failed to process document OCR");
-                            } finally {
-                              setProcessingOCR(false);
-                            }
-                          }}
-                          disabled={processingOCR}
-                        >
-                          {processingOCR ? "Processing..." : "Extract Text"}
-                        </Button>
+                return (
+                  <div
+                    key={doc.storageId}
+                    style={{
+                      border: "1px solid #ddd",
+                      padding: "10px",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    {isImage ? (
+                      <img
+                        src={fileUrl || undefined}
+                        alt={doc.fileName}
+                        style={{
+                          width: "100%",
+                          height: "150px",
+                          objectFit: "cover",
+                          borderRadius: "4px",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          height: "150px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          backgroundColor: "#f5f5f5",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        <FileText size={40} />
                       </div>
                     )}
+                    <div style={{ marginTop: "8px" }}>
+                      <p
+                        style={{
+                          margin: "0",
+                          fontSize: "14px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {doc.fileName}
+                      </p>
+                      <p
+                        style={{
+                          margin: "4px 0 0",
+                          fontSize: "12px",
+                          color: "#666",
+                        }}
+                      >
+                        {new Date(doc.uploadedAt).toLocaleDateString()}
+                      </p>
+                      {fileUrl && (
+                        <div style={{ marginTop: "8px" }}>
+                          <a
+                            href={fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: "inline-block",
+                              marginRight: "8px",
+                              fontSize: "14px",
+                              color: "#0066cc",
+                              textDecoration: "none",
+                            }}
+                          >
+                            View File
+                          </a>
+                          <Button
+                            variant="contained"
+                            onClick={async () => {
+                              try {
+                                setProcessingOCR(true);
+                                const result = await processDocumentOCR({
+                                  storageId: doc.storageId,
+                                  fileType: doc.fileType,
+                                });
+                                console.log(result);
+
+                                if (result.text) {
+                                  setOcrResult({
+                                    text: result.text,
+                                    pageCount: result.pageCount,
+                                    pages: (result.pages || []).map((page) => ({
+                                      ...page,
+                                      blocks: page.blocks.map((block) => ({
+                                        ...block,
+                                        text: block.text || "",
+                                      })),
+                                    })),
+                                  });
+                                  setShowOcrModal(true);
+                                  toast.success("OCR processing completed");
+                                } else {
+                                  toast.error(
+                                    "No text detected in the document"
+                                  );
+                                }
+                              } catch (error) {
+                                console.error("OCR processing error:", error);
+                                toast.error("Failed to process document OCR");
+                              } finally {
+                                setProcessingOCR(false);
+                              }
+                            }}
+                            disabled={processingOCR}
+                          >
+                            {processingOCR ? "Processing..." : "Extract Text"}
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
+        {showOcrModal && ocrResult && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 1000,
+            }}
+            onClick={() => setShowOcrModal(false)}
+          >
+            <div
+              style={{
+                backgroundColor: "white",
+                padding: "20px",
+                borderRadius: "8px",
+                maxWidth: "80%",
+                maxHeight: "80%",
+                overflow: "auto",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 style={{ marginTop: 0 }}>Extracted Text</h3>
+              <div style={{ marginBottom: "16px" }}>
+                <p style={{ margin: "0 0 8px 0", fontSize: "14px" }}>
+                  Total Pages: {ocrResult.pageCount}
+                </p>
+                {ocrResult.pages.map((page, index) => (
+                  <div key={index} style={{ marginBottom: "24px" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: "8px",
+                        padding: "8px",
+                        backgroundColor: "#f0f0f0",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      <h4 style={{ margin: 0 }}>Page {page.pageNumber}</h4>
+                      <span
+                        style={{
+                          fontSize: "14px",
+                          color:
+                            page.confidence > 0.8
+                              ? "#2e7d32"
+                              : page.confidence > 0.6
+                                ? "#ed6c02"
+                                : "#d32f2f",
+                        }}
+                      >
+                        Confidence: {(page.confidence * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        backgroundColor: "#f5f5f5",
+                        padding: "16px",
+                        borderRadius: "4px",
+                        whiteSpace: "pre-wrap",
+                        fontFamily: "monospace",
+                        fontSize: "14px",
+                      }}
+                    >
+                      {page.blocks.map((block, blockIndex) => (
+                        <div
+                          key={blockIndex}
+                          style={{
+                            marginBottom: "8px",
+                            padding: "8px",
+                            backgroundColor: "#ffffff",
+                            borderRadius: "4px",
+                            border: "1px solid #e0e0e0",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              color: "#666",
+                              marginBottom: "4px",
+                            }}
+                          >
+                            Block Confidence:{" "}
+                            {(block.confidence * 100).toFixed(1)}%
+                          </div>
+                          {block.text}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Button
+                variant="contained"
+                onClick={() => setShowOcrModal(false)}
+                fullWidth
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        )}
+      </>
     );
   }
 
