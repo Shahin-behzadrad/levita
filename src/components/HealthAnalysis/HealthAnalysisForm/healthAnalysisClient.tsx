@@ -60,7 +60,7 @@ export const HealthAnalysis = () => {
   const analysisData = useQuery(api.healthAnalysis.getHealthAnalysis);
   const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
   const patientProfile = useQuery(api.userProfiles.getUserProfile);
-  const processDocumentOCR = useAction(api.ocr.processDocumentOCR);
+
   const fileUrls = useQuery(
     api.fileStorage.getFileUrls,
     analysisData?.documents
@@ -97,29 +97,6 @@ export const HealthAnalysis = () => {
       toast.error("Failed to submit health analysis");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  // OCR handler
-  const handleExtractText = async (doc: any) => {
-    try {
-      setProcessingOCR(true);
-      const result = await processDocumentOCR({
-        storageId: doc.storageId,
-        fileType: doc.fileType,
-      });
-      if (result.text) {
-        setOcrResult({ text: result.text });
-        setShowOcrModal(true);
-        toast.success("OCR processing completed");
-      } else {
-        toast.error("No text detected in the document");
-      }
-    } catch (error) {
-      console.error("OCR processing error:", error);
-      toast.error("Failed to process document OCR");
-    } finally {
-      setProcessingOCR(false);
     }
   };
 

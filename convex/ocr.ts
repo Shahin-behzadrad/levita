@@ -35,7 +35,14 @@ if (!GCS_BUCKET) {
 
 export const processDocumentOCR = action({
   args: {
-    storageId: v.string(),
+    file: v.object({
+      id: v.string(),
+      name: v.string(),
+      type: v.string(),
+      size: v.number(),
+      lastModified: v.number(),
+      buffer: v.any(),
+    }),
     fileType: v.string(),
   },
   handler: async (ctx, args) => {
@@ -56,23 +63,16 @@ export const processDocumentOCR = action({
       );
     }
 
-    // Get the file URL from storage
-    const fileUrl = await ctx.storage.getUrl(args.storageId);
-    if (!fileUrl) {
-      throw new ConvexError("File not found");
-    }
-
     try {
       let result;
       if (args.fileType === "application/pdf") {
-        console.log("Processing PDF document:", fileUrl);
+        console.log("Processing PDF document");
         try {
-          // First, download the file from Convex storage
-          const fileResponse = await fetch(fileUrl);
-          const fileBuffer = await fileResponse.arrayBuffer();
+          // Convert the file to buffer
+          const fileBuffer = args.file.buffer;
 
           // Upload to GCS
-          const gcsFileName = `uploads/${args.storageId}.pdf`;
+          const gcsFileName = `uploads/${Date.now()}-${args.file.name}`;
           const bucket = storage.bucket(GCS_BUCKET);
           const file = bucket.file(gcsFileName);
 
@@ -100,7 +100,7 @@ export const processDocumentOCR = action({
                   ],
                   outputConfig: {
                     gcsDestination: {
-                      uri: `gs://${GCS_BUCKET}/ocr-results/${args.storageId}/`,
+                      uri: `gs://${GCS_BUCKET}/ocr-results/${Date.now()}/`,
                     },
                   },
                 },
@@ -121,7 +121,7 @@ export const processDocumentOCR = action({
             filesResponse.responses[0].outputConfig.gcsDestination.uri;
           // List all files in the output folder
           const [outputFiles] = await bucket.getFiles({
-            prefix: `ocr-results/${args.storageId}/`,
+            prefix: `ocr-results/${Date.now()}/`,
           });
 
           // Collect and sort all JSON output files
@@ -162,23 +162,13 @@ export const processDocumentOCR = action({
             },
           };
 
+          // Clean up the uploaded file
+          await file.delete();
+
           console.log("Multi-page OCR processed", {
             pageCount: fullPages.length,
             textLength: fullText.length,
           });
-
-          console.log("Full text annotation:", {
-            text: result.fullTextAnnotation.text,
-            pageCount: result.fullTextAnnotation.pages?.length,
-            pages: result.fullTextAnnotation.pages?.map((page: any) => ({
-              pageNumber: page.pageNumber,
-              confidence: page.confidence,
-              blockCount: page.blocks?.length,
-            })),
-          });
-
-          // Clean up the uploaded file
-          await file.delete();
         } catch (pdfError: any) {
           console.error("PDF processing error:", pdfError);
           throw new ConvexError(
@@ -186,10 +176,14 @@ export const processDocumentOCR = action({
           );
         }
       } else {
-        console.log("Processing image document:", fileUrl);
+        console.log("Processing image document");
         try {
-          // For images, use textDetection
-          const [imageResult] = await vision.textDetection(fileUrl);
+          // For images, convert to base64 and use textDetection
+          const arrayBuffer = args.file.buffer;
+          const base64Image = Buffer.from(arrayBuffer).toString("base64");
+          const [imageResult] = await vision.textDetection({
+            image: { content: base64Image },
+          });
           result = imageResult;
         } catch (imageError: any) {
           console.error("Image processing error:", imageError);
@@ -204,27 +198,8 @@ export const processDocumentOCR = action({
         throw new ConvexError("No text detected in the document");
       }
 
-      console.log("Processing full text annotation:", {
-        textLength: fullTextAnnotation.text?.length,
-        pageCount: fullTextAnnotation.pages?.length,
-        pages: fullTextAnnotation.pages?.map((page: any) => ({
-          pageNumber: page.pageNumber,
-          confidence: page.confidence,
-          blockCount: page.blocks?.length,
-        })),
-      });
-
       // Extract text from all pages
       const fullText = fullTextAnnotation.text || "";
-
-      // Future structure for when you need per-page data:
-      // {
-      //   pages: [
-      //     { text: "Page 1 text..." },
-      //     { text: "Page 2 text..." },
-      //   ],
-      //   fullText: "All pages concatenated"
-      // }
 
       return {
         text: fullText,
@@ -233,7 +208,6 @@ export const processDocumentOCR = action({
       console.error("OCR processing error details:", {
         error,
         fileType: args.fileType,
-        fileUrl,
         errorMessage: error.message || "Unknown error",
         errorStack: error.stack,
       });
