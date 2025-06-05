@@ -8,7 +8,7 @@ export async function generateAIAnalysis(patientData: {
   fullName: string;
   age: number;
   sex: string;
-  healthAnalysis: {
+  healthInput: {
     symptoms: string;
     currentConditions: string;
     healthStatus: string;
@@ -17,14 +17,15 @@ export async function generateAIAnalysis(patientData: {
   ocr?: {
     ocrText: string[];
   };
+  language: string;
 }) {
-  const { fullName, age, sex, healthAnalysis, ocr } = patientData;
+  const { fullName, age, sex, healthInput, ocr, language } = patientData;
 
   const systemInstructions = `You are a medical assistant AI. Your job is to analyze patient information and lab results and generate a structured JSON report.
 
 Input:
 - Patient profile, symptoms, current conditions, and medications.
-- OCR text from uploaded lab results (in English or Persian).
+- OCR text from uploaded lab results (in English or Shqip).
 - The OCR text includes blood test values, hormone levels, urine test results, and more.
 
 Your response must:
@@ -36,7 +37,7 @@ Your response must:
   "doctorReport": {
     "patientOverview": string,
     "laboratoryFindings": {
-      "Complete Blood Count": string[],
+      "Complete_Blood_Count": string[],
       "Biochemistry": string[],
       "Other": string[]
     },
@@ -55,25 +56,27 @@ Your response must:
 }
 
 Example values:
-- “laboratoryFindings” entries should be like: "WBC: 6.9 x10^3/μL (Normal)"
+- "laboratoryFindings" entries should be like: "WBC: 6.9 x10^3/μL (Normal)"
 - All lists should be proper JSON arrays.
-- Use clear English, and summarize Persian OCR content in English.
+- Use clear language as specified below.
 
 Important:
 - Again, DO NOT use triple backticks like \`\`\`json in your output.
 - Just return clean JSON only.
+- If the language is 'en', respond in English. If the language is 'sq', respond in Shqip. All summaries and explanations should be in the specified language.
 
 Begin now.`;
 
   const userContent = `
 Patient Information:
+- Language: ${language}
 - Name: ${fullName}
 - Age: ${age}
 - Sex: ${sex}
-- Symptoms: ${healthAnalysis.symptoms}
-- Current Conditions: ${healthAnalysis.currentConditions}
-- General Health Status: ${healthAnalysis.healthStatus}
-- Additional Info: ${healthAnalysis.additionalInfo}
+- Symptoms: ${healthInput.symptoms}
+- Current Conditions: ${healthInput.currentConditions}
+- General Health Status: ${healthInput.healthStatus}
+- Additional Info: ${healthInput.additionalInfo}
 
 ${ocr?.ocrText?.length ? `OCR Extracted Text:\n${ocr.ocrText.join("\n")}` : ""}
 `;

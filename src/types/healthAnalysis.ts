@@ -1,6 +1,6 @@
 export interface LaboratoryFindings {
   Biochemistry: string[];
-  "Complete Blood Count": string[];
+  Complete_Blood_Count: string[];
   Other: string[];
 }
 
@@ -13,7 +13,7 @@ export interface DoctorReport {
   conclusion: string;
 }
 
-export interface patientReport {
+export interface PatientReport {
   summary: string;
   testResults: string;
   reassurance: string;
@@ -22,7 +22,7 @@ export interface patientReport {
 
 export interface AIAnalysisResult {
   doctorReport: DoctorReport;
-  patientReport: patientReport;
+  patientReport: PatientReport;
   disclaimer: string;
 }
 

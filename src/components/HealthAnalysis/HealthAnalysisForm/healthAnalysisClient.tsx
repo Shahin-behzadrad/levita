@@ -27,7 +27,8 @@ import styles from "./healthAnalysisClient.module.scss";
 import LoadingModal from "@/components/LoadingModal/LoadingModal";
 import DocumentUploadField from "./DocumentUploadField";
 import { AIAnalysisModal } from "../AIAnalysisModal/AIAnalysisModal";
-import { AIAnalysisResponse } from "@/types/healthAnalysis";
+
+import { useLanguage } from "@/i18n/LanguageContext";
 
 // Helper function to upload a file to Convex storage
 const uploadFile = async (
@@ -48,11 +49,12 @@ const uploadFile = async (
 };
 
 export const HealthAnalysis = () => {
+  const { locale, messages } = useLanguage();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOCRFulfilled, setIsOCRFulfilled] = useState(false);
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
-  const [analysisResult, setAnalysisResult] =
-    useState<AIAnalysisResponse | null>(null);
+
   const { control, handleSubmit, errors, setValue } = useHealthAnalysisForm();
 
   const updateHealthAnalysis = useMutation(
@@ -64,10 +66,9 @@ export const HealthAnalysis = () => {
   );
   const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
 
-  console.log(analysisResult);
+  const getAIAnalysis = useQuery(api.healthAnalysis.getAIAnalysis);
 
   const onSubmit = async (data: HealthAnalysisFormData) => {
-    console.log(data);
     setIsSubmitting(true);
     try {
       const uploadedFiles = await Promise.all(
@@ -92,8 +93,8 @@ export const HealthAnalysis = () => {
         ocrText: data.ocr,
       });
 
-      const result = await openAIAnalyzeHealth();
-      setAnalysisResult(result);
+      await openAIAnalyzeHealth({ language: locale });
+
       setShowAnalysisModal(true);
       toast.success("Health analysis submitted successfully");
     } catch (error) {
@@ -112,8 +113,11 @@ export const HealthAnalysis = () => {
     <>
       <Card className={styles.card}>
         <CardHeader
-          title="Health Analysis Form"
-          subheader="Please provide detailed information about your health concerns"
+          title={messages.healthAnalysis?.formTitle || "Health Analysis Form"}
+          subheader={
+            messages.healthAnalysis?.formSubheader ||
+            "Please provide detailed information about your health concerns"
+          }
         />
         <form
           onSubmit={handleSubmit(onSubmit, (errors) => {
@@ -128,12 +132,18 @@ export const HealthAnalysis = () => {
                   control={control}
                   render={({ field }) => (
                     <TextField
-                      label="Symptoms and Concerns"
+                      label={
+                        messages.healthAnalysis?.symptomsLabel ||
+                        "Symptoms and Concerns"
+                      }
                       multiline
                       {...field}
                       error={Boolean(errors.symptoms?.message)}
                       helperText={errors.symptoms?.message}
-                      placeholder="Please describe your symptoms and concerns in detail"
+                      placeholder={
+                        messages.healthAnalysis?.symptomsPlaceholder ||
+                        "Please describe your symptoms and concerns in detail"
+                      }
                     />
                   )}
                 />
@@ -145,12 +155,18 @@ export const HealthAnalysis = () => {
                   control={control}
                   render={({ field }) => (
                     <TextField
-                      label="Current Conditions, Illness, and Medication"
+                      label={
+                        messages.healthAnalysis?.currentConditionsLabel ||
+                        "Current Conditions, Illness, and Medication"
+                      }
                       multiline
                       {...field}
                       error={Boolean(errors.currentConditions?.message)}
                       helperText={errors.currentConditions?.message}
-                      placeholder="List any current conditions, illnesses, or medications you're taking"
+                      placeholder={
+                        messages.healthAnalysis?.currentConditionsPlaceholder ||
+                        "List any current conditions, illnesses, or medications you're taking"
+                      }
                     />
                   )}
                 />
@@ -162,13 +178,16 @@ export const HealthAnalysis = () => {
                   control={control}
                   render={({ field }) => (
                     <TextField
-                      label="Age"
+                      label={messages.healthAnalysis?.ageLabel || "Age"}
                       type="number"
                       inputMode="numeric"
                       {...field}
                       error={Boolean(errors.age?.message)}
                       helperText={errors.age?.message}
-                      placeholder="Enter your age"
+                      placeholder={
+                        messages.healthAnalysis?.agePlaceholder ||
+                        "Enter your age"
+                      }
                     />
                   )}
                 />
@@ -180,7 +199,7 @@ export const HealthAnalysis = () => {
                   control={control}
                   render={({ field }) => (
                     <Select
-                      label="Gender"
+                      label={messages.healthAnalysis?.genderLabel || "Gender"}
                       options={genderOptions}
                       {...field}
                       error={Boolean(errors.sex?.message)}
@@ -196,7 +215,10 @@ export const HealthAnalysis = () => {
                   control={control}
                   render={({ field }) => (
                     <Select
-                      label="General Health Status"
+                      label={
+                        messages.healthAnalysis?.healthStatusLabel ||
+                        "General Health Status"
+                      }
                       options={healthStatusOptions}
                       {...field}
                       error={Boolean(errors.healthStatus?.message)}
@@ -212,12 +234,18 @@ export const HealthAnalysis = () => {
                   control={control}
                   render={({ field }) => (
                     <TextField
-                      label="Additional Information"
+                      label={
+                        messages.healthAnalysis?.additionalInfoLabel ||
+                        "Additional Information"
+                      }
                       multiline
                       {...field}
                       error={Boolean(errors.additionalInfo?.message)}
                       helperText={errors.additionalInfo?.message}
-                      placeholder="Share any additional information that might help the doctor"
+                      placeholder={
+                        messages.healthAnalysis?.additionalInfoPlaceholder ||
+                        "Share any additional information that might help the doctor"
+                      }
                     />
                   )}
                 />
@@ -253,16 +281,27 @@ export const HealthAnalysis = () => {
               fullWidth
               disabled={isSubmitting || !isOCRFulfilled}
             >
-              {isSubmitting ? "Submitting..." : "Submit Health Analysis"}
+              {isSubmitting
+                ? messages.healthAnalysis?.submitting || "Submitting..."
+                : messages.healthAnalysis?.submitButton ||
+                  "Submit Health Analysis"}
             </Button>
+            {getAIAnalysis && (
+              <Button
+                variant="outlined"
+                onClick={() => setShowAnalysisModal(true)}
+              >
+                {messages.healthAnalysis?.viewAIResponse || "View AI Response"}
+              </Button>
+            )}
           </CardFooter>
         </form>
       </Card>
-      {analysisResult && (
+      {getAIAnalysis && (
         <AIAnalysisModal
           isOpen={showAnalysisModal}
           onClose={() => setShowAnalysisModal(false)}
-          analysis={analysisResult.result}
+          analysis={getAIAnalysis}
         />
       )}
     </>

@@ -12,7 +12,7 @@ export const getPatientProfile = query({
       .withIndex("by_userId", (q) => q.eq("userId", userId))
       .unique();
 
-    if (!profile?.healthAnalysis) {
+    if (!profile?.healthInput) {
       throw new Error("Health analysis data missing.");
     }
 

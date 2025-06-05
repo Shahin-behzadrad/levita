@@ -16,6 +16,7 @@ import { useAction } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import Modal from "@/components/Shared/Modal/Modal";
 import { toast } from "sonner";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 type FileStatus = "pending" | "processing" | "completed" | "error";
 
@@ -38,6 +39,7 @@ const DocumentUploadField = ({
   error,
   onOCRComplete,
 }: Props) => {
+  const { messages } = useLanguage();
   const currentFiles = Array.isArray(value) ? value : [];
   const processDocumentOCR = useAction(api.ocr.processDocumentOCR);
   const [processingQueue, setProcessingQueue] = useState<FileWithStatus[]>([]);
@@ -165,7 +167,8 @@ const DocumentUploadField = ({
         startIcon={<Upload size={20} />}
         onClick={() => document.getElementById("document-upload")?.click()}
       >
-        Upload Medical Documents
+        {messages.healthAnalysis?.uploadDocumentsButton ||
+          "Upload Medical Documents"}
       </Button>
       {error && <div style={{ color: "red", marginTop: 4 }}>{error}</div>}
       {filesWithStatus.length > 0 && (
