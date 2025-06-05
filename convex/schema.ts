@@ -45,6 +45,11 @@ const applicationTables = {
         updatedAt: v.number(),
       })
     ),
+    ocr: v.optional(
+      v.object({
+        ocrText: v.array(v.string()),
+      })
+    ),
   }).index("by_userId", ["userId"]),
 };
 

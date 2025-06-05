@@ -12,12 +12,13 @@
 
   .fileName {
     max-width: 85px !important;
+    display: -webkit-box;
     -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden !important;
     text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
     text-align: center;
+    height: 32px;
   }
 }
 
@@ -87,6 +88,16 @@
   }
 }
 
+.previewButton {
+  position: absolute !important;
+  bottom: 0;
+  right: 0;
+  min-width: 25px !important;
+  padding: 4px !important;
+  color: #666;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.4) !important;
+}
+
 .processingIndicator {
   position: absolute;
   top: 50%;
@@ -111,5 +122,26 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+.statusIndicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+
+  &.completed {
+    background-color: var(--success-main);
+    color: white;
+  }
+
+  &.error {
+    background-color: var(--error-main);
+    color: white;
   }
 }

@@ -219,9 +219,7 @@ export const processDocumentOCR = action({
       // Extract text from all pages
       const fullText = fullTextAnnotation.text || "";
 
-      return {
-        text: fullText,
-      };
+      return fullText;
     } catch (error: any) {
       console.error("OCR processing error details:", {
         error,

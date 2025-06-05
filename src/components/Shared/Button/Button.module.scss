@@ -15,6 +15,11 @@
   -webkit-tap-highlight-color: transparent;
   white-space: nowrap;
 
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   &.shadowBox {
     box-shadow: none;
   }

@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/Shared/Button/Button";
-import { X, FileText, Upload, Loader2 } from "lucide-react";
+import {
+  X,
+  FileText,
+  Upload,
+  Loader2,
+  Eye,
+  Check,
+  AlertCircle,
+} from "lucide-react";
 import Image from "@/components/Shared/Image/Image";
 import styles from "./healthAnalysisClient.module.scss";
 import Text from "@/components/Shared/Text";
 import { useAction } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import Modal from "@/components/Shared/Modal/Modal";
+import { toast } from "sonner";
 
 type FileStatus = "pending" | "processing" | "completed" | "error";
 
@@ -15,30 +25,35 @@ interface FileWithStatus extends File {
   ocrText?: string;
 }
 
+type Props = {
+  value: File[];
+  onChange: (files: File[]) => void;
+  error?: string;
+  onOCRComplete: (ocrResult: string[]) => void;
+};
+
 const DocumentUploadField = ({
   value,
   onChange,
   error,
-}: {
-  value: File[];
-  onChange: (files: File[]) => void;
-  error?: string;
-}) => {
+  onOCRComplete,
+}: Props) => {
   const currentFiles = Array.isArray(value) ? value : [];
   const processDocumentOCR = useAction(api.ocr.processDocumentOCR);
   const [processingQueue, setProcessingQueue] = useState<FileWithStatus[]>([]);
   const [filesWithStatus, setFilesWithStatus] = useState<FileWithStatus[]>([]);
+  const [previewFile, setPreviewFile] = useState<FileWithStatus | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const processFile = async (file: FileWithStatus) => {
     try {
       // Update file status to processing
       setFilesWithStatus((prev) =>
-        prev.map((f) =>
-          f.id === file.id ? { ...f, status: "processing" as FileStatus } : f
-        )
+        prev.map((f) => {
+          if (f.id === file.id) f.status = "processing";
+          return f;
+        })
       );
-
-      // Get the file data
 
       const fileData = {
         id: file.id,
@@ -54,24 +69,24 @@ const DocumentUploadField = ({
         fileType: file.type,
       });
 
-      console.log("OCR Result:", result);
-
       // Update file status to completed with OCR text
       setFilesWithStatus((prev) =>
-        prev.map((f) =>
-          f.id === file.id
-            ? { ...f, status: "completed" as FileStatus, ocrText: result.text }
-            : f
-        )
+        prev.map((f) => {
+          if (f.id === file.id) {
+            f.status = "completed";
+            f.ocrText = result;
+          }
+          return f;
+        })
       );
     } catch (error) {
-      console.error("OCR Processing Error:", error);
-      // Update file status to error
       setFilesWithStatus((prev) =>
-        prev.map((f) =>
-          f.id === file.id ? { ...f, status: "error" as FileStatus } : f
-        )
+        prev.map((f) => {
+          if (f.id === file.id) f.status = "error";
+          return f;
+        })
       );
+      toast.error(`Failed to process ${file.name}`);
     }
   };
 
@@ -83,11 +98,24 @@ const DocumentUploadField = ({
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (processingQueue.length > 0) {
       processNextInQueue();
     }
   }, [processingQueue]);
+
+  // Trigger onOCRComplete with array of ocrText when all files are done
+  useEffect(() => {
+    if (
+      filesWithStatus.length > 0 &&
+      filesWithStatus.every(
+        (f) => f.status === "completed" || f.status === "error"
+      )
+    ) {
+      const ocrTexts = filesWithStatus.map((f) => f.ocrText || "");
+      onOCRComplete(ocrTexts);
+    }
+  }, [filesWithStatus, onOCRComplete]);
 
   return (
     <div>
@@ -129,6 +157,7 @@ const DocumentUploadField = ({
         }}
         style={{ display: "none" }}
         id="document-upload"
+        ref={fileInputRef}
       />
       <Button
         type="button"
@@ -142,12 +171,17 @@ const DocumentUploadField = ({
       {filesWithStatus.length > 0 && (
         <div className={styles.filePreviews}>
           {filesWithStatus.map((file: FileWithStatus, index: number) => {
-            console.log(file);
-
             const isImage = file?.type?.startsWith("image/");
             const isPDF = file?.type === "application/pdf";
+            // Reduce opacity for files that are 'pending' (in queue, not yet processing)
+            const containerStyle =
+              file.status === "pending" ? { opacity: 0.5 } : {};
             return (
-              <div className={styles.filePreviewContainer} key={file.id}>
+              <div
+                className={styles.filePreviewContainer}
+                key={file.id}
+                style={containerStyle}
+              >
                 <div className={styles.filePreview}>
                   {isImage ? (
                     <div className={styles.imagePreview}>
@@ -164,12 +198,36 @@ const DocumentUploadField = ({
                       {isPDF ? <FileText size={40} /> : <FileText size={40} />}
                     </div>
                   )}
+                  {file.status === "completed" && (
+                    <div
+                      className={`${styles.statusIndicator} ${styles.completed}`}
+                    >
+                      <Check size={24} />
+                    </div>
+                  )}
+                  {file.status === "error" && (
+                    <div
+                      className={`${styles.statusIndicator} ${styles.error}`}
+                    >
+                      <AlertCircle size={12} />
+                    </div>
+                  )}
+                  {file.status === "processing" && (
+                    <div className={styles.processingIndicator}>
+                      <Loader2 size={16} className={styles.spinner} />
+                    </div>
+                  )}
                   <div className={styles.fileInfo}>
-                    {file.status === "processing" && (
-                      <div className={styles.processingIndicator}>
-                        <Loader2 size={16} className={styles.spinner} />
-                      </div>
-                    )}
+                    <Button
+                      type="button"
+                      color="success"
+                      variant="contained"
+                      size="xs"
+                      onClick={() => setPreviewFile(file)}
+                      className={styles.previewButton}
+                    >
+                      <Eye size={16} />
+                    </Button>
                     <Button
                       type="button"
                       variant="contained"
@@ -184,6 +242,9 @@ const DocumentUploadField = ({
                         setProcessingQueue((prev) =>
                           prev.filter((f) => f.id !== file.id)
                         );
+                        // Reset file input so the same file can be added again
+                        if (fileInputRef.current)
+                          fileInputRef.current.value = "";
                       }}
                       className={styles.removeButton}
                     >
@@ -192,7 +253,7 @@ const DocumentUploadField = ({
                   </div>
                 </div>
                 <Text
-                  value={`${file.name} ${file.status === "processing" ? "(Processing...)" : file.status === "completed" ? "(OCR Complete)" : file.status === "error" ? "(Error)" : ""}`}
+                  value={file.name}
                   fontSize="xs"
                   className={styles.fileName}
                 />
@@ -201,6 +262,26 @@ const DocumentUploadField = ({
           })}
         </div>
       )}
+      <Modal
+        isOpen={!!previewFile}
+        onClose={() => setPreviewFile(null)}
+        title={previewFile?.name}
+        maxWidth={600}
+      >
+        {previewFile && previewFile.type.startsWith("image/") ? (
+          <img
+            src={URL.createObjectURL(previewFile)}
+            alt={previewFile.name}
+            style={{ width: "100%", maxHeight: 500, objectFit: "contain" }}
+          />
+        ) : previewFile && previewFile.type === "application/pdf" ? (
+          <iframe
+            src={URL.createObjectURL(previewFile)}
+            title={previewFile.name}
+            style={{ width: "100%", height: 500, border: "none" }}
+          />
+        ) : null}
+      </Modal>
     </div>
   );
 };

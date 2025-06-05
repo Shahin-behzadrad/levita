@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Controller } from "react-hook-form";
 import { TextField } from "@/components/Shared/TextField/TextField";
 import { Button } from "@/components/Shared/Button/Button";
@@ -11,7 +12,6 @@ import {
 } from "@/components/Shared/Card";
 import Grid from "@/components/Shared/Grid/Grid";
 import Select from "@/components/Shared/Select/Select";
-import { useState } from "react";
 
 import {
   useHealthAnalysisForm,
@@ -22,8 +22,6 @@ import {
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { toast } from "sonner";
-
-import { useAction } from "convex/react";
 
 import styles from "./healthAnalysisClient.module.scss";
 import LoadingModal from "@/components/LoadingModal/LoadingModal";
@@ -49,26 +47,17 @@ const uploadFile = async (
 
 export const HealthAnalysis = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [processingOCR, setProcessingOCR] = useState(false);
-  const [ocrResult, setOcrResult] = useState<{ text: string } | null>(null);
-  const [showOcrModal, setShowOcrModal] = useState(false);
-  const { control, handleSubmit, errors } = useHealthAnalysisForm();
+  const [isOCRFulfilled, setIsOCRFulfilled] = useState(false);
+  const { control, handleSubmit, errors, setValue } = useHealthAnalysisForm();
 
   const updateHealthAnalysis = useMutation(
     api.healthAnalysis.updateHealthAnalysis
   );
   const analysisData = useQuery(api.healthAnalysis.getHealthAnalysis);
   const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
-  const patientProfile = useQuery(api.userProfiles.getUserProfile);
-
-  const fileUrls = useQuery(
-    api.fileStorage.getFileUrls,
-    analysisData?.documents
-      ? { storageIds: analysisData.documents.map((doc) => doc.storageId) }
-      : "skip"
-  );
 
   const onSubmit = async (data: HealthAnalysisFormData) => {
+    console.log(data);
     setIsSubmitting(true);
     try {
       const uploadedFiles = await Promise.all(
@@ -88,8 +77,9 @@ export const HealthAnalysis = () => {
         symptoms: data.symptoms,
         currentConditions: data.currentConditions,
         healthStatus: data.healthStatus,
-        additionalInfo: data.additionalInfo,
+        additionalInfo: data.additionalInfo || "",
         documents: uploadedFiles,
+        ocrText: data.ocr,
       });
       toast.success("Health analysis submitted successfully");
     } catch (error) {
@@ -117,7 +107,7 @@ export const HealthAnalysis = () => {
       >
         <CardContent>
           <Grid container spacing={8}>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={6}>
               <Controller
                 name="symptoms"
                 control={control}
@@ -134,7 +124,7 @@ export const HealthAnalysis = () => {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} md={6}>
               <Controller
                 name="currentConditions"
                 control={control}
@@ -171,15 +161,15 @@ export const HealthAnalysis = () => {
 
             <Grid item xs={12} md={6}>
               <Controller
-                name="gender"
+                name="sex"
                 control={control}
                 render={({ field }) => (
                   <Select
                     label="Gender"
                     options={genderOptions}
                     {...field}
-                    error={Boolean(errors.gender?.message)}
-                    helperText={errors.gender?.message}
+                    error={Boolean(errors.sex?.message)}
+                    helperText={errors.sex?.message}
                   />
                 )}
               />
@@ -231,6 +221,10 @@ export const HealthAnalysis = () => {
                     }
                     onChange={onChange}
                     error={errors.documents?.message}
+                    onOCRComplete={(ocrResults) => {
+                      setValue("ocr", ocrResults);
+                      setIsOCRFulfilled(true);
+                    }}
                   />
                 )}
               />
@@ -242,7 +236,7 @@ export const HealthAnalysis = () => {
             type="submit"
             variant="contained"
             fullWidth
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isOCRFulfilled}
           >
             {isSubmitting ? "Submitting..." : "Submit Health Analysis"}
           </Button>

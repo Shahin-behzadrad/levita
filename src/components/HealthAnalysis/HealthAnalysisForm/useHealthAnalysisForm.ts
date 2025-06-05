@@ -6,10 +6,11 @@ export interface HealthAnalysisFormData {
   symptoms: string;
   currentConditions: string;
   age: number;
-  gender: string;
+  sex: string;
   healthStatus: string;
-  additionalInfo: string;
+  additionalInfo?: string;
   documents: (File | undefined)[];
+  ocr?: string[];
 }
 
 export const schema = yup.object().shape({
@@ -19,12 +20,17 @@ export const schema = yup.object().shape({
     .required("Please list any current conditions"),
   age: yup
     .number()
+    .typeError("Age must be a number")
+    .transform((value, originalValue) => {
+      // Convert empty string to undefined so required() triggers
+      return originalValue === "" ? undefined : value;
+    })
     .required("Age is required")
-    .min(0, "Age must be positive")
-    .max(120, "Age must be less than 120"),
-  gender: yup.string().required("Gender is required"),
+    .min(1, "Age must be at least 1")
+    .max(120, "Age must be less than or equal to 120"),
+  sex: yup.string().required("Gender is required"),
   healthStatus: yup.string().required("Health status is required"),
-  additionalInfo: yup.string().required("Additional information is required"),
+  additionalInfo: yup.string().optional(),
   documents: yup
     .array()
     .of(
@@ -32,7 +38,9 @@ export const schema = yup.object().shape({
         .mixed<File>()
         .test("is-file", "Invalid file", (value) => value instanceof File)
     )
-    .default([]),
+    .default([])
+    .required("Please upload your medical documents"),
+  ocr: yup.array().of(yup.string().required()).optional(),
 });
 
 export const healthStatusOptions = [
@@ -53,16 +61,18 @@ export const useHealthAnalysisForm = () => {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<HealthAnalysisFormData>({
     resolver: yupResolver<HealthAnalysisFormData>(schema),
     defaultValues: {
       symptoms: "",
       currentConditions: "",
       age: undefined,
-      gender: "",
+      sex: "",
       healthStatus: "",
       additionalInfo: "",
       documents: [],
+      ocr: [],
     },
   });
 
@@ -70,5 +80,6 @@ export const useHealthAnalysisForm = () => {
     control,
     handleSubmit,
     errors,
+    setValue,
   };
 };
