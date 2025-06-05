@@ -19,7 +19,7 @@ import {
   healthStatusOptions,
   genderOptions,
 } from "./useHealthAnalysisForm";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { toast } from "sonner";
 
@@ -53,6 +53,7 @@ export const HealthAnalysis = () => {
   const updateHealthAnalysis = useMutation(
     api.healthAnalysis.updateHealthAnalysis
   );
+  const analyzeHealth = useAction(api.healthAnalysis.analyzeHealth);
   const analysisData = useQuery(api.healthAnalysis.getHealthAnalysis);
   const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
 
@@ -81,6 +82,9 @@ export const HealthAnalysis = () => {
         documents: uploadedFiles,
         ocrText: data.ocr,
       });
+
+      await analyzeHealth();
+
       toast.success("Health analysis submitted successfully");
     } catch (error) {
       console.error("Error submitting form:", error);

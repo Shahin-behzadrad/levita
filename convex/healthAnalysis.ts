@@ -1,8 +1,10 @@
 // updateHealthAnalysis.ts
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, action } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError } from "convex/values";
+import { generateAIAnalysis } from "./openai";
+import { api } from "./_generated/api";
 
 export const getHealthAnalysis = query({
   handler: async (ctx) => {
@@ -67,5 +69,38 @@ export const updateHealthAnalysis = mutation({
     });
 
     return { healthAnalysis, ocr: args.ocrText ?? null };
+  },
+});
+
+export const analyzeHealth = action({
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("Not authenticated");
+
+    const patientProfile = await ctx.runQuery(
+      api.patientProfiles.getPatientProfile
+    );
+
+    if (!patientProfile.healthAnalysis) {
+      throw new Error("Health analysis data missing");
+    }
+
+    const aiResponse = await generateAIAnalysis({
+      fullName: patientProfile.fullName,
+      age: patientProfile.age,
+      sex: patientProfile.sex,
+      healthAnalysis: {
+        symptoms: patientProfile.healthAnalysis.symptoms,
+        currentConditions: patientProfile.healthAnalysis.currentConditions,
+        healthStatus: patientProfile.healthAnalysis.healthStatus,
+        additionalInfo: patientProfile.healthAnalysis.additionalInfo,
+      },
+      ocr: { ocrText: patientProfile.ocr?.ocrText ?? [] },
+    });
+
+    console.log("patientProfile:", patientProfile);
+    console.log("OpenAI Analysis Result:", aiResponse);
+
+    return { result: aiResponse };
   },
 });
