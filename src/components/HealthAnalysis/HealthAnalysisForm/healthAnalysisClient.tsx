@@ -12,7 +12,7 @@ import {
 import Grid from "@/components/Shared/Grid/Grid";
 import Select from "@/components/Shared/Select/Select";
 import { useState } from "react";
-import { Upload, X, FileText } from "lucide-react";
+
 import {
   useHealthAnalysisForm,
   type HealthAnalysisFormData,
@@ -28,7 +28,6 @@ import { useAction } from "convex/react";
 import styles from "./healthAnalysisClient.module.scss";
 import LoadingModal from "@/components/LoadingModal/LoadingModal";
 import DocumentUploadField from "./DocumentUploadField";
-import { HealthAnalysisPreview } from "../HealthAnalysisPreview/HealthAnalysisPreview";
 
 // Helper function to upload a file to Convex storage
 const uploadFile = async (
@@ -126,21 +125,6 @@ export const HealthAnalysis = () => {
 
   if (analysisData === undefined) {
     return <LoadingModal />;
-  }
-
-  if (analysisData) {
-    return (
-      <HealthAnalysisPreview
-        patientProfile={patientProfile}
-        analysisData={analysisData}
-        fileUrls={fileUrls || []}
-        processingOCR={processingOCR}
-        handleExtractText={handleExtractText}
-        showOcrModal={showOcrModal}
-        ocrResult={ocrResult}
-        setShowOcrModal={setShowOcrModal}
-      />
-    );
   }
 
   return (

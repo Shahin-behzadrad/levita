@@ -3,6 +3,7 @@ import { Button } from "@/components/Shared/Button/Button";
 import { X, FileText, Upload } from "lucide-react";
 import Image from "@/components/Shared/Image/Image";
 import styles from "./healthAnalysisClient.module.scss";
+import Text from "@/components/Shared/Text";
 
 const DocumentUploadField = ({
   value,
@@ -51,39 +52,44 @@ const DocumentUploadField = ({
             const isImage = file.type.startsWith("image/");
             const isPDF = file.type === "application/pdf";
             return (
-              <div key={index} className={styles.filePreview}>
-                {isImage ? (
-                  <div className={styles.imagePreview}>
-                    <Image
-                      shape="square"
-                      width={200}
-                      height={200}
-                      src={URL.createObjectURL(file)}
-                      alt={file.name}
-                      className={styles.previewImage}
-                    />
+              <div className={styles.filePreviewContainer} key={index}>
+                <div key={index} className={styles.filePreview}>
+                  {isImage ? (
+                    <div className={styles.imagePreview}>
+                      <Image
+                        shape="square"
+                        fill
+                        src={URL.createObjectURL(file)}
+                        alt={file.name}
+                        className={styles.previewImage}
+                      />
+                    </div>
+                  ) : (
+                    <div className={styles.fileIcon}>
+                      {isPDF ? <FileText size={40} /> : <FileText size={40} />}
+                    </div>
+                  )}
+                  <div className={styles.fileInfo}>
+                    <Button
+                      type="button"
+                      variant="contained"
+                      size="xs"
+                      onClick={() => {
+                        const newFiles = [...currentFiles];
+                        newFiles.splice(index, 1);
+                        onChange(newFiles);
+                      }}
+                      className={styles.removeButton}
+                    >
+                      <X size={16} />
+                    </Button>
                   </div>
-                ) : (
-                  <div className={styles.fileIcon}>
-                    {isPDF ? <FileText size={40} /> : <FileText size={40} />}
-                  </div>
-                )}
-                <div className={styles.fileInfo}>
-                  <span className={styles.fileName}>{file.name}</span>
-                  <Button
-                    type="button"
-                    variant="text"
-                    size="xs"
-                    onClick={() => {
-                      const newFiles = [...currentFiles];
-                      newFiles.splice(index, 1);
-                      onChange(newFiles);
-                    }}
-                    className={styles.removeButton}
-                  >
-                    <X size={16} />
-                  </Button>
                 </div>
+                <Text
+                  value={file.name}
+                  fontSize="xs"
+                  className={styles.fileName}
+                />
               </div>
             );
           })}
