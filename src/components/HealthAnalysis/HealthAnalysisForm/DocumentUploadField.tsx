@@ -142,6 +142,8 @@ const DocumentUploadField = ({
       {filesWithStatus.length > 0 && (
         <div className={styles.filePreviews}>
           {filesWithStatus.map((file: FileWithStatus, index: number) => {
+            console.log(file);
+
             const isImage = file?.type?.startsWith("image/");
             const isPDF = file?.type === "application/pdf";
             return (

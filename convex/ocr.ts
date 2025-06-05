@@ -70,9 +70,11 @@ export const processDocumentOCR = action({
         try {
           // Convert the file to buffer
           const fileBuffer = args.file.buffer;
+          const timestamp = Date.now();
+          const gcsFileName = `uploads/${timestamp}-${args.file.name}`;
+          const outputPrefix = `ocr-results/${timestamp}`;
 
           // Upload to GCS
-          const gcsFileName = `uploads/${Date.now()}-${args.file.name}`;
           const bucket = storage.bucket(GCS_BUCKET);
           const file = bucket.file(gcsFileName);
 
@@ -82,6 +84,8 @@ export const processDocumentOCR = action({
               contentType: "application/pdf",
             },
           });
+
+          console.log("PDF uploaded to GCS:", gcsFileName);
 
           // For PDFs, use asyncBatchAnnotateFiles
           const request: protos.google.cloud.vision.v1.IAsyncBatchAnnotateFilesRequest =
@@ -100,15 +104,19 @@ export const processDocumentOCR = action({
                   ],
                   outputConfig: {
                     gcsDestination: {
-                      uri: `gs://${GCS_BUCKET}/ocr-results/${Date.now()}/`,
+                      uri: `gs://${GCS_BUCKET}/${outputPrefix}/`,
                     },
                   },
                 },
               ],
             };
 
+          console.log("Starting async batch annotation");
           const [operation] = await vision.asyncBatchAnnotateFiles(request);
+
+          console.log("Waiting for operation to complete");
           const [filesResponse] = await operation.promise();
+          console.log("Operation completed:", filesResponse);
 
           if (
             !filesResponse?.responses?.[0]?.outputConfig?.gcsDestination?.uri
@@ -116,13 +124,19 @@ export const processDocumentOCR = action({
             throw new ConvexError("No output destination for PDF processing");
           }
 
-          // The result is stored in GCS, we need to fetch it
-          const outputUri =
-            filesResponse.responses[0].outputConfig.gcsDestination.uri;
+          // Wait a bit for the output files to be written
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+
           // List all files in the output folder
+          console.log("Listing output files in:", outputPrefix);
           const [outputFiles] = await bucket.getFiles({
-            prefix: `ocr-results/${Date.now()}/`,
+            prefix: outputPrefix,
           });
+
+          console.log(
+            "Found output files:",
+            outputFiles.map((f) => f.name)
+          );
 
           // Collect and sort all JSON output files
           const jsonFiles = outputFiles
@@ -130,13 +144,16 @@ export const processDocumentOCR = action({
             .sort((a, b) => a.name.localeCompare(b.name));
 
           if (jsonFiles.length === 0) {
-            throw new ConvexError("No output JSON files found in GCS.");
+            throw new ConvexError(
+              "No output JSON files found in GCS. Please check the GCS bucket permissions and try again."
+            );
           }
 
           let fullText = "";
           let fullPages: protos.google.cloud.vision.v1.IPage[] = [];
 
           for (const file of jsonFiles) {
+            console.log("Processing output file:", file.name);
             const [jsonBuffer] = await file.download();
             const json = JSON.parse(jsonBuffer.toString());
 
@@ -162,8 +179,9 @@ export const processDocumentOCR = action({
             },
           };
 
-          // Clean up the uploaded file
+          // Clean up the uploaded file and output files
           await file.delete();
+          await Promise.all(jsonFiles.map((f) => f.delete()));
 
           console.log("Multi-page OCR processed", {
             pageCount: fullPages.length,
