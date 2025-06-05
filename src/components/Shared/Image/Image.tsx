@@ -1,9 +1,9 @@
-import clsx from 'clsx';
-import React, { CSSProperties, useState } from 'react';
-import classes from './Image.module.scss';
-import NextImage from 'next/image';
+import clsx from "clsx";
+import React, { CSSProperties, useState } from "react";
+import classes from "./Image.module.scss";
+import NextImage from "next/image";
 
-import avatar from '@/public/static/images/avatars/avatarPlaceholder.svg';
+import avatar from "../../../../public/placeholder.webp";
 
 interface ImageComponentProps {
   src?: string | undefined;
@@ -15,7 +15,7 @@ interface ImageComponentProps {
   onClick?: () => void;
   caption?: string;
   hasPlaceholder?: boolean;
-  shape?: 'circle' | 'square' | 'default';
+  shape?: "circle" | "square" | "default";
   style?: CSSProperties;
   imageClassName?: string;
 }
@@ -23,7 +23,7 @@ interface ImageComponentProps {
 const Image: React.FC<ImageComponentProps> = ({
   style,
   src,
-  alt = 'image',
+  alt = "image",
   width = 40,
   height = 40,
   className,
@@ -31,7 +31,7 @@ const Image: React.FC<ImageComponentProps> = ({
   caption,
   imageClassName,
   hasPlaceholder = true,
-  shape = 'circle',
+  shape = "circle",
   fill = false,
   ...props
 }) => {
@@ -61,10 +61,10 @@ const Image: React.FC<ImageComponentProps> = ({
         height={fill ? 0 : height}
         {...props}
         className={clsx(classes.image, imageClassName, {
-          [classes.circularImage]: shape === 'circle',
-          [classes.squarImage]: shape === 'square',
-          [classes.defaulImage]: shape === 'default',
-          [classes.placeholder]: placeholder
+          [classes.circularImage]: shape === "circle",
+          [classes.squarImage]: shape === "square",
+          [classes.defaulImage]: shape === "default",
+          [classes.placeholder]: placeholder,
         })}
         onError={handleImageError}
         onLoad={handleImageLoad}

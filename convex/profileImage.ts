@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { Id } from "./_generated/dataModel";
 
 export const getProfileImageUrl = query({
   args: {
@@ -8,7 +9,7 @@ export const getProfileImageUrl = query({
   },
   handler: async (ctx, args) => {
     if (!args.storageId) return null;
-    return await ctx.storage.getUrl(args.storageId);
+    return await ctx.storage.getUrl(args.storageId as Id<"_storage">);
   },
 });
 

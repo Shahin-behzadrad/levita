@@ -26,6 +26,30 @@ const applicationTables = {
     phoneNumber: v.string(),
     languages: v.optional(v.array(v.string())),
     profileImage: v.optional(v.string()), // URL or storage ID for profile image
+    // Health Analysis fields
+    healthAnalysis: v.optional(
+      v.object({
+        symptoms: v.string(),
+        currentConditions: v.string(),
+        healthStatus: v.string(),
+        additionalInfo: v.string(),
+        documents: v.array(
+          v.object({
+            storageId: v.string(),
+            fileName: v.string(),
+            fileType: v.string(),
+            uploadedAt: v.number(),
+          })
+        ),
+        createdAt: v.number(),
+        updatedAt: v.number(),
+      })
+    ),
+    ocr: v.optional(
+      v.object({
+        ocrText: v.array(v.string()),
+      })
+    ),
   }).index("by_userId", ["userId"]),
 };
 

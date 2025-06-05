@@ -295,14 +295,16 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
           />
         </Grid>
       </Grid>
-      <Button
-        type="submit"
-        variant="contained"
-        disabled={!isDirty || isSubmitting}
-        startIcon={<Save size={20} />}
-      >
-        {messages.profile.updateProfile}
-      </Button>
+      {isDirty && (
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={!isDirty || isSubmitting}
+          startIcon={<Save size={20} />}
+        >
+          {messages.profile.updateProfile}
+        </Button>
+      )}
     </form>
   );
 };

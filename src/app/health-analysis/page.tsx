@@ -1,7 +1,8 @@
+import { HealthAnalysis } from "@/components/HealthAnalysis/HealthAnalysisForm/healthAnalysisClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SAL - Health Analysis",
+  title: "Levita - Health Analysis",
   description:
     "Get AI-powered health analysis and insights for your well-being",
   keywords: [
@@ -13,8 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default async function HealthAnalysisServerComponent() {
-  return (
-    <div></div>
-    // <HealthAnalysis />
-  );
+  return <HealthAnalysis />;
 }

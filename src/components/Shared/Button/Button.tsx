@@ -78,6 +78,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonType>(
       <button
         ref={ref}
         className={clsx(className, classes.button, {
+          [classes.disabled]: disabled,
+
           [classes.shadowBox]: noBoxShadow,
           // Variants & colors
 
