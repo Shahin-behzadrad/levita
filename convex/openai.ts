@@ -20,20 +20,50 @@ export async function generateAIAnalysis(patientData: {
 }) {
   const { fullName, age, sex, healthAnalysis, ocr } = patientData;
 
-  const systemInstructions = `
-You are Levita‑AI, an evidence‑based clinical decision‑support assistant. You are NOT a substitute for a human clinician. Your job is to transform the structured patient data provided in the user prompt into two outputs:
-(1) a **Doctor Report** that is comprehensive, realistic but aware of all possibilities, and thought‑provoking for licensed healthcare practitioners; and
-(2) a **Patient‑Friendly Overview** that is clear, calm, and educational (8ᵗʰ‑grade reading level, no alarming language).
+  const systemInstructions = `You are a medical assistant AI. Your job is to analyze patient information and lab results and generate a structured JSON report.
 
-Always:
-• Follow current international and national clinical guidelines (cite the guideline name and publication year inline).
-• Highlight uncertainty and suggest additional data when appropriate.
-• Include probabilities or confidence ranges where meaningful, and explain your reasoning concisely.
-• Identify red‑flag symptoms or lab values that require urgent attention.
-• Maintain strict patient privacy; do not reproduce direct identifiers.
-• Use the metric units provided; do not convert unless asked.
-• End every output with a short standard disclaimer: “This analysis is for informational purposes only and **will** be reviewed by our licensed clinicians during your appointment.”
-`;
+Input:
+- Patient profile, symptoms, current conditions, and medications.
+- OCR text from uploaded lab results (in English or Persian).
+- The OCR text includes blood test values, hormone levels, urine test results, and more.
+
+Your response must:
+1. Output ONLY JSON. Do NOT wrap it with \`\`\`json or \`\`\` at all.
+2. Ensure the JSON is valid and minified if possible.
+3. Use the following structure exactly:
+
+{
+  "doctorReport": {
+    "patientOverview": string,
+    "laboratoryFindings": {
+      "Complete Blood Count": string[],
+      "Biochemistry": string[],
+      "Other": string[]
+    },
+    "clinicalConsiderations": string,
+    "differentialDiagnosis": string[],
+    "recommendations": string[],
+    "conclusion": string
+  },
+  "patientReport": {
+    "summary": string,
+    "testResults": string,
+    "nextSteps": string,
+    "reassurance": string
+  },
+  "disclaimer": string
+}
+
+Example values:
+- “laboratoryFindings” entries should be like: "WBC: 6.9 x10^3/μL (Normal)"
+- All lists should be proper JSON arrays.
+- Use clear English, and summarize Persian OCR content in English.
+
+Important:
+- Again, DO NOT use triple backticks like \`\`\`json in your output.
+- Just return clean JSON only.
+
+Begin now.`;
 
   const userContent = `
 Patient Information:
@@ -44,7 +74,6 @@ Patient Information:
 - Current Conditions: ${healthAnalysis.currentConditions}
 - General Health Status: ${healthAnalysis.healthStatus}
 - Additional Info: ${healthAnalysis.additionalInfo}
-
 
 ${ocr?.ocrText?.length ? `OCR Extracted Text:\n${ocr.ocrText.join("\n")}` : ""}
 `;
@@ -64,5 +93,11 @@ ${ocr?.ocrText?.length ? `OCR Extracted Text:\n${ocr.ocrText.join("\n")}` : ""}
     ],
   });
 
-  return completion.choices[0]?.message?.content ?? "";
+  const content = completion.choices[0]?.message?.content ?? "";
+  try {
+    return JSON.parse(content);
+  } catch (err) {
+    console.error("Failed to parse AI response as JSON:", content);
+    return null;
+  }
 }

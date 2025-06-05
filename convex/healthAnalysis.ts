@@ -6,7 +6,7 @@ import { ConvexError } from "convex/values";
 import { generateAIAnalysis } from "./openai";
 import { api } from "./_generated/api";
 
-export const getHealthAnalysis = query({
+export const getHealthAnalysisInfo = query({
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new ConvexError("Not authenticated");
@@ -25,7 +25,7 @@ export const getHealthAnalysis = query({
   },
 });
 
-export const updateHealthAnalysis = mutation({
+export const updateHealthAnalysisInfo = mutation({
   args: {
     symptoms: v.string(),
     currentConditions: v.string(),
@@ -72,7 +72,7 @@ export const updateHealthAnalysis = mutation({
   },
 });
 
-export const analyzeHealth = action({
+export const openAIAnalyzeHealth = action({
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new ConvexError("Not authenticated");
@@ -97,9 +97,6 @@ export const analyzeHealth = action({
       },
       ocr: { ocrText: patientProfile.ocr?.ocrText ?? [] },
     });
-
-    console.log("patientProfile:", patientProfile);
-    console.log("OpenAI Analysis Result:", aiResponse);
 
     return { result: aiResponse };
   },

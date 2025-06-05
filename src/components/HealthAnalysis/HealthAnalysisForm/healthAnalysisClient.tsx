@@ -26,6 +26,8 @@ import { toast } from "sonner";
 import styles from "./healthAnalysisClient.module.scss";
 import LoadingModal from "@/components/LoadingModal/LoadingModal";
 import DocumentUploadField from "./DocumentUploadField";
+import { AIAnalysisModal } from "../AIAnalysisModal/AIAnalysisModal";
+import { AIAnalysisResponse } from "@/types/healthAnalysis";
 
 // Helper function to upload a file to Convex storage
 const uploadFile = async (
@@ -48,14 +50,21 @@ const uploadFile = async (
 export const HealthAnalysis = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOCRFulfilled, setIsOCRFulfilled] = useState(false);
+  const [showAnalysisModal, setShowAnalysisModal] = useState(false);
+  const [analysisResult, setAnalysisResult] =
+    useState<AIAnalysisResponse | null>(null);
   const { control, handleSubmit, errors, setValue } = useHealthAnalysisForm();
 
   const updateHealthAnalysis = useMutation(
-    api.healthAnalysis.updateHealthAnalysis
+    api.healthAnalysis.updateHealthAnalysisInfo
   );
-  const analyzeHealth = useAction(api.healthAnalysis.analyzeHealth);
-  const analysisData = useQuery(api.healthAnalysis.getHealthAnalysis);
+  const openAIAnalyzeHealth = useAction(api.healthAnalysis.openAIAnalyzeHealth);
+  const getHealthAnalysisInfo = useQuery(
+    api.healthAnalysis.getHealthAnalysisInfo
+  );
   const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
+
+  console.log(analysisResult);
 
   const onSubmit = async (data: HealthAnalysisFormData) => {
     console.log(data);
@@ -83,8 +92,9 @@ export const HealthAnalysis = () => {
         ocrText: data.ocr,
       });
 
-      await analyzeHealth();
-
+      const result = await openAIAnalyzeHealth();
+      setAnalysisResult(result);
+      setShowAnalysisModal(true);
       toast.success("Health analysis submitted successfully");
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -94,158 +104,167 @@ export const HealthAnalysis = () => {
     }
   };
 
-  if (analysisData === undefined) {
+  if (getHealthAnalysisInfo === undefined) {
     return <LoadingModal />;
   }
 
   return (
-    <Card className={styles.card}>
-      <CardHeader
-        title="Health Analysis Form"
-        subheader="Please provide detailed information about your health concerns"
-      />
-      <form
-        onSubmit={handleSubmit(onSubmit, (errors) => {
-          console.log("errors", errors);
-        })}
-      >
-        <CardContent>
-          <Grid container spacing={8}>
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="symptoms"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="Symptoms and Concerns"
-                    multiline
-                    {...field}
-                    error={Boolean(errors.symptoms?.message)}
-                    helperText={errors.symptoms?.message}
-                    placeholder="Please describe your symptoms and concerns in detail"
-                  />
-                )}
-              />
-            </Grid>
+    <>
+      <Card className={styles.card}>
+        <CardHeader
+          title="Health Analysis Form"
+          subheader="Please provide detailed information about your health concerns"
+        />
+        <form
+          onSubmit={handleSubmit(onSubmit, (errors) => {
+            console.log("errors", errors);
+          })}
+        >
+          <CardContent>
+            <Grid container spacing={8}>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="symptoms"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      label="Symptoms and Concerns"
+                      multiline
+                      {...field}
+                      error={Boolean(errors.symptoms?.message)}
+                      helperText={errors.symptoms?.message}
+                      placeholder="Please describe your symptoms and concerns in detail"
+                    />
+                  )}
+                />
+              </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="currentConditions"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="Current Conditions, Illness, and Medication"
-                    multiline
-                    {...field}
-                    error={Boolean(errors.currentConditions?.message)}
-                    helperText={errors.currentConditions?.message}
-                    placeholder="List any current conditions, illnesses, or medications you're taking"
-                  />
-                )}
-              />
-            </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="currentConditions"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      label="Current Conditions, Illness, and Medication"
+                      multiline
+                      {...field}
+                      error={Boolean(errors.currentConditions?.message)}
+                      helperText={errors.currentConditions?.message}
+                      placeholder="List any current conditions, illnesses, or medications you're taking"
+                    />
+                  )}
+                />
+              </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="age"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="Age"
-                    type="number"
-                    inputMode="numeric"
-                    {...field}
-                    error={Boolean(errors.age?.message)}
-                    helperText={errors.age?.message}
-                    placeholder="Enter your age"
-                  />
-                )}
-              />
-            </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="age"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      label="Age"
+                      type="number"
+                      inputMode="numeric"
+                      {...field}
+                      error={Boolean(errors.age?.message)}
+                      helperText={errors.age?.message}
+                      placeholder="Enter your age"
+                    />
+                  )}
+                />
+              </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Controller
-                name="sex"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    label="Gender"
-                    options={genderOptions}
-                    {...field}
-                    error={Boolean(errors.sex?.message)}
-                    helperText={errors.sex?.message}
-                  />
-                )}
-              />
-            </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="sex"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      label="Gender"
+                      options={genderOptions}
+                      {...field}
+                      error={Boolean(errors.sex?.message)}
+                      helperText={errors.sex?.message}
+                    />
+                  )}
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              <Controller
-                name="healthStatus"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    label="General Health Status"
-                    options={healthStatusOptions}
-                    {...field}
-                    error={Boolean(errors.healthStatus?.message)}
-                    helperText={errors.healthStatus?.message}
-                  />
-                )}
-              />
-            </Grid>
+              <Grid item xs={12}>
+                <Controller
+                  name="healthStatus"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      label="General Health Status"
+                      options={healthStatusOptions}
+                      {...field}
+                      error={Boolean(errors.healthStatus?.message)}
+                      helperText={errors.healthStatus?.message}
+                    />
+                  )}
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              <Controller
-                name="additionalInfo"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="Additional Information"
-                    multiline
-                    {...field}
-                    error={Boolean(errors.additionalInfo?.message)}
-                    helperText={errors.additionalInfo?.message}
-                    placeholder="Share any additional information that might help the doctor"
-                  />
-                )}
-              />
-            </Grid>
+              <Grid item xs={12}>
+                <Controller
+                  name="additionalInfo"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      label="Additional Information"
+                      multiline
+                      {...field}
+                      error={Boolean(errors.additionalInfo?.message)}
+                      helperText={errors.additionalInfo?.message}
+                      placeholder="Share any additional information that might help the doctor"
+                    />
+                  )}
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              <Controller
-                name="documents"
-                control={control}
-                render={({ field: { value, onChange } }) => (
-                  <DocumentUploadField
-                    value={
-                      Array.isArray(value)
-                        ? value.filter((f): f is File => f instanceof File)
-                        : []
-                    }
-                    onChange={onChange}
-                    error={errors.documents?.message}
-                    onOCRComplete={(ocrResults) => {
-                      setValue("ocr", ocrResults);
-                      setIsOCRFulfilled(true);
-                    }}
-                  />
-                )}
-              />
+              <Grid item xs={12}>
+                <Controller
+                  name="documents"
+                  control={control}
+                  render={({ field: { value, onChange } }) => (
+                    <DocumentUploadField
+                      value={
+                        Array.isArray(value)
+                          ? value.filter((f): f is File => f instanceof File)
+                          : []
+                      }
+                      onChange={onChange}
+                      error={errors.documents?.message}
+                      onOCRComplete={(ocrResults) => {
+                        setValue("ocr", ocrResults);
+                        setIsOCRFulfilled(true);
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
             </Grid>
-          </Grid>
-        </CardContent>
-        <CardFooter>
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            disabled={isSubmitting || !isOCRFulfilled}
-          >
-            {isSubmitting ? "Submitting..." : "Submit Health Analysis"}
-          </Button>
-        </CardFooter>
-      </form>
-    </Card>
+          </CardContent>
+          <CardFooter>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              disabled={isSubmitting || !isOCRFulfilled}
+            >
+              {isSubmitting ? "Submitting..." : "Submit Health Analysis"}
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+      {analysisResult && (
+        <AIAnalysisModal
+          isOpen={showAnalysisModal}
+          onClose={() => setShowAnalysisModal(false)}
+          analysis={analysisResult.result}
+        />
+      )}
+    </>
   );
 };
