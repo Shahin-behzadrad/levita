@@ -53,6 +53,7 @@ const Header = () => {
               <>
                 <div className={styles.rightSection}>
                   <LanguageSwitcher />
+                  <Notification isDoctor={userData?.role === "doctor"} />
                   <Menu
                     className={styles.menuButton}
                     onClick={() => setIsSidebarOpen(true)}
