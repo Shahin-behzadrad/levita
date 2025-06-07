@@ -23,18 +23,12 @@ const PatientNotification = ({
   return (
     <div className={classes.container}>
       <div className={classes.header}>
-        <Text
-          value="Consultation Request"
-          variant="h6"
-          fontSize="sm"
-          fontWeight="medium"
-        />
+        <Text value="Consultation Request" noWrap fontSize="sm" />
         <Text
           value={getExistingNotification.status}
           variant="span"
           fontSize="xs"
           fontWeight="medium"
-          color="warning"
           className={classes.status}
         />
       </div>

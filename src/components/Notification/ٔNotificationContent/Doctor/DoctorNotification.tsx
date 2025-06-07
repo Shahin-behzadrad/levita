@@ -7,10 +7,12 @@ import { ArrowRight } from "lucide-react";
 
 interface DoctorNotificationProps {
   pendingConsultations: ConsultationRequest[];
+  onConsultationClick: () => void;
 }
 
 const DoctorNotification = ({
   pendingConsultations,
+  onConsultationClick,
 }: DoctorNotificationProps) => {
   const router = useRouter();
 
@@ -40,7 +42,10 @@ const DoctorNotification = ({
           <Button
             variant="outlined"
             color="primary"
-            onClick={() => router.push(`/consultation/${consultation._id}`)}
+            onClick={() => {
+              router.push(`/consultation/${consultation._id}`);
+              onConsultationClick();
+            }}
             endIcon={<ArrowRight size={16} />}
           >
             View consultation request

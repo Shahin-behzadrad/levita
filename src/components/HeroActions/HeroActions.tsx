@@ -11,7 +11,6 @@ const HeroActions = () => {
   const { isAuthenticated } = useConvexAuth();
   const userData = useQuery(api.api.profiles.userProfiles.getUserProfile);
   const { messages } = useLanguage();
-  console.log(userData);
 
   return (
     <div className={styles.container}>

@@ -1,16 +1,18 @@
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Tooltip from "@/components/Shared/Tooltip/Tooltip";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bell } from "lucide-react";
 import classes from "./Notification.module.scss";
 import Text from "@/components/Shared/Text";
 import DoctorNotification from "./ٔNotificationContent/Doctor/DoctorNotification";
 import PatientNotification from "./ٔNotificationContent/Patient/PatientNotification";
 import { ConsultationRequest } from "@/types/consultation";
+import { useNotificationStore } from "@/store/notificationStore";
 
 const Notification = ({ isDoctor }: { isDoctor: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isRead, setRead } = useNotificationStore();
   const patientProfile = useQuery(
     api.api.profiles.patientProfiles.getPatientProfile
   );
@@ -25,6 +27,15 @@ const Notification = ({ isDoctor }: { isDoctor: boolean }) => {
     api.api.consultation.getPendingConsultations.getPendingConsultations
   ) as ConsultationRequest[];
 
+  useEffect(() => {
+    if (isOpen && isDoctor) {
+      setRead(true);
+    }
+  }, [isOpen, isDoctor, setRead]);
+
+  const hasNotifications =
+    (getExistingNotification || pendingConsultations?.length > 0) && !isRead;
+
   return (
     <Tooltip
       open={isOpen}
@@ -32,7 +43,10 @@ const Notification = ({ isDoctor }: { isDoctor: boolean }) => {
       tooltipContent={
         <div className={classes.tooltipContent}>
           {isDoctor ? (
-            <DoctorNotification pendingConsultations={pendingConsultations} />
+            <DoctorNotification
+              pendingConsultations={pendingConsultations}
+              onConsultationClick={() => setIsOpen(false)}
+            />
           ) : (
             <PatientNotification
               getExistingNotification={getExistingNotification}
@@ -46,9 +60,7 @@ const Notification = ({ isDoctor }: { isDoctor: boolean }) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <Bell className={classes.bellIcon} />
-        {(getExistingNotification || pendingConsultations?.length > 0) && (
-          <div className={classes.notificationDot} />
-        )}
+        {hasNotifications && <div className={classes.notificationDot} />}
       </div>
     </Tooltip>
   );

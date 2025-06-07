@@ -30,7 +30,8 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.56.4",
     "sonner": "^2.0.3",
-    "yup": "^1.6.1"
+    "yup": "^1.6.1",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
