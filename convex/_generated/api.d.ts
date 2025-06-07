@@ -16,6 +16,11 @@ import type {
 import type * as api_ai_ocr from "../api/ai/ocr.js";
 import type * as api_ai_openai from "../api/ai/openai.js";
 import type * as api_auth_checkEmailExists from "../api/auth/checkEmailExists.js";
+import type * as api_consultation_acceptConsultation from "../api/consultation/acceptConsultation.js";
+import type * as api_consultation_createConsultationRequest from "../api/consultation/createConsultationRequest.js";
+import type * as api_consultation_getConsultationDetails from "../api/consultation/getConsultationDetails.js";
+import type * as api_consultation_getExistingConsultationRequest from "../api/consultation/getExistingConsultationRequest.js";
+import type * as api_consultation_getPendingConsultations from "../api/consultation/getPendingConsultations.js";
 import type * as api_health_healthAnalysis from "../api/health/healthAnalysis.js";
 import type * as api_profiles_patientProfiles from "../api/profiles/patientProfiles.js";
 import type * as api_profiles_timeSlots from "../api/profiles/timeSlots.js";
@@ -38,6 +43,11 @@ declare const fullApi: ApiFromModules<{
   "api/ai/ocr": typeof api_ai_ocr;
   "api/ai/openai": typeof api_ai_openai;
   "api/auth/checkEmailExists": typeof api_auth_checkEmailExists;
+  "api/consultation/acceptConsultation": typeof api_consultation_acceptConsultation;
+  "api/consultation/createConsultationRequest": typeof api_consultation_createConsultationRequest;
+  "api/consultation/getConsultationDetails": typeof api_consultation_getConsultationDetails;
+  "api/consultation/getExistingConsultationRequest": typeof api_consultation_getExistingConsultationRequest;
+  "api/consultation/getPendingConsultations": typeof api_consultation_getPendingConsultations;
   "api/health/healthAnalysis": typeof api_health_healthAnalysis;
   "api/profiles/patientProfiles": typeof api_profiles_patientProfiles;
   "api/profiles/timeSlots": typeof api_profiles_timeSlots;

@@ -4,7 +4,7 @@ import { useQuery } from "convex/react";
 import { Button } from "@/components/Shared/Button/Button";
 import { api } from "../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
-import { Menu } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 import styles from "./Header.module.scss";
@@ -13,9 +13,11 @@ import Text from "../Shared/Text";
 import Sidebar from "../Shared/Sidebar/Sidebar";
 import { LanguageSwitcher } from "../Shared/LanguageSwitcher/LanguageSwitcher";
 import { useLanguage } from "@/i18n/LanguageContext";
+import Notification from "../Notification/Notification";
 
 const Header = () => {
   const userData = useQuery(api.api.profiles.userProfiles.getUserProfile);
+
   const router = useRouter();
   const isMobile = useIsMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -35,6 +37,7 @@ const Header = () => {
             value="Levita"
           />
         </div>
+
         {isLoading ? (
           <div className={styles.loadingContainer}>
             <div className={styles.loadingPulse}>
@@ -64,6 +67,7 @@ const Header = () => {
             ) : (
               <div className={styles.rightSection}>
                 <LanguageSwitcher />
+                <Notification isDoctor={userData?.role === "doctor"} />
                 <UserProfile userData={userData} />
               </div>
             )}

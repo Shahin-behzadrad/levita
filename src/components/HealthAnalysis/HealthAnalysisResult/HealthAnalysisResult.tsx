@@ -3,17 +3,44 @@
 import { Card, CardContent, CardHeader } from "@/components/Shared/Card";
 import Grid from "@/components/Shared/Grid/Grid";
 import { Text } from "@/components/Shared/Text/Text";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useLanguage } from "@/i18n/LanguageContext";
 import styles from "./HealthAnalysisResult.module.scss";
 import { TriangleAlert } from "lucide-react";
+import { useEffect } from "react";
 
 export const HealthAnalysisResult = () => {
   const { messages } = useLanguage();
   const getAIAnalysis = useQuery(api.api.health.healthAnalysis.getAIAnalysis);
+  const patientProfile = useQuery(
+    api.api.profiles.patientProfiles.getPatientProfile
+  );
 
-  if (!getAIAnalysis?.patientReport) {
+  const getExisting = useQuery(
+    api.api.consultation.getExistingConsultationRequest
+      .getExistingConsultationRequest,
+    patientProfile?._id ? { patientId: patientProfile?._id } : "skip"
+  );
+
+  const safeCreateRequest = useMutation(
+    api.api.consultation.createConsultationRequest.CreateConsultationRequest
+  );
+
+  useEffect(() => {
+    if (
+      patientProfile?._id &&
+      getAIAnalysis?.doctorReport &&
+      getExisting === null
+    ) {
+      void safeCreateRequest({
+        patientId: patientProfile?._id,
+        doctorReportPreview: getAIAnalysis.doctorReport,
+      });
+    }
+  }, [getAIAnalysis, getExisting, safeCreateRequest]);
+
+  if (!getAIAnalysis?.doctorReport) {
     return null;
   }
 

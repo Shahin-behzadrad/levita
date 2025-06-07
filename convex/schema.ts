@@ -89,6 +89,36 @@ const applicationTables = {
       })
     ),
   }).index("by_userId", ["userId"]),
+
+  consultationRequests: defineTable({
+    patientId: v.id("patientProfiles"),
+    senderUserId: v.id("users"),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("accepted"),
+      v.literal("rejected")
+    ),
+    acceptedByDoctorId: v.optional(v.id("doctorProfiles")),
+
+    doctorReportPreview: v.optional(
+      v.object({
+        patientOverview: v.string(),
+        clinicalConsiderations: v.string(),
+        laboratoryFindings: v.object({
+          Biochemistry: v.array(v.string()),
+          Complete_Blood_Count: v.array(v.string()),
+          Other: v.array(v.string()),
+        }),
+        differentialDiagnosis: v.array(v.string()),
+        recommendations: v.array(v.string()),
+        conclusion: v.string(),
+      })
+    ),
+
+    createdAt: v.number(), // use Date.now()
+  })
+    .index("by_status", ["status"])
+    .index("by_patientId", ["patientId"]),
 };
 
 export default defineSchema({

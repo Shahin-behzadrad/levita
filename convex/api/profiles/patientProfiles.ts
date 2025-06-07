@@ -5,7 +5,7 @@ import { ConvexError } from "convex/values";
 export const getPatientProfile = query({
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx);
-    if (!userId) throw new ConvexError("Not authenticated");
+    if (!userId) return null;
 
     const profile = await ctx.db
       .query("patientProfiles")
