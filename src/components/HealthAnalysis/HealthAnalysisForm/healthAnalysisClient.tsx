@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 import { TextField } from "@/components/Shared/TextField/TextField";
 import { Button } from "@/components/Shared/Button/Button";
@@ -26,9 +26,8 @@ import { toast } from "sonner";
 import styles from "./healthAnalysisClient.module.scss";
 import LoadingModal from "@/components/LoadingModal/LoadingModal";
 import DocumentUploadField from "./DocumentUploadField";
-import { AIAnalysisModal } from "../AIAnalysisModal/AIAnalysisModal";
-
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useRouter } from "next/navigation";
 
 // Helper function to upload a file to Convex storage
 const uploadFile = async (
@@ -49,24 +48,39 @@ const uploadFile = async (
 };
 
 export const HealthAnalysis = () => {
+  const router = useRouter();
   const { locale, messages } = useLanguage();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOCRFulfilled, setIsOCRFulfilled] = useState(false);
-  const [showAnalysisModal, setShowAnalysisModal] = useState(false);
 
   const { control, handleSubmit, errors, setValue } = useHealthAnalysisForm();
 
   const updateHealthAnalysis = useMutation(
     api.healthAnalysis.updateHealthAnalysisInfo
   );
+  const patientProfile = useQuery(api.patientProfiles.getPatientProfile);
+
+  const getAIAnalysis = useQuery(api.healthAnalysis.getAIAnalysis);
+
   const openAIAnalyzeHealth = useAction(api.healthAnalysis.openAIAnalyzeHealth);
   const getHealthAnalysisInfo = useQuery(
     api.healthAnalysis.getHealthAnalysisInfo
   );
   const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
 
-  const getAIAnalysis = useQuery(api.healthAnalysis.getAIAnalysis);
+  useEffect(() => {
+    if (patientProfile && patientProfile.sex && patientProfile.age) {
+      setValue("age", patientProfile.age);
+      setValue("sex", patientProfile.sex);
+    }
+  }, [patientProfile]);
+
+  useEffect(() => {
+    if (getAIAnalysis) {
+      router.push("/health-analysis/result");
+    }
+  }, [getAIAnalysis]);
 
   const onSubmit = async (data: HealthAnalysisFormData) => {
     setIsSubmitting(true);
@@ -94,8 +108,7 @@ export const HealthAnalysis = () => {
       });
 
       await openAIAnalyzeHealth({ language: locale });
-
-      setShowAnalysisModal(true);
+      router.push("/health-analysis/result");
       toast.success("Health analysis submitted successfully");
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -286,24 +299,9 @@ export const HealthAnalysis = () => {
                 : messages.healthAnalysis?.submitButton ||
                   "Submit Health Analysis"}
             </Button>
-            {getAIAnalysis && (
-              <Button
-                variant="outlined"
-                onClick={() => setShowAnalysisModal(true)}
-              >
-                {messages.healthAnalysis?.viewAIResponse || "View AI Response"}
-              </Button>
-            )}
           </CardFooter>
         </form>
       </Card>
-      {getAIAnalysis && (
-        <AIAnalysisModal
-          isOpen={showAnalysisModal}
-          onClose={() => setShowAnalysisModal(false)}
-          analysis={getAIAnalysis}
-        />
-      )}
     </>
   );
 };

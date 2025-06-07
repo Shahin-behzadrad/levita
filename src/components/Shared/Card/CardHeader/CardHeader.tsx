@@ -12,6 +12,7 @@ interface CardHeaderProps {
   subheader?: string;
   className?: string;
   action?: ReactNode;
+  titleColor?: "primary" | "secondary" | "white" | "true-white" | "black";
 }
 
 export const CardHeader: FC<CardHeaderProps> = ({
@@ -23,6 +24,7 @@ export const CardHeader: FC<CardHeaderProps> = ({
   action,
   titleFontSize = 23,
   titleClassName,
+  titleColor,
 }) => (
   <div className={`${styles.cardHeader} ${className || ""}`}>
     <div>
@@ -34,6 +36,7 @@ export const CardHeader: FC<CardHeaderProps> = ({
         endAdornment={titleEndAdornment}
         fontWeight="bold"
         style={{ fontSize: titleFontSize }}
+        color={titleColor}
       />
       {subheader && <Text value={subheader} className={styles.subheader} />}
     </div>

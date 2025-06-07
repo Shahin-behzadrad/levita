@@ -238,6 +238,8 @@
   "healthAnalysis": {
     "formTitle": "Health Analysis Form",
     "formSubheader": "Please provide detailed information about your health concerns",
+    "lookingForPractitioner": "we are looking for the best health practitioner to handle your case",
+    "willBeContacted": "you will be contacted by the best health practitioner to handle your case",
     "symptomsLabel": "Symptoms and Concerns",
     "symptomsPlaceholder": "Please describe your symptoms and concerns in detail",
     "currentConditionsLabel": "Current Conditions, Illness, and Medication",
@@ -277,6 +279,7 @@
     "genderRequired": "Gender is required",
     "healthStatusRequired": "Health status is required",
     "invalidFile": "Invalid file",
-    "documentsRequired": "Please upload your medical documents"
+    "documentsRequired": "Please upload your medical documents",
+    "result": "Result"
   }
 }

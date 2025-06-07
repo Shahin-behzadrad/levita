@@ -1,0 +1,14 @@
+.container {
+  padding: 16px;
+  max-width: 1000px;
+  margin: 100px auto;
+
+  .card {
+    background-color: var(--primary-light);
+  }
+
+  .alertText {
+    justify-content: center !important;
+    color: var(--warning-main) !important;
+  }
+}

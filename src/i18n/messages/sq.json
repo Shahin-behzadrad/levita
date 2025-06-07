@@ -238,6 +238,8 @@
   "healthAnalysis": {
     "formTitle": "Forma e Analizës Shëndetësore",
     "formSubheader": "Ju lutemi jepni informacion të detajuar rreth shqetësimeve tuaja shëndetësore",
+    "lookingForPractitioner": "po kërkojmë praktikantin më të mirë shëndetësor për të trajtuar rastin tuaj",
+    "willBeContacted": "do të kontaktoni nga praktikanti më i mirë shëndetësor për të trajtuar rastin tuaj",
     "symptomsLabel": "Simptomat dhe Shqetësimet",
     "symptomsPlaceholder": "Ju lutemi përshkruani simptomat dhe shqetësimet tuaja në detaje",
     "currentConditionsLabel": "Gjendjet Aktuale, Sëmundjet dhe Medikamentet",
@@ -277,6 +279,7 @@
     "genderRequired": "Gjinia është e detyrueshme",
     "healthStatusRequired": "Gjendja shëndetësore është e detyrueshme",
     "invalidFile": "Skedar i pavlefshëm",
-    "documentsRequired": "Ju lutemi ngarkoni dokumentet tuaja mjekësore"
+    "documentsRequired": "Ju lutemi ngarkoni dokumentet tuaja mjekësore",
+    "result": "Rezultati"
   }
 }
