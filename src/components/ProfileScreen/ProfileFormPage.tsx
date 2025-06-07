@@ -279,21 +279,23 @@ export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
             </Grid>
           </>
         )}
-        <Grid item xs={12}>
-          <Controller
-            name="bio"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                label={messages.profile.bio}
-                {...field}
-                multiline
-                error={!!errors.bio}
-                errors={errors.bio?.message}
-              />
-            )}
-          />
-        </Grid>
+        {isDoctor && (
+          <Grid item xs={12}>
+            <Controller
+              name="bio"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label={messages.profile.bio}
+                  {...field}
+                  multiline
+                  error={!!errors.bio}
+                  errors={errors.bio?.message}
+                />
+              )}
+            />
+          </Grid>
+        )}
       </Grid>
       {isDirty && (
         <Button

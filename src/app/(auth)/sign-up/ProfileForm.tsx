@@ -4,15 +4,12 @@ import { Button } from "@/components/Shared/Button/Button";
 import { CardContent, CardFooter, CardHeader } from "@/components/Shared/Card";
 import styles from "./SignUp.module.scss";
 import TextField from "@/components/Shared/TextField";
-import Checkbox from "@/components/Shared/CheckBox/CheckBox";
 import { Text } from "@/components/Shared/Text/Text";
 import { RadioGroup } from "@/components/Shared/RadioGroup";
 import { Controller } from "react-hook-form";
 import Select from "@/components/Shared/Select/Select";
 import Grid from "@/components/Shared/Grid/Grid";
-import Link from "next/link";
 import { useProfileForm } from "./useProfileForm";
-import { toast } from "sonner";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 interface ProfileFormProps {
@@ -208,23 +205,25 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
                     )}
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <Controller
-                    name="bio"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        label={messages.auth.signUpForm.bio}
-                        id="bio"
-                        placeholder={messages.auth.signUpForm.bioPlaceholder}
-                        multiline
-                        {...field}
-                        error={Boolean(errors.bio?.message)}
-                        helperText={errors.bio?.message}
-                      />
-                    )}
-                  />
-                </Grid>
+                {role === "doctor" && (
+                  <Grid item xs={12}>
+                    <Controller
+                      name="bio"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          label={messages.auth.signUpForm.bio}
+                          id="bio"
+                          placeholder={messages.auth.signUpForm.bioPlaceholder}
+                          multiline
+                          {...field}
+                          error={Boolean(errors.bio?.message)}
+                          helperText={errors.bio?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                )}
               </>
             )}
           </Grid>
