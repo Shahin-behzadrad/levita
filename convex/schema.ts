@@ -15,6 +15,20 @@ const applicationTables = {
     languages: v.optional(v.array(v.string())),
     bio: v.optional(v.string()), // subtext: "Share anything you're particularly passionate about, in regards to healthcare and not"
     profileImage: v.optional(v.string()), // URL or storage ID for profile image
+    availabilitySettings: v.optional(
+      v.object({
+        defaultDuration: v.number(), // in minutes
+        bufferTime: v.number(), // in minutes
+        workingHours: v.array(
+          v.object({
+            dayOfWeek: v.number(), // 0-6 (Sunday-Saturday)
+            startTime: v.string(), // HH:mm format
+            endTime: v.string(), // HH:mm format
+            isAvailable: v.boolean(),
+          })
+        ),
+      })
+    ),
   }).index("by_userId", ["userId"]),
 
   // Patients

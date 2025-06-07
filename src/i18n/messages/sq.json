@@ -109,7 +109,21 @@
     "updateError": "Dështoi përditësimi i profilit. Ju lutemi provoni përsëri.",
     "requiredField": "Kjo fushë është e detyrueshme",
     "invalidAge": "Ju lutemi vendosni një moshë të vlefshme",
-    "ageRange": "Mosha duhet të jetë midis 0 dhe 120"
+    "ageRange": "Mosha duhet të jetë midis 0 dhe 120",
+    "availability": {
+      "title": "Cilësimet e Disponueshmërisë",
+      "noSettings": "Nuk ka cilësime të disponueshmërisë",
+      "configure": "Konfiguro Disponueshmërinë",
+      "edit": "Ndrysho",
+      "save": "Ruaj",
+      "cancel": "Anulo",
+      "defaultDuration": "Kohëzgjatja e Paracaktuar e Takimit (minuta)",
+      "bufferTime": "Koha e Bufferit Mes Takimeve (minuta)",
+      "workingHours": "Orari i Punës",
+      "notAvailable": "Nuk është i Disponueshëm",
+      "updateSuccess": "Cilësimet e disponueshmërisë u përditësuan me sukses",
+      "updateError": "Dështoi përditësimi i cilësimeve të disponueshmërisë"
+    }
   },
   "errors": {
     "required": "Kjo fushë është e detyrueshme",

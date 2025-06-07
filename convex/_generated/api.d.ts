@@ -18,6 +18,7 @@ import type * as api_ai_openai from "../api/ai/openai.js";
 import type * as api_auth_checkEmailExists from "../api/auth/checkEmailExists.js";
 import type * as api_health_healthAnalysis from "../api/health/healthAnalysis.js";
 import type * as api_profiles_patientProfiles from "../api/profiles/patientProfiles.js";
+import type * as api_profiles_timeSlots from "../api/profiles/timeSlots.js";
 import type * as api_profiles_userProfiles from "../api/profiles/userProfiles.js";
 import type * as api_storage_fileStorage from "../api/storage/fileStorage.js";
 import type * as api_storage_profileImage from "../api/storage/profileImage.js";
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   "api/auth/checkEmailExists": typeof api_auth_checkEmailExists;
   "api/health/healthAnalysis": typeof api_health_healthAnalysis;
   "api/profiles/patientProfiles": typeof api_profiles_patientProfiles;
+  "api/profiles/timeSlots": typeof api_profiles_timeSlots;
   "api/profiles/userProfiles": typeof api_profiles_userProfiles;
   "api/storage/fileStorage": typeof api_storage_fileStorage;
   "api/storage/profileImage": typeof api_storage_profileImage;

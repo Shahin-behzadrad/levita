@@ -1,5 +1,7 @@
+import { Id } from "../../convex/_generated/dataModel";
+
 export type UserType = {
-  _id: string;
+  _id: Id<"doctorProfiles"> | Id<"patientProfiles">;
   fullName?: string;
   profileImage?: string;
   role?: string;
