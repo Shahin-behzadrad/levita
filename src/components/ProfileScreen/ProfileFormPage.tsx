@@ -76,7 +76,9 @@ interface ProfileFormProps {
 
 export const ProfileFormPage = ({ userData, onSuccess }: ProfileFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const updateUserProfile = useMutation(api.userProfiles.updateUserProfile);
+  const updateUserProfile = useMutation(
+    api.api.profiles.userProfiles.updateUserProfile
+  );
   const { messages } = useLanguage();
 
   const sexOptions = [

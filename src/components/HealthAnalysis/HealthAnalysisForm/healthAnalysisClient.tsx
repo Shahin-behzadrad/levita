@@ -57,17 +57,23 @@ export const HealthAnalysis = () => {
   const { control, handleSubmit, errors, setValue } = useHealthAnalysisForm();
 
   const updateHealthAnalysis = useMutation(
-    api.healthAnalysis.updateHealthAnalysisInfo
+    api.api.health.healthAnalysis.updateHealthAnalysisInfo
   );
-  const patientProfile = useQuery(api.patientProfiles.getPatientProfile);
+  const patientProfile = useQuery(
+    api.api.profiles.patientProfiles.getPatientProfile
+  );
 
-  const getAIAnalysis = useQuery(api.healthAnalysis.getAIAnalysis);
+  const getAIAnalysis = useQuery(api.api.health.healthAnalysis.getAIAnalysis);
 
-  const openAIAnalyzeHealth = useAction(api.healthAnalysis.openAIAnalyzeHealth);
+  const openAIAnalyzeHealth = useAction(
+    api.api.health.healthAnalysis.openAIAnalyzeHealth
+  );
   const getHealthAnalysisInfo = useQuery(
-    api.healthAnalysis.getHealthAnalysisInfo
+    api.api.health.healthAnalysis.getHealthAnalysisInfo
   );
-  const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
+  const generateUploadUrl = useMutation(
+    api.api.storage.fileStorage.generateUploadUrl
+  );
 
   useEffect(() => {
     if (patientProfile && patientProfile.sex && patientProfile.age) {

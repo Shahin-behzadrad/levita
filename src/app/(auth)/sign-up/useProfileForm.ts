@@ -40,7 +40,9 @@ const schema = yup.object().shape({
 
 export const useProfileForm = () => {
   const router = useRouter();
-  const updateUserProfile = useMutation(api.userProfiles.updateUserProfile);
+  const updateUserProfile = useMutation(
+    api.api.profiles.userProfiles.updateUserProfile
+  );
 
   const {
     control,

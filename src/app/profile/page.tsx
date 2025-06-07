@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import LoadingModal from "@/components/LoadingModal/LoadingModal";
 
 export default function ProfilePage() {
-  const userData = useQuery(api.userProfiles.getUserProfile);
+  const userData = useQuery(api.api.profiles.userProfiles.getUserProfile);
   const router = useRouter();
 
   useEffect(() => {

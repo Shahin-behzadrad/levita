@@ -15,7 +15,7 @@ import { LanguageSwitcher } from "../Shared/LanguageSwitcher/LanguageSwitcher";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 const Header = () => {
-  const userData = useQuery(api.userProfiles.getUserProfile);
+  const userData = useQuery(api.api.profiles.userProfiles.getUserProfile);
   const router = useRouter();
   const isMobile = useIsMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

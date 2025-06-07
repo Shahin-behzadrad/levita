@@ -11,7 +11,7 @@ import { TriangleAlert } from "lucide-react";
 
 export const HealthAnalysisResult = () => {
   const { messages } = useLanguage();
-  const getAIAnalysis = useQuery(api.healthAnalysis.getAIAnalysis);
+  const getAIAnalysis = useQuery(api.api.health.healthAnalysis.getAIAnalysis);
 
   if (!getAIAnalysis?.patientReport) {
     return null;

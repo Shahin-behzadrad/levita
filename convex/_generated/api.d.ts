@@ -13,17 +13,17 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as api_ai_ocr from "../api/ai/ocr.js";
+import type * as api_ai_openai from "../api/ai/openai.js";
+import type * as api_auth_checkEmailExists from "../api/auth/checkEmailExists.js";
+import type * as api_health_healthAnalysis from "../api/health/healthAnalysis.js";
+import type * as api_profiles_patientProfiles from "../api/profiles/patientProfiles.js";
+import type * as api_profiles_userProfiles from "../api/profiles/userProfiles.js";
+import type * as api_storage_fileStorage from "../api/storage/fileStorage.js";
+import type * as api_storage_profileImage from "../api/storage/profileImage.js";
 import type * as auth from "../auth.js";
-import type * as checkEmailExists from "../checkEmailExists.js";
-import type * as fileStorage from "../fileStorage.js";
-import type * as healthAnalysis from "../healthAnalysis.js";
 import type * as http from "../http.js";
-import type * as ocr from "../ocr.js";
-import type * as openai from "../openai.js";
-import type * as patientProfiles from "../patientProfiles.js";
-import type * as profileImage from "../profileImage.js";
 import type * as router from "../router.js";
-import type * as userProfiles from "../userProfiles.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -34,17 +34,17 @@ import type * as userProfiles from "../userProfiles.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  "api/ai/ocr": typeof api_ai_ocr;
+  "api/ai/openai": typeof api_ai_openai;
+  "api/auth/checkEmailExists": typeof api_auth_checkEmailExists;
+  "api/health/healthAnalysis": typeof api_health_healthAnalysis;
+  "api/profiles/patientProfiles": typeof api_profiles_patientProfiles;
+  "api/profiles/userProfiles": typeof api_profiles_userProfiles;
+  "api/storage/fileStorage": typeof api_storage_fileStorage;
+  "api/storage/profileImage": typeof api_storage_profileImage;
   auth: typeof auth;
-  checkEmailExists: typeof checkEmailExists;
-  fileStorage: typeof fileStorage;
-  healthAnalysis: typeof healthAnalysis;
   http: typeof http;
-  ocr: typeof ocr;
-  openai: typeof openai;
-  patientProfiles: typeof patientProfiles;
-  profileImage: typeof profileImage;
   router: typeof router;
-  userProfiles: typeof userProfiles;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
