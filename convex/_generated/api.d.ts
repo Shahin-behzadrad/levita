@@ -22,6 +22,7 @@ import type * as api_consultation_getConsultationDetails from "../api/consultati
 import type * as api_consultation_getExistingConsultationRequest from "../api/consultation/getExistingConsultationRequest.js";
 import type * as api_consultation_getPendingConsultations from "../api/consultation/getPendingConsultations.js";
 import type * as api_health_healthAnalysis from "../api/health/healthAnalysis.js";
+import type * as api_profiles_doctorProfile from "../api/profiles/doctorProfile.js";
 import type * as api_profiles_patientProfiles from "../api/profiles/patientProfiles.js";
 import type * as api_profiles_timeSlots from "../api/profiles/timeSlots.js";
 import type * as api_profiles_userProfiles from "../api/profiles/userProfiles.js";
@@ -49,6 +50,7 @@ declare const fullApi: ApiFromModules<{
   "api/consultation/getExistingConsultationRequest": typeof api_consultation_getExistingConsultationRequest;
   "api/consultation/getPendingConsultations": typeof api_consultation_getPendingConsultations;
   "api/health/healthAnalysis": typeof api_health_healthAnalysis;
+  "api/profiles/doctorProfile": typeof api_profiles_doctorProfile;
   "api/profiles/patientProfiles": typeof api_profiles_patientProfiles;
   "api/profiles/timeSlots": typeof api_profiles_timeSlots;
   "api/profiles/userProfiles": typeof api_profiles_userProfiles;
