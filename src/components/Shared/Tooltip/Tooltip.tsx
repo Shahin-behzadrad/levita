@@ -64,6 +64,12 @@ const Tooltip = ({ children, tooltipContent, style, onClose, open }: Props) => {
       >
         {tooltipContent}
       </div>
+      <div
+        className={clsx(classes.tooltipArrow, {
+          [classes.openTooltip]: open,
+          [classes.hoverDisabled]: open !== undefined,
+        })}
+      />
     </div>
   );
 };

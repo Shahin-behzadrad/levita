@@ -1,10 +1,9 @@
-// updateHealthAnalysis.ts
 import { v } from "convex/values";
-import { mutation, query, action } from "./_generated/server";
+import { mutation, query, action } from "../../_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError } from "convex/values";
-import { generateAIAnalysis } from "./openai";
-import { api } from "./_generated/api";
+import { generateAIAnalysis } from "../ai/openai";
+import { api } from "../../_generated/api";
 
 export const getHealthAnalysisInfo = query({
   handler: async (ctx) => {
@@ -138,10 +137,10 @@ export const openAIAnalyzeHealth = action({
     if (!userId) throw new ConvexError("Not authenticated");
 
     const patientProfile = await ctx.runQuery(
-      api.patientProfiles.getPatientProfile
+      api.api.profiles.patientProfiles.getPatientProfile
     );
 
-    if (!patientProfile.healthInput) {
+    if (!patientProfile?.healthInput) {
       throw new Error("Health analysis data missing");
     }
 
@@ -160,7 +159,7 @@ export const openAIAnalyzeHealth = action({
     });
 
     // Store the AI analysis in the patient profile
-    await ctx.runMutation(api.healthAnalysis.updateAIAnalysis, {
+    await ctx.runMutation(api.api.health.healthAnalysis.updateAIAnalysis, {
       patientId: patientProfile._id,
       aiAnalysis: aiResponse,
     });

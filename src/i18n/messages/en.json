@@ -4,6 +4,7 @@
     "english": "English",
     "albanian": "Albanian",
     "loading": "Loading...",
+    "pending": "Pending...",
     "error": "Error",
     "success": "Success",
     "save": "Save",
@@ -11,7 +12,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "continue": "Continue",
-    "submit": "Submit"
+    "submit": "Submit",
+    "consultationAccepted": "Consultation accepted"
   },
   "nav": {
     "home": "Home",
@@ -109,7 +111,21 @@
     "updateError": "Failed to update profile. Please try again.",
     "requiredField": "This field is required",
     "invalidAge": "Please enter a valid age",
-    "ageRange": "Age must be between 0 and 120"
+    "ageRange": "Age must be between 0 and 120",
+    "availability": {
+      "title": "Availability Settings",
+      "noSettings": "No availability settings configured",
+      "configure": "Configure Availability",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "defaultDuration": "Default Appointment Duration (minutes)",
+      "bufferTime": "Buffer Time Between Appointments (minutes)",
+      "workingHours": "Working Hours",
+      "notAvailable": "Not Available",
+      "updateSuccess": "Availability settings updated successfully",
+      "updateError": "Failed to update availability settings"
+    }
   },
   "errors": {
     "required": "This field is required",

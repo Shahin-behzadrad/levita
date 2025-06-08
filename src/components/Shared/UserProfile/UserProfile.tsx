@@ -28,7 +28,7 @@ export const UserProfile = ({ userData, onCloseSidebar }: UserProfileProps) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const { messages } = useLanguage();
   const imageUrl = useQuery(
-    api.profileImage.getProfileImageUrl,
+    api.api.storage.profileImage.getProfileImageUrl,
     userData.profileImage ? { storageId: userData.profileImage } : "skip"
   );
 

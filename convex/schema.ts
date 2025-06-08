@@ -15,6 +15,20 @@ const applicationTables = {
     languages: v.optional(v.array(v.string())),
     bio: v.optional(v.string()), // subtext: "Share anything you're particularly passionate about, in regards to healthcare and not"
     profileImage: v.optional(v.string()), // URL or storage ID for profile image
+    availabilitySettings: v.optional(
+      v.object({
+        defaultDuration: v.number(), // in minutes
+        bufferTime: v.number(), // in minutes
+        workingHours: v.array(
+          v.object({
+            dayOfWeek: v.number(), // 0-6 (Sunday-Saturday)
+            startTime: v.string(), // HH:mm format
+            endTime: v.string(), // HH:mm format
+            isAvailable: v.boolean(),
+          })
+        ),
+      })
+    ),
   }).index("by_userId", ["userId"]),
 
   // Patients
@@ -75,6 +89,36 @@ const applicationTables = {
       })
     ),
   }).index("by_userId", ["userId"]),
+
+  consultationRequests: defineTable({
+    patientId: v.id("patientProfiles"),
+    senderUserId: v.id("users"),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("accepted"),
+      v.literal("rejected")
+    ),
+    acceptedByDoctorId: v.optional(v.id("doctorProfiles")),
+
+    doctorReportPreview: v.optional(
+      v.object({
+        patientOverview: v.string(),
+        clinicalConsiderations: v.string(),
+        laboratoryFindings: v.object({
+          Biochemistry: v.array(v.string()),
+          Complete_Blood_Count: v.array(v.string()),
+          Other: v.array(v.string()),
+        }),
+        differentialDiagnosis: v.array(v.string()),
+        recommendations: v.array(v.string()),
+        conclusion: v.string(),
+      })
+    ),
+
+    createdAt: v.number(), // use Date.now()
+  })
+    .index("by_status", ["status"])
+    .index("by_patientId", ["patientId"]),
 };
 
 export default defineSchema({

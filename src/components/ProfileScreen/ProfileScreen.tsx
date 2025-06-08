@@ -1,21 +1,25 @@
-import { UserType } from "@/types/userType";
 import { Card, CardContent } from "../Shared/Card";
-import { Text } from "../Shared/Text/Text";
-import { ProfileImageUpload } from "../ProfileImageUpload/ProfileImageUpload";
-import styles from "./ProfileScreen.module.scss";
 import Grid from "../Shared/Grid/Grid";
 import { User } from "lucide-react";
+import { Text } from "../Shared/Text/Text";
 import { ProfileFormPage } from "./ProfileFormPage";
+import { ProfileImageUpload } from "../ProfileImageUpload/ProfileImageUpload";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { AvailabilitySettings } from "./AvailabilitySettings";
+import styles from "./ProfileScreen.module.scss";
+import { UserType } from "@/types/userType";
+import { Id } from "convex/_generated/dataModel";
 
 interface ProfileScreenProps {
-  userData?: UserType | null;
+  userData: UserType;
 }
 
 const ProfileScreen = ({ userData }: ProfileScreenProps) => {
   const { messages } = useLanguage();
 
   if (!userData) return null;
+
+  const isDoctor = userData.role === "doctor";
 
   return (
     <div className={styles.container}>
@@ -43,7 +47,7 @@ const ProfileScreen = ({ userData }: ProfileScreenProps) => {
                 noWrap
                 textAlign="center"
               />
-              {userData.role === "doctor" && userData.specialization && (
+              {isDoctor && userData.specialization && (
                 <div className={styles.specialization}>
                   <Text value={userData.specialization} fontSize="sm" />
                 </div>
@@ -69,6 +73,14 @@ const ProfileScreen = ({ userData }: ProfileScreenProps) => {
               <ProfileFormPage userData={userData} />
             </CardContent>
           </Card>
+
+          {isDoctor && (
+            <div className={styles.availabilityCard}>
+              <AvailabilitySettings
+                doctorId={userData._id as Id<"doctorProfiles">}
+              />
+            </div>
+          )}
         </Grid>
       </Grid>
     </div>
