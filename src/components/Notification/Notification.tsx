@@ -8,11 +8,10 @@ import Text from "@/components/Shared/Text";
 import DoctorNotification from "./ٔNotificationContent/Doctor/DoctorNotification";
 import PatientNotification from "./ٔNotificationContent/Patient/PatientNotification";
 import { ConsultationRequest } from "@/types/consultation";
-import { useNotificationStore } from "@/store/notificationStore";
 
 const Notification = ({ isDoctor }: { isDoctor: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isRead, setRead } = useNotificationStore();
+
   const patientProfile = useQuery(
     api.api.profiles.patientProfiles.getPatientProfile
   );
@@ -27,14 +26,8 @@ const Notification = ({ isDoctor }: { isDoctor: boolean }) => {
     api.api.consultation.getPendingConsultations.getPendingConsultations
   ) as ConsultationRequest[];
 
-  useEffect(() => {
-    if (isOpen && isDoctor) {
-      setRead(true);
-    }
-  }, [isOpen, isDoctor, setRead]);
-
   const hasNotifications =
-    (getExistingNotification || pendingConsultations?.length > 0) && !isRead;
+    getExistingNotification || pendingConsultations?.length > 0;
 
   return (
     <Tooltip

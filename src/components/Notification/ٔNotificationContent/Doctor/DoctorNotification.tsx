@@ -19,8 +19,9 @@ const DoctorNotification = ({
   if (!pendingConsultations?.length) {
     return (
       <Text
-        value="No pending consultations"
-        variant="p"
+        value="No new notifications"
+        variant="span"
+        noWrap
         fontSize="sm"
         color="gray"
       />

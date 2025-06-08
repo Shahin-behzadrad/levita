@@ -4,6 +4,7 @@
     "english": "English",
     "albanian": "Albanian",
     "loading": "Loading...",
+    "pending": "Pending...",
     "error": "Error",
     "success": "Success",
     "save": "Save",
@@ -11,7 +12,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "continue": "Continue",
-    "submit": "Submit"
+    "submit": "Submit",
+    "consultationAccepted": "Consultation accepted"
   },
   "nav": {
     "home": "Home",

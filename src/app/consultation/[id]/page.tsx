@@ -3,6 +3,12 @@
 import { use } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import ConsultationDetails from "@/components/Consultation/ConsultationDetails/ConsultationDetails";
+import { notFound } from "next/navigation";
+import ErrorBoundary from "@/components/ErrorBoundary/ErrorBoundary";
+
+function isValidConvexId(id: string): boolean {
+  return /^[a-zA-Z0-9_-]{10,}$/.test(id);
+}
 
 export default function ConsultationPage({
   params,
@@ -11,7 +17,13 @@ export default function ConsultationPage({
 }) {
   const { id } = use(params);
 
+  if (!isValidConvexId(id)) {
+    return notFound();
+  }
+
   return (
-    <ConsultationDetails consultationId={id as Id<"consultationRequests">} />
+    <ErrorBoundary>
+      <ConsultationDetails consultationId={id as Id<"consultationRequests">} />
+    </ErrorBoundary>
   );
 }

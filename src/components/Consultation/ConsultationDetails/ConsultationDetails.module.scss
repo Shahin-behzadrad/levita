@@ -124,9 +124,9 @@
 .actions {
   display: flex;
   gap: 1rem;
-  margin-top: 2rem;
+  justify-content: flex-end;
   padding-top: 2rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--secondary-light);
 }
 
 .acceptButton {

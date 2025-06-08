@@ -4,6 +4,7 @@
     "english": "Anglisht",
     "albanian": "Shqip",
     "loading": "Duke u ngarkuar...",
+    "pending": "Duke u përfunduar...",
     "error": "Gabim",
     "success": "Sukses",
     "save": "Ruaj",
@@ -11,7 +12,8 @@
     "delete": "Fshi",
     "edit": "Ndrysho",
     "continue": "Vazhdo",
-    "submit": "Dërgo"
+    "submit": "Dërgo",
+    "consultationAccepted": "Konsultimi u pranua"
   },
   "nav": {
     "home": "Ballina",
