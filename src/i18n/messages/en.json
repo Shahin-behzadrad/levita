@@ -13,7 +13,13 @@
     "edit": "Edit",
     "continue": "Continue",
     "submit": "Submit",
-    "consultationAccepted": "Consultation accepted"
+    "accept": "Accept",
+    "acceptAndSchedule": "Accept and Schedule",
+    "consultationAccepted": "Consultation accepted",
+    "confirm": "Confirm",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "scheduleConsultation": "Schedule Consultation"
   },
   "nav": {
     "home": "Home",

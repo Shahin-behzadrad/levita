@@ -13,7 +13,13 @@
     "edit": "Ndrysho",
     "continue": "Vazhdo",
     "submit": "Dërgo",
-    "consultationAccepted": "Konsultimi u pranua"
+    "accept": "Prano",
+    "acceptAndSchedule": "Prano dhe Përzgjedh Datën",
+    "consultationAccepted": "Konsultimi u pranua",
+    "confirm": "Konfirmo",
+    "selectDate": "Përzgjidh Datën",
+    "selectTime": "Përzgjidh Ora",
+    "scheduleConsultation": "Planifikoni Konsultimin"
   },
   "nav": {
     "home": "Ballina",

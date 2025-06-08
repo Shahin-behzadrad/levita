@@ -7,10 +7,19 @@ import { Card, CardContent, CardHeader } from "@/components/Shared/Card";
 import Text from "@/components/Shared/Text";
 import Button from "@/components/Shared/Button";
 import styles from "./ConsultationDetails.module.scss";
-import { Clock, User, FileText, Microscope, ListChecks } from "lucide-react";
+import {
+  Clock,
+  User,
+  FileText,
+  Microscope,
+  ListChecks,
+  CalendarDays,
+} from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import LoadingModal from "@/components/LoadingModal/LoadingModal";
+import { useState } from "react";
 import { toast } from "sonner";
+import ConsultationScheduler from "../ConsultationScheduler/ConsultationScheduler";
 
 interface LaboratoryFindings {
   [category: string]: string[];
@@ -23,6 +32,7 @@ export default function ConsultationDetails({
 }) {
   const { messages } = useLanguage();
   const userProfile = useQuery(api.api.profiles.userProfiles.getUserProfile);
+  const [showScheduler, setShowScheduler] = useState(false);
 
   const consultation = useQuery(
     api.api.consultation.getConsultationDetails.getConsultationDetails,
@@ -35,12 +45,17 @@ export default function ConsultationDetails({
     api.api.consultation.acceptConsultation.acceptConsultation
   );
 
-  const handleAcceptConsultation = async () => {
+  const handleAcceptConsultation = async (consultationDateTime: string) => {
     if (userProfile && consultation) {
       await acceptConsultation({
         doctorId: userProfile._id as Id<"doctorProfiles">,
         requestId: consultationId,
+        consultationDateTime,
       });
+
+      console.log(consultationDateTime);
+
+      setShowScheduler(false);
       toast.success(messages.common.consultationAccepted);
     }
   };
@@ -174,15 +189,24 @@ export default function ConsultationDetails({
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleAcceptConsultation}
+                onClick={() => setShowScheduler(true)}
                 className={styles.acceptButton}
+                endIcon={<CalendarDays size={20} />}
               >
-                {messages.common.submit}
+                {messages.common.acceptAndSchedule}
               </Button>
             </div>
           )}
         </CardContent>
       </Card>
+
+      {showScheduler && (
+        <ConsultationScheduler
+          isOpen={showScheduler}
+          onClose={() => setShowScheduler(false)}
+          onConfirm={handleAcceptConsultation}
+        />
+      )}
     </div>
   );
 }
