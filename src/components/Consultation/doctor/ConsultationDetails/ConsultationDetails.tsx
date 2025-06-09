@@ -6,10 +6,13 @@ import { useMutation, useQuery } from "convex/react";
 import styles from "./ConsultationDetails.module.scss";
 import { useLanguage } from "@/i18n/LanguageContext";
 import LoadingModal from "@/components/LoadingModal/LoadingModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import ConsultationScheduler from "../ConsultationScheduler/ConsultationScheduler";
 import ConsultationCard from "../ConsultationCard/ConsultationCard";
+import PatientInfoCard from "../PatientInfoCard/PatientInfoCard";
+import HealthAnalysisModal from "../HealthAnalysisModal/HealthAnalysisModal";
+import Grid from "@/components/Shared/Grid/Grid";
 
 export default function ConsultationDetails({
   consultationId,
@@ -19,6 +22,8 @@ export default function ConsultationDetails({
   const { messages } = useLanguage();
   const userProfile = useQuery(api.api.profiles.userProfiles.getUserProfile);
   const [showScheduler, setShowScheduler] = useState(false);
+  const [showHealthAnalysis, setShowHealthAnalysis] = useState(false);
+  const [canJoin, setCanJoin] = useState(false);
 
   const consultation = useQuery(
     api.api.consultation.getConsultationDetails.getConsultationDetails,
@@ -31,7 +36,22 @@ export default function ConsultationDetails({
     api.api.consultation.acceptConsultation.acceptConsultation
   );
 
-  console.log(consultation);
+  useEffect(() => {
+    if (consultation?.consultationDateTime) {
+      const checkTime = () => {
+        const now = new Date();
+        const consultationTime = new Date(
+          consultation.consultationDateTime as string
+        );
+        const timeDiff = consultationTime.getTime() - now.getTime();
+        setCanJoin(timeDiff <= 0 && timeDiff > -3600000); // Enable join button if within 1 hour of consultation time
+      };
+
+      checkTime();
+      const interval = setInterval(checkTime, 60000); // Check every minute
+      return () => clearInterval(interval);
+    }
+  }, [consultation?.consultationDateTime]);
 
   const handleAcceptConsultation = async (consultationDateTime: string) => {
     if (userProfile && consultation) {
@@ -41,11 +61,14 @@ export default function ConsultationDetails({
         consultationDateTime,
       });
 
-      console.log(consultationDateTime);
-
       setShowScheduler(false);
       toast.success(messages.common.consultationAccepted);
     }
+  };
+
+  const handleJoinConsultation = () => {
+    // TODO: Implement video consultation join logic
+    toast.info("Joining consultation...");
   };
 
   if (consultation === undefined) {
@@ -56,15 +79,25 @@ export default function ConsultationDetails({
     throw new Error("Consultation not found");
   }
 
-  //TODO: preview consultation after accepting and then render the date of consultatioin for patient too
-
   return (
     <div className={styles.container}>
-      <ConsultationCard
-        consultation={consultation}
-        messages={messages}
-        onScheduleClick={() => setShowScheduler(true)}
-      />
+      {consultation.status === "accepted" && (
+        <PatientInfoCard
+          consultation={consultation}
+          messages={messages}
+          canJoin={canJoin}
+          onJoinClick={handleJoinConsultation}
+          previewUsersHealthAnalysis={() => setShowHealthAnalysis(true)}
+        />
+      )}
+
+      {consultation.status === "pending" && (
+        <ConsultationCard
+          consultation={consultation}
+          messages={messages}
+          onScheduleClick={() => setShowScheduler(true)}
+        />
+      )}
 
       {showScheduler && (
         <ConsultationScheduler
@@ -73,6 +106,13 @@ export default function ConsultationDetails({
           onConfirm={handleAcceptConsultation}
         />
       )}
+
+      <HealthAnalysisModal
+        isOpen={showHealthAnalysis}
+        onClose={() => setShowHealthAnalysis(false)}
+        consultation={consultation}
+        messages={messages}
+      />
     </div>
   );
 }

@@ -13,6 +13,7 @@ interface CardHeaderProps {
   className?: string;
   action?: ReactNode;
   titleColor?: "primary" | "secondary" | "white" | "true-white" | "black";
+  onClick?: () => void;
 }
 
 export const CardHeader: FC<CardHeaderProps> = ({
@@ -25,8 +26,9 @@ export const CardHeader: FC<CardHeaderProps> = ({
   titleFontSize = 23,
   titleClassName,
   titleColor,
+  onClick,
 }) => (
-  <div className={`${styles.cardHeader} ${className || ""}`}>
+  <div className={`${styles.cardHeader} ${className || ""}`} onClick={onClick}>
     <div>
       <Text
         value={title}
