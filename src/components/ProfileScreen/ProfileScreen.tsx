@@ -5,10 +5,8 @@ import { Text } from "../Shared/Text/Text";
 import { ProfileFormPage } from "./ProfileFormPage";
 import { ProfileImageUpload } from "../ProfileImageUpload/ProfileImageUpload";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { AvailabilitySettings } from "./AvailabilitySettings";
 import styles from "./ProfileScreen.module.scss";
 import { UserType } from "@/types/userType";
-import { Id } from "convex/_generated/dataModel";
 
 interface ProfileScreenProps {
   userData: UserType;
@@ -73,14 +71,6 @@ const ProfileScreen = ({ userData }: ProfileScreenProps) => {
               <ProfileFormPage userData={userData} />
             </CardContent>
           </Card>
-
-          {isDoctor && (
-            <div className={styles.availabilityCard}>
-              <AvailabilitySettings
-                doctorId={userData._id as Id<"doctorProfiles">}
-              />
-            </div>
-          )}
         </Grid>
       </Grid>
     </div>

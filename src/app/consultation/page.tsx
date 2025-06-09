@@ -58,7 +58,6 @@ export default function ConsultationsPage() {
           <Grid
             item
             xs={12}
-            sm={6}
             className={styles.cardContainer}
             key={consultation._id}
           >
@@ -71,7 +70,7 @@ export default function ConsultationsPage() {
                   <div className={styles.statusBadge}>
                     <Text
                       value={messages.common[consultation.status]}
-                      color="white"
+                      color="black"
                       fontSize="sm"
                     />
                   </div>
@@ -105,11 +104,10 @@ export default function ConsultationsPage() {
                   )}
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className={styles.cardFooter}>
                 <Button
                   variant="contained"
                   color="primary"
-                  fullWidth
                   onClick={() =>
                     router.push(`/consultation/${consultation._id}`)
                   }

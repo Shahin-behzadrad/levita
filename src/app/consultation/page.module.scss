@@ -8,14 +8,17 @@
       height: 100%;
 
       .statusBadge {
-        background-color: var(--primary-main);
+        background-color: var(--success-main);
         padding: 4px 12px;
         border-radius: 16px;
-        color: var(--text-white);
       }
 
       .text {
         width: fit-content;
+      }
+
+      .cardFooter {
+        justify-content: flex-end;
       }
     }
   }

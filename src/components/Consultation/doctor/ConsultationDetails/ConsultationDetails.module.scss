@@ -1,9 +1,10 @@
 .container {
   margin: 100px auto;
-  padding: 2rem;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-width: 1000px;
 }
 
 .patientInfoCard {

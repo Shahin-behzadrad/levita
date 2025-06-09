@@ -24,4 +24,5 @@ export type ConsultationRequest = {
   acceptedByDoctorId?: Id<"doctorProfiles">;
   doctorReportPreview?: DoctorReportPreview;
   createdAt: number;
+  consultationDateTime?: string;
 };

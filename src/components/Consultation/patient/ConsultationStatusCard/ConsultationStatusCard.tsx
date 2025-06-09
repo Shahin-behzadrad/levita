@@ -18,8 +18,6 @@ export default function ConsultationStatusCard({
   consultation,
   doctorProfile,
 }: ConsultationStatusCardProps) {
-  console.log(doctorProfile);
-
   return (
     <Card className={styles.requestSentCard}>
       <CardContent>
@@ -54,7 +52,10 @@ export default function ConsultationStatusCard({
       </CardContent>
       {doctorProfile && doctorProfile._id && (
         <CardContent>
-          <DoctorInfoCard doctor={doctorProfile as UserType} />
+          <DoctorInfoCard
+            doctor={doctorProfile as UserType}
+            consultationTime={consultation.consultationDateTime}
+          />
         </CardContent>
       )}
     </Card>
