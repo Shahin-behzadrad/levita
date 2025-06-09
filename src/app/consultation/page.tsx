@@ -4,15 +4,21 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { notFound, useRouter } from "next/navigation";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Card, CardContent, CardHeader } from "@/components/Shared/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardFooter,
+} from "@/components/Shared/Card";
 import Text from "@/components/Shared/Text";
 import Button from "@/components/Shared/Button";
 import styles from "./page.module.scss";
 import { User, Clock, Calendar } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useEffect } from "react";
+
 import { Id } from "../../../convex/_generated/dataModel";
 import LoadingModal from "@/components/LoadingModal/LoadingModal";
+import Grid from "@/components/Shared/Grid/Grid";
 
 interface Consultation {
   _id: Id<"consultationRequests">;
@@ -47,62 +53,74 @@ export default function ConsultationsPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.consultationsList}>
+      <Grid container spacing={8}>
         {consultations.map((consultation: Consultation) => (
-          <div key={consultation._id} className={styles.consultationCard}>
-            <Card>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            className={styles.cardContainer}
+            key={consultation._id}
+          >
+            <Card className={styles.card}>
               <CardHeader
                 title={consultation.patient?.fullName || "Unknown Patient"}
                 titleStartAdornment={<User size={24} />}
+                titleFontSize={16}
                 action={
                   <div className={styles.statusBadge}>
                     <Text
                       value={messages.common[consultation.status]}
-                      variant="p"
+                      color="white"
                       fontSize="sm"
                     />
                   </div>
                 }
               />
 
-              <CardContent className={styles.content}>
-                <div className={styles.infoRow}>
-                  <Clock size={20} className={styles.icon} />
-                  <Text
-                    value={`${messages.common.submitted}: ${new Date(
-                      consultation._creationTime
-                    ).toLocaleString()}`}
-                    variant="p"
-                    fontSize="sm"
-                  />
-                </div>
-
-                {consultation.consultationDateTime && (
-                  <div className={styles.infoRow}>
-                    <Calendar size={20} className={styles.icon} />
+              <CardContent>
+                <div>
+                  <div>
                     <Text
-                      value={`${messages.common.consultationTime}: ${new Date(
-                        consultation.consultationDateTime
+                      className={styles.text}
+                      startAdornment={<Clock size={20} />}
+                      value={`${messages.common.submitted}: ${new Date(
+                        consultation._creationTime
                       ).toLocaleString()}`}
-                      variant="p"
                       fontSize="sm"
                     />
                   </div>
-                )}
 
+                  {consultation.consultationDateTime && (
+                    <div>
+                      <Text
+                        className={styles.text}
+                        startAdornment={<Calendar size={20} />}
+                        value={`${messages.common.consultationTime}: ${new Date(
+                          consultation.consultationDateTime
+                        ).toLocaleString()}`}
+                        fontSize="sm"
+                      />
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+              <CardFooter>
                 <Button
                   variant="contained"
                   color="primary"
                   fullWidth
-                  className={styles.viewButton}
+                  onClick={() =>
+                    router.push(`/consultation/${consultation._id}`)
+                  }
                 >
                   {messages.common.viewDetails}
                 </Button>
-              </CardContent>
+              </CardFooter>
             </Card>
-          </div>
+          </Grid>
         ))}
-      </div>
+      </Grid>
     </div>
   );
 }

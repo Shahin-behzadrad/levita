@@ -36,7 +36,10 @@
     "consultations": "Consultations",
     "noConsultationsFound": "No Consultations Found",
     "noConsultationsDescription": "You currently have no accepted consultations. When patients request consultations, they will appear here for your review and acceptance.",
-    "backToHome": "Back to Home"
+    "backToHome": "Back to Home",
+    "unknownPatient": "Unknown Patient",
+    "accepted": "Accepted",
+    "rejected": "Rejected"
   },
   "nav": {
     "home": "Home",

@@ -36,7 +36,10 @@
     "consultations": "Konsultimet",
     "noConsultationsFound": "Nuk u Gjetën Konsultime",
     "noConsultationsDescription": "Aktualisht nuk keni asnjë konsultim të pranuar. Kur pacientët kërkojnë konsultime, ato do të shfaqen këtu për rishikim dhe pranim nga ju.",
-    "backToHome": "Kthehu në Ballina"
+    "backToHome": "Kthehu në Ballina",
+    "unknownPatient": "Pacient i Panjohur",
+    "accepted": "E Pranuar",
+    "rejected": "E Refuzuar"
   },
   "nav": {
     "home": "Ballina",

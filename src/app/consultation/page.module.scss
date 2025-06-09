@@ -2,46 +2,21 @@
   padding: 24px;
   max-width: 1200px;
   margin: 100px auto;
-}
 
-.consultationsList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
-}
+  .cardContainer {
+    .card {
+      height: 100%;
 
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+      .statusBadge {
+        background-color: var(--primary-main);
+        padding: 4px 12px;
+        border-radius: 16px;
+        color: var(--text-white);
+      }
 
-.infoRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.icon {
-  color: var(--text-secondary);
-}
-
-.statusBadge {
-  padding: 4px 12px;
-  border-radius: 16px;
-  background-color: var(--background-secondary);
-}
-
-.viewButton {
-  margin-top: 8px;
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 16px;
-  }
-
-  .consultationsList {
-    grid-template-columns: 1fr;
+      .text {
+        width: fit-content;
+      }
+    }
   }
 }
