@@ -1,18 +1,20 @@
-import MainPage from "@/components/MainPage/MainPage";
-import Footer from "../components/Footer/Footer";
+import { App } from "@/components/App/App";
+import { AppProvider } from "@/lib/AppContext";
 import type { Metadata } from "next";
 import styles from "./page.module.scss";
 
 export const metadata: Metadata = {
-  title: "Levita - Home",
+  title: "Levita - Your AI-powered health analysis platform",
   description: "Welcome to Levita - Your AI-powered health analysis platform",
   keywords: ["health", "AI", "analysis", "wellness"],
 };
 
-export default async function HomeServerComponent() {
+export default function Home() {
   return (
     <div className={styles.container}>
-      <MainPage />
+      <AppProvider>
+        <App />
+      </AppProvider>
     </div>
   );
 }

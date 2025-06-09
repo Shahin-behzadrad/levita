@@ -1,13 +1,12 @@
 import { FC, useEffect } from "react";
-import Link from "next/link";
 import Button from "../Button";
 import { SignOutButton } from "../../SignOutButton/SignOutButton";
 import { UserProfile } from "../UserProfile/UserProfile";
 import styles from "./Sidebar.module.scss";
 import clsx from "clsx";
 import { X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useApp } from "@/lib/AppContext";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -19,7 +18,7 @@ interface SidebarProps {
 }
 
 const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
-  const router = useRouter();
+  const { setView } = useApp();
   const { messages } = useLanguage();
 
   useEffect(() => {
@@ -69,7 +68,7 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
                 variant="outlined"
                 onClick={() => {
                   onOpenChange(false);
-                  router.push("/sign-in");
+                  setView("sign-in");
                 }}
               >
                 {messages.auth.signIn}
@@ -78,7 +77,7 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onOpenChange, userData }) => {
                 variant="contained"
                 onClick={() => {
                   onOpenChange(false);
-                  router.push("/sign-up");
+                  setView("sign-up");
                 }}
               >
                 {messages.auth.signUp}
