@@ -1,0 +1,25 @@
+.container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 100px auto;
+
+  .cardContainer {
+    .card {
+      height: 100%;
+
+      .statusBadge {
+        background-color: var(--success-main);
+        padding: 4px 12px;
+        border-radius: 16px;
+      }
+
+      .text {
+        width: fit-content;
+      }
+
+      .cardFooter {
+        justify-content: flex-end;
+      }
+    }
+  }
+}

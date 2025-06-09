@@ -1,16 +1,16 @@
 "use client";
 
 import { use } from "react";
-import { Id } from "../../../../convex/_generated/dataModel";
-import ConsultationDetails from "@/components/Consultation/doctor/ConsultationDetails/ConsultationDetails";
+import { Id } from "../../../../../convex/_generated/dataModel";
 import { notFound } from "next/navigation";
 import ErrorBoundary from "@/components/ErrorBoundary/ErrorBoundary";
+import ConsultationDetails from "@/components/Consultation/doctor/ConsultationDetails/ConsultationDetails";
 
 function isValidConvexId(id: string): boolean {
   return /^[a-zA-Z0-9_-]{10,}$/.test(id);
 }
 
-export default function ConsultationPage({
+export default function DoctorConsultationPage({
   params,
 }: {
   params: Promise<{ id: string }>;

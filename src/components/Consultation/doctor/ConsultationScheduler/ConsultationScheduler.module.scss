@@ -1,0 +1,29 @@
+.schedulerActions {
+  display: flex;
+  gap: 12px;
+}
+
+.label {
+  margin-bottom: 6px;
+  margin-left: 6px;
+}
+
+.timePickerWrapper {
+  width: 90%;
+
+  .datePicker,
+  .timePicker {
+    width: 100%;
+
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+  }
+}

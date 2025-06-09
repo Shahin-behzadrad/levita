@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.card {
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.description {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.button {
+  margin-top: 1rem;
+  align-self: center;
+  min-width: 200px;
+}

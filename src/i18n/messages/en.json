@@ -13,7 +13,33 @@
     "edit": "Edit",
     "continue": "Continue",
     "submit": "Submit",
-    "consultationAccepted": "Consultation accepted"
+    "accept": "Accept",
+    "acceptAndSchedule": "Accept and Schedule",
+    "consultationAccepted": "Consultation accepted",
+    "confirm": "Confirm",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "scheduleConsultation": "Schedule Consultation",
+    "patientInfo": "Patient Information",
+    "patientName": "Patient Name",
+    "consultationTime": "Consultation Time",
+    "joinConsultation": "Join Consultation",
+    "waitingForConsultation": "Waiting for Consultation Time",
+    "consultationDetails": "Consultation Details",
+    "expandDetails": "Expand Details",
+    "collapseDetails": "Collapse Details",
+
+    "previewUsersHealthAnalysis": "Preview Users Health Analysis",
+    "userAnalysis": "User Analysis",
+    "viewDetails": "View Details",
+    "submitted": "Submitted",
+    "consultations": "Consultations",
+    "noConsultationsFound": "No Consultations Found",
+    "noConsultationsDescription": "You currently have no accepted consultations. When patients request consultations, they will appear here for your review and acceptance.",
+    "backToHome": "Back to Home",
+    "unknownPatient": "Unknown Patient",
+    "accepted": "Accepted",
+    "rejected": "Rejected"
   },
   "nav": {
     "home": "Home",
@@ -27,7 +53,8 @@
     "title": "AI-Powered Healthcare Assistant",
     "description": "Get personalized health insights based on your symptoms and lab results using advanced AI technology.",
     "getStarted": "Get Started",
-    "learnMore": "Learn More"
+    "learnMore": "Learn More",
+    "myConsultations": "My Consultations"
   },
   "features": {
     "title": "Features",

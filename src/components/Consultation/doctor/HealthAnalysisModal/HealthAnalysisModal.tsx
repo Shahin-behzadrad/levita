@@ -1,78 +1,40 @@
-"use client";
-
-import { Id } from "../../../../convex/_generated/dataModel";
-import { api } from "../../../../convex/_generated/api";
-import { useMutation, useQuery } from "convex/react";
+import Modal from "@/components/Shared/Modal/Modal";
 import { Card, CardContent, CardHeader } from "@/components/Shared/Card";
 import Text from "@/components/Shared/Text";
-import Button from "@/components/Shared/Button";
-import styles from "./ConsultationDetails.module.scss";
-import { Clock, User, FileText, Microscope, ListChecks } from "lucide-react";
-import { useLanguage } from "@/i18n/LanguageContext";
-import LoadingModal from "@/components/LoadingModal/LoadingModal";
-import { toast } from "sonner";
+import styles from "./HealthAnalysisModal.module.scss";
+import { User, FileText, Microscope, ListChecks } from "lucide-react";
 
 interface LaboratoryFindings {
   [category: string]: string[];
 }
 
-export default function ConsultationDetails({
-  consultationId,
-}: {
-  consultationId: Id<"consultationRequests">;
-}) {
-  const { messages } = useLanguage();
-  const userProfile = useQuery(api.api.profiles.userProfiles.getUserProfile);
-
-  const consultation = useQuery(
-    api.api.consultation.getConsultationDetails.getConsultationDetails,
-    {
-      consultationId,
-    }
-  );
-
-  const acceptConsultation = useMutation(
-    api.api.consultation.acceptConsultation.acceptConsultation
-  );
-
-  const handleAcceptConsultation = async () => {
-    if (userProfile && consultation) {
-      await acceptConsultation({
-        doctorId: userProfile._id as Id<"doctorProfiles">,
-        requestId: consultationId,
-      });
-      toast.success(messages.common.consultationAccepted);
-    }
+interface HealthAnalysisModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  consultation: {
+    doctorReportPreview?: {
+      patientOverview: string;
+      clinicalConsiderations: string;
+      laboratoryFindings?: LaboratoryFindings;
+      recommendations: string[];
+    };
   };
+  messages: any;
+}
 
-  if (consultation === undefined) {
-    return <LoadingModal />;
-  }
-
-  if (consultation === null) {
-    throw new Error("Consultation not found");
-  }
-
+export default function HealthAnalysisModal({
+  isOpen,
+  onClose,
+  consultation,
+  messages,
+}: HealthAnalysisModalProps) {
   return (
-    <div className={styles.container}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <Card className={styles.card}>
         <CardHeader
           title={messages.healthAnalysis.formTitle}
           titleFontSize={28}
           titleColor="primary"
-          subheader={`${messages.common.submit} ${new Date(
-            consultation?._creationTime ?? new Date()
-          ).toLocaleDateString()}`}
-          titleStartAdornment={
-            <Clock size={20} className={styles.headerIcon} />
-          }
-          action={
-            consultation?.status === "pending" ? (
-              <div className={styles.statusBadge}>
-                <Text value={messages.common.pending} />
-              </div>
-            ) : undefined
-          }
           className={styles.header}
         />
 
@@ -168,21 +130,8 @@ export default function ConsultationDetails({
               )}
             </ul>
           </div>
-
-          {consultation?.status === "pending" && (
-            <div className={styles.actions}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAcceptConsultation}
-                className={styles.acceptButton}
-              >
-                {messages.common.submit}
-              </Button>
-            </div>
-          )}
         </CardContent>
       </Card>
-    </div>
+    </Modal>
   );
 }

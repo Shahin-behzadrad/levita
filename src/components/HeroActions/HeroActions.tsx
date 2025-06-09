@@ -14,6 +14,13 @@ const HeroActions = () => {
 
   return (
     <div className={styles.container}>
+      {userData?.role === "doctor" && (
+        <Link href="/consultation">
+          <Button variant="contained" size="lg">
+            {messages.hero.myConsultations}
+          </Button>
+        </Link>
+      )}
       {userData?.role !== "doctor" && (
         <Link href={isAuthenticated ? "/health-analysis" : "/sign-in"}>
           <Button variant="contained" size="lg">

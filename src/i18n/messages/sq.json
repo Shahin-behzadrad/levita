@@ -13,7 +13,33 @@
     "edit": "Ndrysho",
     "continue": "Vazhdo",
     "submit": "Dërgo",
-    "consultationAccepted": "Konsultimi u pranua"
+    "accept": "Prano",
+    "acceptAndSchedule": "Prano dhe Përzgjedh Datën",
+    "consultationAccepted": "Konsultimi u pranua",
+    "confirm": "Konfirmo",
+    "selectDate": "Përzgjidh Datën",
+    "selectTime": "Përzgjidh Ora",
+    "scheduleConsultation": "Planifikoni Konsultimin",
+    "patientInfo": "Informacioni i Pacientit",
+    "patientName": "Emri i Pacientit",
+    "consultationTime": "Koha e Konsultimit",
+    "joinConsultation": "Hyni në Konsultim",
+    "waitingForConsultation": "Duke pritur Kohën e Konsultimit",
+    "consultationDetails": "Detajet e Konsultimit",
+    "expandDetails": "Zgjero Detajet",
+    "collapseDetails": "Mbyll Detajet",
+
+    "previewUsersHealthAnalysis": "Shiko Analizën e Shëndetit të Pacientit",
+    "userAnalysis": "Analiza e Shëndetit të Pacientit",
+    "viewDetails": "Shiko Detajet",
+    "submitted": "E Dërguar",
+    "consultations": "Konsultimet",
+    "noConsultationsFound": "Nuk u Gjetën Konsultime",
+    "noConsultationsDescription": "Aktualisht nuk keni asnjë konsultim të pranuar. Kur pacientët kërkojnë konsultime, ato do të shfaqen këtu për rishikim dhe pranim nga ju.",
+    "backToHome": "Kthehu në Ballina",
+    "unknownPatient": "Pacient i Panjohur",
+    "accepted": "E Pranuar",
+    "rejected": "E Refuzuar"
   },
   "nav": {
     "home": "Ballina",
@@ -27,7 +53,8 @@
     "title": "Asistenti Shëndetësor i Mundësuar nga AI",
     "description": "Merrni njohuri të personalizuara shëndetësore bazuar në simptomat dhe rezultatet tuaja laboratorike duke përdorur teknologjinë e avancuar të AI.",
     "getStarted": "Filloni",
-    "learnMore": "Mëso më shumë"
+    "learnMore": "Mëso më shumë",
+    "myConsultations": "Konsultimet e Mia"
   },
   "features": {
     "title": "Veçoritë",

@@ -9,6 +9,8 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import styles from "./HealthAnalysisResult.module.scss";
 import { TriangleAlert } from "lucide-react";
 import { useEffect } from "react";
+import ConsultationStatusCard from "@/components/Consultation/patient/ConsultationStatusCard/ConsultationStatusCard";
+import { UserType } from "@/types/userType";
 
 export const HealthAnalysisResult = () => {
   const { messages } = useLanguage();
@@ -21,6 +23,13 @@ export const HealthAnalysisResult = () => {
     api.api.consultation.getExistingConsultationRequest
       .getExistingConsultationRequest,
     patientProfile?._id ? { patientId: patientProfile?._id } : "skip"
+  );
+
+  const doctorProfile = useQuery(
+    api.api.profiles.doctorProfile.getDoctorProfileById,
+    getExisting?.acceptedByDoctorId
+      ? { doctorId: getExisting?.acceptedByDoctorId }
+      : "skip"
   );
 
   const safeCreateRequest = useMutation(
@@ -49,6 +58,12 @@ export const HealthAnalysisResult = () => {
 
   return (
     <div className={styles.container}>
+      {getExisting && (
+        <ConsultationStatusCard
+          consultation={getExisting}
+          doctorProfile={doctorProfile as UserType}
+        />
+      )}
       <Card className={styles.card}>
         <CardHeader
           title={messages.healthAnalysis?.result}

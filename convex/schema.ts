@@ -99,6 +99,7 @@ const applicationTables = {
       v.literal("rejected")
     ),
     acceptedByDoctorId: v.optional(v.id("doctorProfiles")),
+    consultationDateTime: v.optional(v.string()), // Format: YYYY-MM-DD HH:mm
 
     doctorReportPreview: v.optional(
       v.object({
