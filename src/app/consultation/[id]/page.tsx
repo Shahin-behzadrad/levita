@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
-import ConsultationDetails from "@/components/Consultation/ConsultationDetails/ConsultationDetails";
+import ConsultationDetails from "@/components/Consultation/doctor/ConsultationDetails/ConsultationDetails";
 import { notFound } from "next/navigation";
 import ErrorBoundary from "@/components/ErrorBoundary/ErrorBoundary";
 

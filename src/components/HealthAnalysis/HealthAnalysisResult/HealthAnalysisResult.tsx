@@ -9,7 +9,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import styles from "./HealthAnalysisResult.module.scss";
 import { TriangleAlert } from "lucide-react";
 import { useEffect } from "react";
-import ConsultationStatusCard from "@/components/Consultation/ConsultationStatusCard/ConsultationStatusCard";
+import ConsultationStatusCard from "@/components/Consultation/patient/ConsultationStatusCard/ConsultationStatusCard";
 import { UserType } from "@/types/userType";
 
 export const HealthAnalysisResult = () => {
