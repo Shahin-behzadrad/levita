@@ -1,26 +1,52 @@
 import { api } from "../../../../../convex/_generated/api";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import styles from "./PendingConsultations.module.scss";
 import ConsultationScheduler from "../ConsultationScheduler/ConsultationScheduler";
 
 import { useState } from "react";
-import { PendingConsultation } from "@/types/consultation";
 import Text from "@/components/Shared/Text";
 import { Card, CardContent } from "@/components/Shared/Card";
 import Divider from "@/components/Shared/Divider/Divider";
+import { formatDistanceToNow } from "date-fns";
+import Button from "@/components/Shared/Button";
+import { Id } from "convex/_generated/dataModel";
 
-const PendingConsultations = () => {
+const PendingConsultations = ({
+  userId,
+}: {
+  userId: Id<"doctorProfiles"> | null;
+}) => {
   const [showScheduler, setShowScheduler] = useState(false);
+  const [selectedConsultation, setSelectedConsultation] = useState<
+    string | null
+  >(null);
 
   const pendingConsultation = useQuery(
     api.api.consultation.getPendingConsultations.getPendingConsultations
   );
 
-  const handleAcceptConsultation = () => {
-    console.log("accept consultation");
+  const acceptConsultation = useMutation(
+    api.api.consultation.acceptConsultation.acceptConsultation
+  );
+
+  const handleAcceptConsultation = (consultationId: string) => {
+    setSelectedConsultation(consultationId);
+    setShowScheduler(true);
   };
 
-  console.log(pendingConsultation);
+  const acceptConsultationHandler = async (consultationDateTime: string) => {
+    if (!selectedConsultation) return;
+    if (!userId) return;
+    await acceptConsultation({
+      doctorId: userId,
+      requestId: selectedConsultation as Id<"consultationRequests">,
+      consultationDateTime,
+    });
+  };
+
+  const handleRejectConsultation = (consultationId: string) => {
+    console.log("reject consultation", consultationId);
+  };
 
   return (
     <>
@@ -37,14 +63,56 @@ const PendingConsultations = () => {
           <CardContent>
             {pendingConsultation && pendingConsultation.length > 0 ? (
               pendingConsultation.map((consultation, index) => (
-                <>
-                  <div key={consultation._id}>
-                    <Text value={consultation.patientId} />
+                <div key={consultation._id}>
+                  <div className={styles.appointmentCard}>
+                    <div className={styles.appointmentHeader}>
+                      <div className={styles.patientInfo}>
+                        <div className={styles.patientLabel}>
+                          <Text
+                            value="Patient: "
+                            className={styles.patientLabel}
+                            fontSize="lg"
+                            fontWeight="bold"
+                          />
+                          <Text
+                            fontSize="lg"
+                            color="primary"
+                            fontWeight="bold"
+                            value={
+                              consultation.patient?.fullName ||
+                              "Unknown Patient"
+                            }
+                          />
+                        </div>
+                        <div className={styles.patientDetails}>
+                          <Text
+                            value={`${consultation.patient?.age || "N/A"} years old`}
+                          />
+                          <Text value={consultation.patient?.sex || "N/A"} />
+                        </div>
+                      </div>
+                      <Text
+                        value={formatDistanceToNow(consultation.createdAt, {
+                          addSuffix: true,
+                        })}
+                        className={styles.timestamp}
+                      />
+                    </div>
+                    <div className={styles.appointmentActions}>
+                      <Button
+                        variant="contained"
+                        onClick={() =>
+                          handleAcceptConsultation(consultation._id)
+                        }
+                      >
+                        Accept & Schedule
+                      </Button>
+                    </div>
                   </div>
                   {index !== pendingConsultation.length - 1 && (
                     <Divider color="gray" />
                   )}
-                </>
+                </div>
               ))
             ) : (
               <div className={styles.emptyState}>
@@ -66,7 +134,7 @@ const PendingConsultations = () => {
         <ConsultationScheduler
           isOpen={showScheduler}
           onClose={() => setShowScheduler(false)}
-          onConfirm={handleAcceptConsultation}
+          onConfirm={acceptConsultationHandler}
         />
       )}
     </>

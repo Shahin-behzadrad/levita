@@ -7,12 +7,65 @@
 
   .title {
     width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 
     .icon {
       width: 8px;
       height: 30px;
       background-color: var(--warning-darker);
       border-radius: 8px;
+    }
+  }
+}
+
+.appointmentCard {
+  padding: 16px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--gray-50);
+  }
+
+  .appointmentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+
+    .patientInfo {
+      .patientLabel {
+        display: flex;
+        gap: 4px;
+      }
+
+      .patientDetails {
+        display: flex;
+        gap: 16px;
+        color: var(--gray-600);
+        font-size: 0.875rem;
+      }
+    }
+
+    .timestamp {
+      color: var(--gray-500);
+      font-size: 0.875rem;
+    }
+  }
+
+  .appointmentActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+
+    button {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
     }
   }
 }
