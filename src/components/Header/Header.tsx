@@ -17,7 +17,7 @@ import { useApp } from "@/lib/AppContext";
 
 const Header = () => {
   const userData = useQuery(api.api.profiles.userProfiles.getUserProfile);
-  const { setView } = useApp();
+  const { setView, currentView } = useApp();
   const isMobile = useIsMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { messages } = useLanguage();
@@ -27,7 +27,12 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <div className={`${styles.container} ${isMobile ? styles.mobile : ""}`}>
-        <div onClick={() => setView("home")} className={styles.levita}>
+        <div
+          onClick={() => {
+            setView("home");
+          }}
+          className={styles.levita}
+        >
           <Text
             fontSize="lg"
             variant="h3"
@@ -90,20 +95,27 @@ const Header = () => {
                 />
               </>
             ) : (
-              <div className={styles.rightSection}>
-                <LanguageSwitcher />
-                <div className={styles.authButtons}>
-                  <Button
-                    variant="contained"
-                    onClick={() => setView("sign-up")}
-                  >
-                    {messages.auth.signUp}
-                  </Button>
-                  <Button variant="outlined" onClick={() => setView("sign-in")}>
-                    {messages.auth.signIn}
-                  </Button>
-                </div>
-              </div>
+              <>
+                {currentView !== "complete-profile" && (
+                  <div className={styles.rightSection}>
+                    <LanguageSwitcher />
+                    <div className={styles.authButtons}>
+                      <Button
+                        variant="contained"
+                        onClick={() => setView("sign-up")}
+                      >
+                        {messages.auth.signUp}
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        onClick={() => setView("sign-in")}
+                      >
+                        {messages.auth.signIn}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </>
         )}

@@ -1,39 +1,22 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/Shared/Button/Button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/Shared/Card";
+import { useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { toast } from "sonner";
-import { Eye, EyeOff } from "lucide-react";
-import { useConvexAuth } from "convex/react";
-import styles from "./SignIn.module.scss";
-import TextField from "@/components/Shared/TextField";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useApp } from "@/lib/AppContext";
+import AuthForm from "@/components/Shared/AuthForm/AuthForm";
 
 export default function SignInClient() {
   const { signIn } = useAuthActions();
-  const { isAuthenticated } = useConvexAuth();
-  const router = useRouter();
+  const { setView } = useApp();
+  const { messages } = useLanguage();
+
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { messages } = useLanguage();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/");
-    }
-  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,7 +37,7 @@ export default function SignInClient() {
 
       if (errorMessage.includes("InvalidAccountId")) {
         toast.error(messages.auth.noAccount);
-        router.push("/sign-up");
+        setView("sign-up");
       } else if (errorMessage.includes("InvalidSecret")) {
         toast.error(messages.auth.incorrectPassword);
       } else {
@@ -66,59 +49,26 @@ export default function SignInClient() {
   };
 
   return (
-    <div className={styles.container}>
-      <Card className={styles.card}>
-        <CardHeader title={messages.auth.signIn} />
-        <form onSubmit={handleSubmit}>
-          <CardContent className={styles.content}>
-            <div className={styles.formGroup}>
-              <TextField
-                label={messages.auth.email}
-                name="email"
-                type="email"
-                placeholder="m.johnson@example.com"
-                required
-                value={email}
-                onChangeText={setEmail}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <div className={styles.passwordInput}>
-                <TextField
-                  label={messages.auth.password}
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={password}
-                  onChangeText={setPassword}
-                  endAdornment={
-                    <Button onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </Button>
-                  }
-                />
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter className={styles.footer}>
-            <Button
-              type="submit"
-              size="lg"
-              variant="contained"
-              fullWidth
-              disabled={isLoading}
-            >
-              {isLoading ? messages.auth.signingIn : messages.auth.signIn}
-            </Button>
-            <div className={styles.signUpText}>
-              {messages.auth.dontHaveAccount}{" "}
-              <Link href="/sign-up" className={styles.signUpLink}>
-                {messages.auth.signUp}
-              </Link>
-            </div>
-          </CardFooter>
-        </form>
-      </Card>
-    </div>
+    <AuthForm
+      type="sign-in"
+      title={messages.auth.signIn}
+      email={email}
+      password={password}
+      showPassword={showPassword}
+      isLoading={isLoading}
+      onSubmit={handleSubmit}
+      onEmailChange={setEmail}
+      onPasswordChange={setPassword}
+      onTogglePassword={() => setShowPassword(!showPassword)}
+      messages={{
+        email: messages.auth.email,
+        password: messages.auth.password,
+        submit: messages.auth.signIn,
+        loading: messages.auth.signingIn,
+        switchText: messages.auth.dontHaveAccount,
+        switchLink: messages.auth.signUp,
+        switchUrl: "/sign-up",
+      }}
+    />
   );
 }

@@ -7,16 +7,19 @@ interface CardProps {
   className?: string;
   style?: CSSProperties;
   hasBoxShadow?: boolean;
+  fullWidth?: boolean;
 }
 
 export const Card: FC<CardProps> = ({
   children,
   className,
   hasBoxShadow = true,
+  fullWidth = false,
 }) => (
   <div
     className={clsx(classes.card, className, {
       [classes.noBoxShadow]: !hasBoxShadow,
+      [classes.fullWidth]: fullWidth,
     })}
   >
     {children}

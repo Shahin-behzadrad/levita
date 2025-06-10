@@ -1,5 +1,4 @@
 import { App } from "@/components/App/App";
-import { AppProvider } from "@/lib/AppContext";
 import type { Metadata } from "next";
 import styles from "./page.module.scss";
 
@@ -12,9 +11,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className={styles.container}>
-      <AppProvider>
-        <App />
-      </AppProvider>
+      <App />
     </div>
   );
 }

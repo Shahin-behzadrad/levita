@@ -1,4 +1,15 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+"use client";
+
+import { api } from "../../convex/_generated/api";
+import { useConvexAuth, useQuery } from "convex/react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
+import { UserType } from "@/types/userType";
 
 export type View =
   | "home"
@@ -11,27 +22,33 @@ export type View =
   | "doctors"
   | "learn-more"
   | "terms"
-  | "privacy";
+  | "privacy"
+  | "complete-profile";
 
 interface AppContextType {
   currentView: View;
   setView: (view: View) => void;
   isAuthenticated: boolean;
-  setIsAuthenticated: (value: boolean) => void;
   userType: "patient" | "doctor" | null;
-  setUserType: (type: "patient" | "doctor" | null) => void;
+  userData: UserType;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [currentView, setCurrentView] = useState<View>("home");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userType, setUserType] = useState<"patient" | "doctor" | null>(null);
+  const { isAuthenticated } = useConvexAuth();
+  const userData = useQuery(api.api.profiles.userProfiles.getUserProfile);
 
   const setView = useCallback((view: View) => {
     setCurrentView(view);
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated && userData === null) {
+      setView("complete-profile");
+    }
+  }, [isAuthenticated, userData, setView]);
 
   return (
     <AppContext.Provider
@@ -39,9 +56,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         currentView,
         setView,
         isAuthenticated,
-        setIsAuthenticated,
-        userType,
-        setUserType,
+        userType: userData?.role as AppContextType["userType"],
+        userData: userData as UserType,
       }}
     >
       {children}
