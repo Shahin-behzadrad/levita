@@ -8,6 +8,7 @@ import SignInClient from "@/app/(auth)/sign-in/SignInClient";
 import MainPage from "../MainPage/MainPage";
 import SignUpClient from "@/app/(auth)/sign-up/SignUpClient";
 import { ProfileForm } from "@/app/(auth)/sign-up/ProfileForm";
+import ProfileScreen from "../ProfileScreen/ProfileScreen";
 
 export function App() {
   const { currentView, isAuthenticated, userData } = useApp();
@@ -30,6 +31,8 @@ export function App() {
         return <SignUpClient />;
       case "complete-profile":
         return <ProfileForm />;
+      case "profile":
+        return <ProfileScreen userData={userData} />;
       // case "consultation":
       //   return <ConsultationCard />;
       // case "health-analysis":
