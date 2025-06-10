@@ -45,8 +45,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated && userData === null) {
-      setView("complete-profile");
+    if (isAuthenticated) {
+      if (userData === null) {
+        setView("complete-profile");
+      } else {
+        setView("home");
+      }
     }
   }, [isAuthenticated, userData, setView]);
 

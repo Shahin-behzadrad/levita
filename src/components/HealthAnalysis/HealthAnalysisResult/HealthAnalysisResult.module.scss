@@ -1,15 +1,13 @@
 .container {
   padding: 16px;
   max-width: 1000px;
-  margin: 100px auto;
 
   .card {
-    background-color: var(--primary-light);
-  }
+    background-color: var(--primary-opaque-10);
 
-  .alertText {
-    margin-inline: 16px;
-    justify-content: center !important;
-    color: var(--warning-main) !important;
+    .titleIcon {
+      font-size: 24px;
+      margin-right: 8px;
+    }
   }
 }

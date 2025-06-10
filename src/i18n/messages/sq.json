@@ -323,6 +323,7 @@
     "healthStatusRequired": "Gjendja shëndetësore është e detyrueshme",
     "invalidFile": "Skedar i pavlefshëm",
     "documentsRequired": "Ju lutemi ngarkoni dokumentet tuaja mjekësore",
-    "result": "Rezultati"
+    "result": "Rezultati",
+    "yourAnalysisResults": "Rezultatet e Analizës Tuaja"
   }
 }

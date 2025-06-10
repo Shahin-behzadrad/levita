@@ -7,10 +7,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useLanguage } from "@/i18n/LanguageContext";
 import styles from "./HealthAnalysisResult.module.scss";
-import { TriangleAlert } from "lucide-react";
 import { useEffect } from "react";
-import ConsultationStatusCard from "@/components/Consultation/patient/ConsultationStatusCard/ConsultationStatusCard";
-import { UserType } from "@/types/userType";
 
 export const HealthAnalysisResult = () => {
   const { messages } = useLanguage();
@@ -23,13 +20,6 @@ export const HealthAnalysisResult = () => {
     api.api.consultation.getExistingConsultationRequest
       .getExistingConsultationRequest,
     patientProfile?._id ? { patientId: patientProfile?._id } : "skip"
-  );
-
-  const doctorProfile = useQuery(
-    api.api.profiles.doctorProfile.getDoctorProfileById,
-    getExisting?.acceptedByDoctorId
-      ? { doctorId: getExisting?.acceptedByDoctorId }
-      : "skip"
   );
 
   const safeCreateRequest = useMutation(
@@ -58,30 +48,11 @@ export const HealthAnalysisResult = () => {
 
   return (
     <div className={styles.container}>
-      {getExisting && (
-        <ConsultationStatusCard
-          consultation={getExisting}
-          doctorProfile={doctorProfile as UserType}
-        />
-      )}
       <Card className={styles.card}>
         <CardHeader
-          title={messages.healthAnalysis?.result}
-          titleColor="true-white"
-        />
-        <Text
-          value={messages.healthAnalysis?.lookingForPractitioner}
-          color="true-white"
-          textAlign="center"
-          fontWeight="bold"
-          fontSize="lg"
-        />
-        <Text
-          value={messages.healthAnalysis?.willBeContacted}
-          textAlign="center"
-          className={styles.alertText}
-          endAdornment={<TriangleAlert size={20} />}
-          startAdornment={<TriangleAlert size={20} />}
+          titleStartAdornment={<div className={styles.titleIcon}>📋</div>}
+          title={messages.healthAnalysis?.yourAnalysisResults}
+          titleColor="black"
         />
         <CardContent>
           <Grid container spacing={4}>
