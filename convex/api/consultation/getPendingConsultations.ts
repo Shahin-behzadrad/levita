@@ -8,13 +8,27 @@ export const getPendingConsultations = query({
       .withIndex("by_status", (q) => q.eq("status", "pending"))
       .collect();
 
-    // Return a simplified version with only essential fields
-    return consultations.map((consultation) => ({
-      _id: consultation._id,
-      _creationTime: consultation._creationTime,
-      createdAt: consultation.createdAt,
-      patientId: consultation.patientId,
-      status: consultation.status,
-    }));
+    // Get patient information for each consultation
+    const consultationsWithPatientInfo = await Promise.all(
+      consultations.map(async (consultation) => {
+        const patient = await ctx.db.get(consultation.patientId);
+        return {
+          _id: consultation._id,
+          _creationTime: consultation._creationTime,
+          createdAt: consultation.createdAt,
+          patientId: consultation.patientId,
+          status: consultation.status,
+          patient: patient
+            ? {
+                fullName: patient.fullName,
+                age: patient.age,
+                sex: patient.sex,
+              }
+            : null,
+        };
+      })
+    );
+
+    return consultationsWithPatientInfo;
   },
 });

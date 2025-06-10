@@ -1,8 +1,13 @@
 "use client";
 
 import { Button } from "@/components/Shared/Button/Button";
-import { CardContent, CardFooter, CardHeader } from "@/components/Shared/Card";
-import styles from "./SignUp.module.scss";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/Shared/Card";
+import styles from "./ProfileForm.module.scss";
 import TextField from "@/components/Shared/TextField";
 import { Text } from "@/components/Shared/Text/Text";
 import { RadioGroup } from "@/components/Shared/RadioGroup";
@@ -11,12 +16,9 @@ import Select from "@/components/Shared/Select/Select";
 import Grid from "@/components/Shared/Grid/Grid";
 import { useProfileForm } from "./useProfileForm";
 import { useLanguage } from "@/i18n/LanguageContext";
+import clsx from "clsx";
 
-interface ProfileFormProps {
-  isSetup?: boolean;
-}
-
-export function ProfileForm({ isSetup = false }: ProfileFormProps) {
+export function ProfileForm() {
   const { messages } = useLanguage();
   const {
     control,
@@ -28,18 +30,14 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
   } = useProfileForm();
 
   return (
-    <>
+    <Card
+      className={clsx(styles.formContainer, {
+        [styles.doctorForm]: role === "doctor",
+      })}
+    >
       <CardHeader
-        title={
-          isSetup
-            ? messages.auth.signUpForm.completeProfile
-            : messages.auth.signUpForm.createProfile
-        }
-        subheader={
-          isSetup
-            ? messages.auth.signUpForm.completeProfileSubheader
-            : messages.auth.signUpForm.createProfileSubheader
-        }
+        title={messages.auth.signUpForm.completeProfile}
+        subheader={messages.auth.signUpForm.completeProfileSubheader}
       />
       <form onSubmit={handleSubmit(handleProfileSubmit)}>
         <CardContent>
@@ -238,12 +236,10 @@ export function ProfileForm({ isSetup = false }: ProfileFormProps) {
           >
             {isSubmitting
               ? messages.auth.signUpForm.saving
-              : isSetup
-                ? messages.auth.signUpForm.completeProfile
-                : messages.auth.signUpForm.createProfile}
+              : messages.auth.signUpForm.completeProfile}
           </Button>
         </CardFooter>
       </form>
-    </>
+    </Card>
   );
 }

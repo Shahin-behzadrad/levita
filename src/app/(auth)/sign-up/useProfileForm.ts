@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useForm } from "react-hook-form";
@@ -6,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { SignUpFormData } from "./type";
 import { toast } from "sonner";
+import { useApp } from "@/lib/AppContext";
 
 const schema = yup.object().shape({
   role: yup.string().oneOf(["doctor", "patient"]).required("Role is required"),
@@ -39,7 +39,7 @@ const schema = yup.object().shape({
 });
 
 export const useProfileForm = () => {
-  const router = useRouter();
+  const { setView } = useApp();
   const updateUserProfile = useMutation(
     api.api.profiles.userProfiles.updateUserProfile
   );
@@ -86,7 +86,7 @@ export const useProfileForm = () => {
 
       await updateUserProfile(profileData);
       toast("Profile completed successfully!");
-      router.push("/");
+      setView("home");
     } catch (error: any) {
       console.error("Profile update error:", error);
       toast.error("Failed to update profile. Please try again.");

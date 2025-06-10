@@ -1,15 +1,16 @@
 .container {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   min-height: 100vh;
-  padding: 2rem;
-  background-color: var(--primaryAlt);
+  padding: 1rem;
+  width: 100%;
 }
 
 .card {
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
+  margin: 0 auto;
   border-radius: 8px;
   box-shadow: 0 4px 6px var(--primary-opaque-10);
   margin: 80px auto;
@@ -124,12 +125,6 @@
   &:hover {
     text-decoration: underline;
   }
-}
-
-.footer {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 .signInText {

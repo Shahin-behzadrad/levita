@@ -1,80 +1,61 @@
 "use client";
 
-import { Card, CardContent, CardHeader } from "../Shared/Card";
-import HeroActions from "../HeroActions/HeroActions";
 import styles from "./MainPage.module.scss";
 import Text from "../Shared/Text";
-import { useLanguage } from "@/i18n/LanguageContext";
 
-const FeatureCard = ({
-  title,
-  description,
-  content,
-}: {
-  title: string;
-  description: string;
-  content: string;
-}) => (
-  <Card>
-    <CardHeader title={title} subheader={description} />
-    <CardContent>
-      <Text value={content} color="gray" />
-    </CardContent>
-  </Card>
-);
+import { UserType } from "@/types/userType";
 
-const HeroSection = () => {
-  const { messages } = useLanguage();
+import PendingConsultations from "../Consultation/doctor/PendingConsultations/PendingConsultations";
+import DoctorsConsultations from "../Consultation/doctor/MyConsultations/DoctorsConsultations";
+import PatientConsultations from "../Consultation/patient/MyConsultations/PatientConsultations";
+import PatientHealthAnalysisForm from "../Consultation/patient/PatientHealthAnalysisForm/PatientHealthAnalysisForm";
+
+const HeroSection = ({ userData }: { userData: UserType }) => {
   return (
-    <section className={styles.hero}>
-      <div className={styles.heroContainer}>
-        <div className={styles.heroContent}>
-          <div>
-            <h1 className={styles.heroTitle}>{messages.hero.title}</h1>
-            <p className={styles.heroDescription}>
-              {messages.hero.description}
-            </p>
-          </div>
-          <HeroActions />
-        </div>
+    <div className={styles.heroContainer}>
+      <div className={styles.hero}>
+        <Text value="Welcome, " fontSize="xxl" fontWeight="bold" />
+        <Text
+          value={
+            userData?.role === "doctor"
+              ? `Dr. ${userData?.fullName}`
+              : `${userData?.fullName}`
+          }
+          fontSize="xxl"
+          color="primary"
+          fontWeight="bold"
+        />
       </div>
-    </section>
+      <Text
+        value={
+          userData?.role === "patient"
+            ? "Get AI-powered medical analysis and connect with healthcare professionals"
+            : "Review patient cases and manage appointments with our AI-powered platform"
+        }
+        color="gray"
+        textAlign="center"
+      />
+    </div>
   );
 };
 
-const FeaturesSection = () => {
-  const { messages } = useLanguage();
-  return (
-    <section className={styles.features}>
-      <div className={styles.featuresContainer}>
-        <div className={styles.featuresGrid}>
-          <FeatureCard
-            title={messages.features.aiAnalysis}
-            description={messages.features.personalizedInsights}
-            content={messages.features.description}
-          />
-          <FeatureCard
-            title={messages.features.labResults}
-            description={messages.features.personalizedInsights}
-            content={messages.features.description}
-          />
-          <FeatureCard
-            title={messages.features.healthTracking}
-            description={messages.features.personalizedInsights}
-            content={messages.features.description}
-          />
-        </div>
+const MainPage = ({ userData }: { userData: UserType }) => {
+  if (userData?.role === "patient") {
+    return (
+      <div className={styles.main}>
+        <HeroSection userData={userData} />
+        <PatientHealthAnalysisForm />
+        <PatientConsultations />
       </div>
-    </section>
-  );
-};
+    );
+  }
 
-const MainPage = () => {
   return (
-    <main className={styles.main}>
-      <HeroSection />
-      <FeaturesSection />
-    </main>
+    <div className={styles.main}>
+      <HeroSection userData={userData} />
+      <DoctorsConsultations />
+      <PendingConsultations />
+    </div>
   );
 };
 
