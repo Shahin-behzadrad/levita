@@ -3,7 +3,7 @@
 import { useQuery } from "convex/react";
 import { Button } from "@/components/Shared/Button/Button";
 import { api } from "../../../convex/_generated/api";
-import { Bell, Menu } from "lucide-react";
+import { Bell, Flower, Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 import styles from "./Header.module.scss";
@@ -34,10 +34,11 @@ const Header = () => {
           className={styles.levita}
         >
           <Text
-            fontSize="lg"
-            variant="h3"
+            startAdornment={<Flower size={isMobile ? 24 : 40} />}
+            fontSize={isMobile ? "md" : "lg"}
+            variant={isMobile ? "h4" : "h3"}
             fontWeight="bold"
-            color="black"
+            color="primary"
             value="Levita"
           />
         </div>
