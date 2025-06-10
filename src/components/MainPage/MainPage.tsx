@@ -9,6 +9,7 @@ import PendingConsultations from "../Consultation/doctor/PendingConsultations/Pe
 import DoctorsConsultations from "../Consultation/doctor/MyConsultations/DoctorsConsultations";
 import PatientConsultations from "../Consultation/patient/MyConsultations/PatientConsultations";
 import PatientHealthAnalysisForm from "../Consultation/patient/PatientHealthAnalysisForm/PatientHealthAnalysisForm";
+import { Id } from "../../../convex/_generated/dataModel";
 
 const HeroSection = ({ userData }: { userData: UserType }) => {
   return (
@@ -45,7 +46,9 @@ const MainPage = ({ userData }: { userData: UserType }) => {
       <div className={styles.main}>
         <HeroSection userData={userData} />
         <PatientHealthAnalysisForm />
-        <PatientConsultations />
+        <PatientConsultations
+          userId={userData?._id as Id<"patientProfiles"> | null}
+        />
       </div>
     );
   }

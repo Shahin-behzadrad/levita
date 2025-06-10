@@ -28,7 +28,7 @@ export default function RootLayout({
           <AppProvider>
             <LanguageProvider>
               <Header />
-              <main className={styles.main}>{children}</main>
+              <div>{children}</div>
               <Footer />
 
               <Toaster
