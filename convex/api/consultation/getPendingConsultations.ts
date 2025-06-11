@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export const getPendingConsultations = query({
   handler: async (ctx) => {
     const consultations = await ctx.db
-      .query("consultationRequests")
+      .query("consultations")
       .withIndex("by_status", (q) => q.eq("status", "pending"))
       .collect();
 

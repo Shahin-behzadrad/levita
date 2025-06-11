@@ -1,6 +1,7 @@
 .app {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -10,4 +11,12 @@
   margin: 0 auto;
   max-width: 100vw;
   overflow-x: hidden;
+}
+
+.chatView {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }

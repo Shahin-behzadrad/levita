@@ -10,6 +10,7 @@ import React, {
   useEffect,
 } from "react";
 import { UserType } from "@/types/userType";
+import { Id } from "../../convex/_generated/dataModel";
 
 export type View =
   | "home"
@@ -19,7 +20,8 @@ export type View =
   | "learn-more"
   | "terms"
   | "privacy"
-  | "complete-profile";
+  | "complete-profile"
+  | "chat";
 
 interface AppContextType {
   currentView: View;
@@ -27,12 +29,17 @@ interface AppContextType {
   isAuthenticated: boolean;
   userType: "patient" | "doctor" | null;
   userData: UserType;
+  activeChatId?: Id<"consultations">;
+  setActiveChatId: (id: Id<"consultations"> | undefined) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [currentView, setCurrentView] = useState<View>("home");
+  const [activeChatId, setActiveChatId] = useState<
+    Id<"consultations"> | undefined
+  >(undefined);
   const { isAuthenticated } = useConvexAuth();
   const userData = useQuery(api.api.profiles.userProfiles.getUserProfile);
 
@@ -58,6 +65,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated,
         userType: userData?.role as AppContextType["userType"],
         userData: userData as UserType,
+        activeChatId,
+        setActiveChatId,
       }}
     >
       {children}

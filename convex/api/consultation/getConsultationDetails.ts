@@ -3,7 +3,7 @@ import { v } from "convex/values";
 
 export const getConsultationDetails = query({
   args: {
-    consultationId: v.id("consultationRequests"),
+    consultationId: v.id("consultations"),
   },
   handler: async (ctx, args) => {
     const consultation = await ctx.db.get(args.consultationId);

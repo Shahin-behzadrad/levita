@@ -1,18 +1,12 @@
-.pendingConsultations {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+.title {
+  width: fit-content;
+  margin-bottom: 24px;
 
-  .title {
-    width: fit-content;
-    margin-bottom: 24px;
-
-    .icon {
-      width: 8px;
-      height: 30px;
-      background-color: var(--primary-main);
-      border-radius: 6px;
-    }
+  .icon {
+    width: 8px;
+    height: 30px;
+    background-color: var(--primary-main);
+    border-radius: 6px;
   }
 }
 
@@ -105,12 +99,21 @@
   gap: 8px;
   margin-bottom: 12px;
   color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
 }
 
 .labFindings {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  animation: slideDown 0.2s ease-out;
 }
 
 .labSection {

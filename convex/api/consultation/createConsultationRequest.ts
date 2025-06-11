@@ -28,7 +28,7 @@ export const CreateConsultationRequest = mutation({
     if (!patientProfile) throw new Error("Patient profile not found");
 
     const existing = await ctx.db
-      .query("consultationRequests")
+      .query("consultations")
       .withIndex("by_patientId", (q) => q.eq("patientId", args.patientId))
       .collect();
 
@@ -38,7 +38,7 @@ export const CreateConsultationRequest = mutation({
 
     if (alreadyExists) return null;
 
-    return await ctx.db.insert("consultationRequests", {
+    return await ctx.db.insert("consultations", {
       patientId: args.patientId,
       senderUserId: patientProfile.userId,
       status: "pending",

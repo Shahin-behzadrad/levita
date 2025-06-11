@@ -10,6 +10,10 @@ import { Id } from "../../../../../convex/_generated/dataModel";
 import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import clsx from "clsx";
+import { Chat } from "../../Chat/Chat";
+import { useApp } from "@/lib/AppContext";
+import { MessageSquareText } from "lucide-react";
+import Button from "@/components/Shared/Button";
 
 const PatientConsultations = ({
   getAIAnalysis,
@@ -18,6 +22,7 @@ const PatientConsultations = ({
   getAIAnalysis?: AIAnalysisResult | null;
   userId: Id<"patientProfiles"> | null;
 }) => {
+  const { setView, setActiveChatId } = useApp();
   const [isExpanded, setIsExpanded] = useState(false);
   const existingConsultations = useQuery(
     api.api.consultation.getExistingConsultationRequest
@@ -33,118 +38,148 @@ const PatientConsultations = ({
     setIsExpanded(!isExpanded);
   };
 
+  const handleStartChat = (consultationId: Id<"consultations">) => {
+    setActiveChatId(consultationId);
+    setView("chat");
+  };
+
+  if (!existingConsultations) {
+    return null;
+  }
+
   return (
-    <>
-      <div className={styles.pendingConsultations}>
-        <Text
-          value="My Appointments"
-          textAlign="left"
-          fontSize="xl"
-          fontWeight="bold"
-          className={styles.title}
-          startAdornment={<div className={styles.icon} />}
-        />
-        <Card className={styles.pendingConsultationsList}>
-          <CardContent>
-            {existingConsultations ? (
-              <div className={styles.consultationDetails}>
-                <div
-                  className={clsx(styles.header, styles.clickable)}
-                  onClick={toggleExpand}
-                >
-                  <div className={styles.status}>
-                    <span
-                      className={`${styles.statusDot} ${styles[existingConsultations.status]}`}
-                    />
-                    <Text
-                      value={
-                        existingConsultations.status.charAt(0).toUpperCase() +
-                        existingConsultations.status.slice(1)
-                      }
-                      fontWeight="medium"
-                    />
-                  </div>
-                  <div className={styles.headerRight}>
-                    <Text
-                      value={`${formatTime(existingConsultations.createdAt)}`}
-                      className={styles.time}
-                    />
-                    <span
-                      className={`${styles.expandIcon} ${isExpanded ? styles.expanded : ""}`}
-                    >
-                      ▼
-                    </span>
-                  </div>
+    <div className={styles.pendingConsultations}>
+      <Text
+        value="My Consultation"
+        textAlign="left"
+        fontSize="xl"
+        fontWeight="bold"
+        className={styles.title}
+        startAdornment={<div className={styles.icon} />}
+      />
+      <Card>
+        <CardContent className={styles.consultationsList}>
+          {existingConsultations ? (
+            <div className={styles.consultationItem}>
+              <div
+                className={clsx(styles.consultationHeader, styles.clickable)}
+                onClick={toggleExpand}
+              >
+                <div className={styles.status}>
+                  <div
+                    className={clsx(
+                      styles.statusDot,
+                      existingConsultations.status === "pending"
+                        ? styles.pending
+                        : existingConsultations.status === "accepted"
+                          ? styles.completed
+                          : styles.cancelled
+                    )}
+                  />
+                  <Text
+                    value={existingConsultations.status}
+                    fontSize="sm"
+                    color="gray"
+                  />
                 </div>
+                <div className={styles.time}>
+                  <Text
+                    value={formatTime(existingConsultations.createdAt)}
+                    fontSize="sm"
+                    color="gray"
+                  />
+                </div>
+              </div>
 
-                <div
-                  className={`${styles.content} ${isExpanded ? styles.expanded : ""}`}
-                >
-                  <Divider className={styles.divider} />
-
-                  {existingConsultations.doctorReportPreview && (
-                    <>
-                      <div className={styles.overview}>
+              {isExpanded && (
+                <>
+                  <Divider />
+                  <div className={styles.consultationDetails}>
+                    {existingConsultations.consultationDateTime && (
+                      <div className={styles.scheduledTime}>
                         <Text
-                          value="Patient Overview"
-                          fontWeight="bold"
-                          className={styles.sectionTitle}
+                          value="Scheduled Time"
+                          fontSize="sm"
+                          fontWeight="medium"
+                        />
+                        <Text
+                          value={existingConsultations.consultationDateTime}
+                          fontSize="sm"
+                          color="gray"
+                        />
+                      </div>
+                    )}
+
+                    {existingConsultations.doctorReportPreview && (
+                      <div className={styles.reportPreview}>
+                        <Text
+                          value="Report Preview"
+                          fontSize="sm"
+                          fontWeight="medium"
                         />
                         <Text
                           value={
                             existingConsultations.doctorReportPreview
                               .patientOverview
                           }
+                          fontSize="sm"
+                          color="gray"
                         />
                       </div>
+                    )}
 
-                      <div className={styles.conclusion}>
-                        <Text
-                          value="Conclusion"
-                          fontWeight="bold"
-                          className={styles.sectionTitle}
-                        />
-                        <Text
-                          value={
-                            existingConsultations.doctorReportPreview.conclusion
+                    <div className={styles.actions}>
+                      {existingConsultations.chatStarted &&
+                      !existingConsultations.chatEnded ? (
+                        <Button
+                          variant="contained"
+                          onClick={() =>
+                            handleStartChat(existingConsultations._id)
                           }
-                        />
-                      </div>
-
-                      <div className={styles.recommendations}>
-                        <Text
-                          value="Recommendations"
-                          fontWeight="bold"
-                          className={styles.sectionTitle}
-                        />
-                        <ul className={styles.recommendationList}>
-                          {existingConsultations.doctorReportPreview.recommendations.map(
-                            (rec, index) => (
-                              <li key={index}>
-                                <Text value={rec} />
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className={styles.emptyState}>
-                <Text value="📋" className={styles.emoji} />
-                <Text value="No appointments yet" className={styles.title} />
-                <Text
-                  value="Start by describing your symptoms above to get connected with a healthcare professional."
-                  className={styles.description}
-                />
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    </>
+                          startIcon={<MessageSquareText />}
+                        >
+                          Continue Chat
+                        </Button>
+                      ) : !existingConsultations.chatStarted &&
+                        !existingConsultations.chatEnded ? (
+                        <Button
+                          variant="contained"
+                          onClick={() =>
+                            handleStartChat(existingConsultations._id)
+                          }
+                          startIcon={<MessageSquareText />}
+                        >
+                          Join Chat
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outlined"
+                          onClick={() =>
+                            handleStartChat(existingConsultations._id)
+                          }
+                          startIcon={<MessageSquareText />}
+                        >
+                          View Chat History
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <Text value="📋" className={styles.emoji} />
+              <Text value="No Consultation Request" />
+              <Text
+                value="You haven't submitted any consultation requests yet."
+                className={styles.description}
+              />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

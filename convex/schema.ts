@@ -90,16 +90,19 @@ const applicationTables = {
     ),
   }).index("by_userId", ["userId"]),
 
-  consultationRequests: defineTable({
+  consultations: defineTable({
     patientId: v.id("patientProfiles"),
     senderUserId: v.id("users"),
     status: v.union(
       v.literal("pending"),
       v.literal("accepted"),
-      v.literal("rejected")
+      v.literal("rejected"),
+      v.literal("completed")
     ),
     acceptedByDoctorId: v.optional(v.id("doctorProfiles")),
     consultationDateTime: v.optional(v.string()), // Format: YYYY-MM-DD HH:mm
+    chatStarted: v.optional(v.boolean()),
+    chatEnded: v.optional(v.boolean()),
 
     doctorReportPreview: v.optional(
       v.object({
@@ -120,6 +123,13 @@ const applicationTables = {
   })
     .index("by_status", ["status"])
     .index("by_patientId", ["patientId"]),
+
+  chatMessages: defineTable({
+    consultationId: v.id("consultations"),
+    senderId: v.id("users"),
+    content: v.string(),
+    createdAt: v.number(),
+  }).index("by_consultation", ["consultationId"]),
 };
 
 export default defineSchema({
