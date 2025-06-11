@@ -129,6 +129,9 @@ const applicationTables = {
     senderId: v.id("users"),
     content: v.string(),
     createdAt: v.number(),
+    fileUrl: v.optional(v.string()),
+    fileName: v.optional(v.string()),
+    fileType: v.optional(v.string()),
   }).index("by_consultation", ["consultationId"]),
 };
 

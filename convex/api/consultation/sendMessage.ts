@@ -1,17 +1,25 @@
 import { mutation } from "../../_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { Id } from "../../_generated/dataModel";
 
 export const sendMessage = mutation({
   args: {
     consultationId: v.id("consultations"),
     content: v.string(),
+    fileUrl: v.optional(v.string()),
+    fileName: v.optional(v.string()),
+    fileType: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const { consultationId, content, fileUrl, fileName, fileType } = args;
     const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Not authenticated");
 
-    const consultation = await ctx.db.get(args.consultationId);
+    if (!userId) {
+      throw new Error("Not authenticated");
+    }
+
+    const consultation = await ctx.db.get(consultationId);
     if (!consultation) throw new Error("Consultation not found");
 
     if (!consultation.chatStarted || consultation.chatEnded) {
@@ -44,11 +52,17 @@ export const sendMessage = mutation({
       throw new Error("Patient is not part of this consultation");
     }
 
-    await ctx.db.insert("chatMessages", {
-      consultationId: args.consultationId,
+    // Create the message
+    const messageId = await ctx.db.insert("chatMessages", {
+      consultationId,
       senderId: userId,
-      content: args.content,
+      content,
       createdAt: Date.now(),
+      fileUrl,
+      fileName,
+      fileType,
     });
+
+    return messageId;
   },
 });

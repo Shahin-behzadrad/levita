@@ -26,14 +26,15 @@ import type * as api_consultation_getExistingConsultationRequest from "../api/co
 import type * as api_consultation_getPendingConsultations from "../api/consultation/getPendingConsultations.js";
 import type * as api_consultation_sendMessage from "../api/consultation/sendMessage.js";
 import type * as api_consultation_startChat from "../api/consultation/startChat.js";
+import type * as api_consultation_uploadFile from "../api/consultation/uploadFile.js";
 import type * as api_health_healthAnalysis from "../api/health/healthAnalysis.js";
 import type * as api_profiles_doctorProfile from "../api/profiles/doctorProfile.js";
 import type * as api_profiles_patientProfiles from "../api/profiles/patientProfiles.js";
 import type * as api_profiles_timeSlots from "../api/profiles/timeSlots.js";
 import type * as api_profiles_userProfiles from "../api/profiles/userProfiles.js";
-import type * as api_storage_fileStorage from "../api/storage/fileStorage.js";
-import type * as api_storage_profileImage from "../api/storage/profileImage.js";
 import type * as auth from "../auth.js";
+import type * as functions_internal_api_storage_fileStorage from "../functions/internal/api/storage/fileStorage.js";
+import type * as functions_internal_api_storage_profileImage from "../functions/internal/api/storage/profileImage.js";
 import type * as http from "../http.js";
 import type * as router from "../router.js";
 
@@ -59,14 +60,15 @@ declare const fullApi: ApiFromModules<{
   "api/consultation/getPendingConsultations": typeof api_consultation_getPendingConsultations;
   "api/consultation/sendMessage": typeof api_consultation_sendMessage;
   "api/consultation/startChat": typeof api_consultation_startChat;
+  "api/consultation/uploadFile": typeof api_consultation_uploadFile;
   "api/health/healthAnalysis": typeof api_health_healthAnalysis;
   "api/profiles/doctorProfile": typeof api_profiles_doctorProfile;
   "api/profiles/patientProfiles": typeof api_profiles_patientProfiles;
   "api/profiles/timeSlots": typeof api_profiles_timeSlots;
   "api/profiles/userProfiles": typeof api_profiles_userProfiles;
-  "api/storage/fileStorage": typeof api_storage_fileStorage;
-  "api/storage/profileImage": typeof api_storage_profileImage;
   auth: typeof auth;
+  "functions/internal/api/storage/fileStorage": typeof functions_internal_api_storage_fileStorage;
+  "functions/internal/api/storage/profileImage": typeof functions_internal_api_storage_profileImage;
   http: typeof http;
   router: typeof router;
 }>;

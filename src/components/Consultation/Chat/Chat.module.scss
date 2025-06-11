@@ -3,7 +3,6 @@
   flex-direction: column;
   width: 100%;
   position: relative;
-  // border: 5px solid var(--primary-main) !important;
 
   // Desktop styles
   @media (min-width: 768px) {
@@ -67,13 +66,13 @@
   // Desktop styles
   @media (min-width: 768px) {
     margin-top: 60px; // Height of header
-    margin-bottom: 72px; // Height of input
+    margin-bottom: 100px; // Height of input
   }
 
   // Mobile styles
   @media (max-width: 767px) {
     margin-top: 60px; // Height of header
-    margin-bottom: 72px; // Height of input
+    margin-bottom: 100px; // Height of input
   }
 }
 
@@ -157,5 +156,77 @@
 
   .sendButton {
     height: 40px;
+  }
+}
+
+.fileMessage {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 300px;
+
+  .filePreview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+
+  .fileLink {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.selectedFile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--secondary-main);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.attachButton {
+  height: 40px;
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.messageInputField {
+  flex: 1;
+}
+
+.sendButton {
+  height: 40px;
+  min-width: 80px;
+}
+
+.endChatButton {
+  &.hideButton {
+    visibility: hidden;
   }
 }
