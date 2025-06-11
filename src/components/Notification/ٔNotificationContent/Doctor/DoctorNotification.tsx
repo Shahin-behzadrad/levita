@@ -1,11 +1,11 @@
-import { ConsultationRequest } from "@/types/consultation";
+import { PendingConsultation } from "@/types/consultation";
 import Text from "@/components/Shared/Text";
 import styles from "./DoctorNotification.module.scss";
 import Button from "@/components/Shared/Button";
 import { ArrowRight } from "lucide-react";
 
 interface DoctorNotificationProps {
-  pendingConsultations: ConsultationRequest[];
+  pendingConsultations: PendingConsultation[];
   onConsultationClick: () => void;
 }
 
