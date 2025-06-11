@@ -3,7 +3,7 @@
 import { useQuery } from "convex/react";
 import { Button } from "@/components/Shared/Button/Button";
 import { api } from "../../../convex/_generated/api";
-import { Bell, Flower, Menu } from "lucide-react";
+import { Flower, Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 import styles from "./Header.module.scss";

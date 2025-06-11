@@ -20,13 +20,16 @@
 }
 
 // Luxury light theme palette
-$primary: #7c3d3d; // Regal purple
+$primary: #803c3c; // Regal purple
 $secondary: #b9b8c3; // Elegant soft silver
 $success: #6cbf84; // Soft mint green
 $warning: #ffcf3f; // Rich golden yellow
 $error: #d64550; // Refined crimson
 $info: #5c91e4; // Muted royal blue
-$primary-alt: #fff8f2; // Soft cream background accent
+$primary-alt: #fafbfa; // Soft cream background accent
+$card-background: #f1efef; // Soft cream background accent
+$title: #282424; // Deep charcoal instead of true black
+$caption: #585757; // Deep charcoal instead of true black
 
 @include generate-color-variants(primary, $primary);
 @include generate-color-variants(secondary, $secondary);
@@ -35,6 +38,9 @@ $primary-alt: #fff8f2; // Soft cream background accent
 @include generate-color-variants(error, $error);
 @include generate-color-variants(info, $info);
 @include generate-color-variants(primaryAlt, $primary-alt);
+@include generate-color-variants(cardBackground, $card-background);
+@include generate-color-variants(title, $title);
+@include generate-color-variants(caption, $caption);
 
 :root {
   // Static global colors

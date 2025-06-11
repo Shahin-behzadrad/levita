@@ -61,6 +61,7 @@ const PatientConsultations = ({
                         existingConsultations.status.charAt(0).toUpperCase() +
                         existingConsultations.status.slice(1)
                       }
+                      fontWeight="medium"
                     />
                   </div>
                   <div className={styles.headerRight}>
