@@ -22,6 +22,10 @@ const Header = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { messages } = useLanguage();
 
+  if (currentView === "chat") {
+    return null;
+  }
+
   const isLoading = userData === undefined;
 
   return (

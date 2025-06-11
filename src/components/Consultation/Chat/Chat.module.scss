@@ -1,30 +1,80 @@
 .chatContainer {
   display: flex;
   flex-direction: column;
-  gap: 16px;
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  height: 100%;
+  position: relative;
+  // border: 5px solid var(--primary-main) !important;
+
+  // Desktop styles
+  @media (min-width: 768px) {
+    max-width: 768px;
+    margin: 0 auto;
+    height: 100dvh;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  // Mobile styles
+  @media (max-width: 767px) {
+    height: 100vh;
+    margin: 0;
+  }
 }
 
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  padding: 8px 0;
+  padding: 8px 16px;
   border-bottom: 1px solid var(--border);
+  background-color: var(--cardBackground-main);
+  z-index: 2;
+  box-shadow: 4px 10px 10px rgba(0, 0, 0, 0.1);
+
+  // Desktop styles
+  @media (min-width: 768px) {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+
+  // Mobile styles
+  @media (max-width: 767px) {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+
+  .endChatButton {
+    margin-right: 16px;
+
+    &.hideButton {
+      opacity: 0;
+    }
+  }
 }
 
 .chatBox {
   display: flex;
   flex-direction: column;
   flex: 1;
-  border: 1px solid var(--border);
-  border-radius: 8px;
   overflow: hidden;
-  min-height: 500px;
+
+  // Desktop styles
+  @media (min-width: 768px) {
+    margin-top: 60px; // Height of header
+    margin-bottom: 72px; // Height of input
+  }
+
+  // Mobile styles
+  @media (max-width: 767px) {
+    margin-top: 60px; // Height of header
+    margin-bottom: 72px; // Height of input
+  }
 }
 
 .messages {
@@ -42,14 +92,16 @@
   border-radius: 8px;
   position: relative;
 
-  &.patientMessage {
-    align-self: flex-start;
-    background-color: var(--background-secondary);
-  }
-
-  &.doctorMessage {
+  &.currentUserMessage {
     align-self: flex-end;
     background-color: var(--primary-light);
+    border-bottom-right-radius: 2px;
+  }
+
+  &.otherUserMessage {
+    align-self: flex-start;
+    background-color: var(--secondary-light);
+    border-bottom-left-radius: 2px;
   }
 }
 
@@ -68,30 +120,42 @@
 
 .messageInput {
   display: flex;
+  justify-content: space-between;
   gap: 8px;
   padding: 16px;
   border-top: 1px solid var(--border);
-  background-color: var(--background);
+  background-color: var(--cardBackground-main);
+  box-shadow: -4px -5px 10px rgba(0, 0, 0, 0.1);
+
+  // Desktop styles
+  @media (min-width: 768px) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  // Mobile styles
+  @media (max-width: 767px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .messageInputField {
+    width: 100%;
+    .attachButtonContainer {
+      align-self: flex-start;
+
+      .attachButton {
+        height: 40px;
+        width: 40px;
+      }
+    }
+  }
 
   .sendButton {
     height: 40px;
-  }
-
-  input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    font-size: 14px;
-
-    &:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-
-    &:disabled {
-      background-color: var(--background-secondary);
-      cursor: not-allowed;
-    }
   }
 }

@@ -3,9 +3,15 @@
 import Link from "next/link";
 import styles from "./Footer.module.scss";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useApp } from "@/lib/AppContext";
 
 const Footer = () => {
+  const { currentView } = useApp();
   const { messages } = useLanguage();
+
+  if (currentView === "chat") {
+    return null;
+  }
 
   return (
     <footer className={styles.footer}>

@@ -8,8 +8,10 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import styles from "./Chat.module.scss";
 import { format } from "date-fns";
 import { useApp } from "@/lib/AppContext";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLinkIcon, Paperclip, X } from "lucide-react";
 import TextField from "@/components/Shared/TextField";
+import { useIsMobile } from "@/hooks/use-mobile";
+import clsx from "clsx";
 
 interface ChatProps {
   consultationId: Id<"consultations">;
@@ -17,6 +19,7 @@ interface ChatProps {
 }
 
 export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
+  const isMobile = useIsMobile();
   const { messages } = useLanguage();
   const { setView, currentView } = useApp();
   const [newMessage, setNewMessage] = useState("");
@@ -84,22 +87,41 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
   const canEndChat =
     isDoctor && consultation.chatStarted && !consultation.chatEnded;
 
+  // Determine if a message is from the current user
+  const isMessageFromCurrentUser = (message: any) => {
+    if (isDoctor) {
+      return message.senderId !== consultation.senderUserId;
+    } else {
+      return message.senderId === consultation.senderUserId;
+    }
+  };
+
   return (
     <div className={styles.chatContainer}>
       {currentView === "chat" && (
         <div className={styles.header}>
           <Button
             variant="text"
-            startIcon={<ArrowLeft />}
+            startIcon={<ArrowLeft size={18} />}
             onClick={() => setView("home")}
           >
             Back
           </Button>
           <Text
             value={`Chat with ${isDoctor ? "Patient" : "Doctor"}`}
-            fontSize="lg"
             fontWeight="medium"
           />
+
+          <Button
+            className={clsx(styles.endChatButton, {
+              [styles.hideButton]: !canEndChat,
+            })}
+            variant="outlined"
+            size="sm"
+            onClick={handleEndChat}
+          >
+            End Chat
+          </Button>
         </div>
       )}
 
@@ -116,9 +138,9 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
               <div
                 key={message._id}
                 className={`${styles.message} ${
-                  message.senderId === consultation.senderUserId
-                    ? styles.patientMessage
-                    : styles.doctorMessage
+                  isMessageFromCurrentUser(message)
+                    ? styles.currentUserMessage
+                    : styles.otherUserMessage
                 }`}
               >
                 <div className={styles.messageContent}>{message.content}</div>
@@ -132,29 +154,33 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
 
           <form onSubmit={handleSendMessage} className={styles.messageInput}>
             <TextField
+              multiline
               maxLength={100}
+              fullWidth
               type="text"
+              className={styles.messageInputField}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Type your message..."
               disabled={!isChatActive}
+              endAdornmentClassName={styles.attachButtonContainer}
+              endAdornment={
+                <Button variant="outlined" className={styles.attachButton}>
+                  <Paperclip size={18} />
+                </Button>
+              }
             />
+
             <Button
               type="submit"
               variant="contained"
-              className={styles.sendButton}
               disabled={!isChatActive}
+              className={styles.sendButton}
             >
               Send
             </Button>
           </form>
         </div>
-      )}
-
-      {canEndChat && (
-        <Button variant="outlined" onClick={handleEndChat}>
-          End Chat
-        </Button>
       )}
 
       {consultation.chatEnded && (
