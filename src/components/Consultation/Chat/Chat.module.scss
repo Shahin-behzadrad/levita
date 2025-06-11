@@ -93,7 +93,7 @@
 
   &.currentUserMessage {
     align-self: flex-end;
-    background-color: var(--primary-light);
+    background-color: var(--primary-lighter);
     border-bottom-right-radius: 2px;
   }
 
@@ -165,24 +165,56 @@
   flex-direction: column;
   gap: 8px;
   max-width: 300px;
+  background-color: var(--cardBackground-main);
+  border-radius: 8px;
+  border: 1px solid var(--border);
 
-  .filePreview {
-    max-width: 100%;
-    max-height: 200px;
+  .filePreviewContainer {
+    cursor: pointer;
     border-radius: 8px;
-    object-fit: contain;
-  }
-
-  .fileLink {
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    overflow: hidden;
+    background-color: var(--background-main);
 
     &:hover {
-      text-decoration: underline;
+      opacity: 0.9;
     }
+  }
+
+  .fileInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .fileActions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .documentPreview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    background-color: var(--background-main);
+    border-radius: 8px;
+  }
+
+  .documentIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: var(--primary-light);
+    border-radius: 8px;
+    color: var(--primary-main);
+  }
+
+  .documentInfo {
+    flex: 1;
+    min-width: 0;
   }
 }
 
@@ -197,6 +229,7 @@
 }
 
 .inputContainer {
+  width: 100%;
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -204,16 +237,6 @@
 
 .fileInput {
   display: none;
-}
-
-.attachButton {
-  height: 40px;
-  width: 40px;
-  min-width: 40px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .messageInputField {

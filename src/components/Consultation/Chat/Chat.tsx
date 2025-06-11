@@ -8,11 +8,20 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import styles from "./Chat.module.scss";
 import { format } from "date-fns";
 import { useApp } from "@/lib/AppContext";
-import { ArrowLeft, ExternalLinkIcon, Paperclip, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ExternalLinkIcon,
+  Paperclip,
+  X,
+  Download,
+  FileText,
+  Image as ImageIcon,
+} from "lucide-react";
 import TextField from "@/components/Shared/TextField";
 import { useIsMobile } from "@/hooks/use-mobile";
 import clsx from "clsx";
 import { useAction } from "convex/react";
+import Image from "@/components/Shared/Image/Image";
 
 interface ChatProps {
   consultationId: Id<"consultations">;
@@ -147,54 +156,154 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
     }
   };
 
+  const downloadFile = async (url: string, fileName: string) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  };
+
   const renderMessageContent = (message: any) => {
     if (message.fileUrl) {
       const isImage = message.fileType?.startsWith("image/");
       const isPDF = message.fileType === "application/pdf";
+      const isDocument =
+        message.fileType?.includes("document") ||
+        message.fileType?.includes("word") ||
+        message.fileType?.includes("text");
 
       if (isImage) {
         return (
           <div className={styles.fileMessage}>
-            <img
-              src={message.fileUrl}
-              alt={message.fileName}
-              className={styles.filePreview}
-            />
-            <Text value={message.fileName} fontSize="sm" color="gray" />
+            <div className={styles.filePreviewContainer}>
+              <Image
+                src={message.fileUrl}
+                alt={message.fileName}
+                className={styles.filePreview}
+                onClick={() => window.open(message.fileUrl, "_blank")}
+                width={100}
+                height={100}
+                shape="square"
+              />
+            </div>
+            <div className={styles.fileInfo}>
+              <Text value={message.fileName} fontSize="sm" color="gray" />
+              <div className={styles.fileActions}>
+                <Button
+                  variant="text"
+                  size="sm"
+                  startIcon={<ExternalLinkIcon size={16} />}
+                  onClick={() => window.open(message.fileUrl, "_blank")}
+                >
+                  Open
+                </Button>
+                <Button
+                  variant="text"
+                  size="sm"
+                  startIcon={<Download size={16} />}
+                  onClick={() =>
+                    downloadFile(message.fileUrl, message.fileName)
+                  }
+                >
+                  Download
+                </Button>
+              </div>
+            </div>
           </div>
         );
       }
 
-      if (isPDF) {
+      if (isPDF || isDocument) {
         return (
           <div className={styles.fileMessage}>
-            <a
-              href={message.fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.fileLink}
-            >
-              <Text value={`📄 ${message.fileName}`} fontSize="sm" />
-            </a>
+            <div className={styles.documentPreview}>
+              <div className={styles.documentIcon}>
+                {isPDF ? <FileText size={32} /> : <FileText size={32} />}
+              </div>
+              <div className={styles.documentInfo}>
+                <Text
+                  value={message.fileName}
+                  fontSize="sm"
+                  fontWeight="medium"
+                />
+                <Text
+                  value={isPDF ? "PDF Document" : "Document"}
+                  fontSize="xs"
+                  color="gray"
+                />
+              </div>
+            </div>
+            <div className={styles.fileActions}>
+              <Button
+                variant="outlined"
+                size="sm"
+                startIcon={<ExternalLinkIcon size={16} />}
+                onClick={() => window.open(message.fileUrl, "_blank")}
+              >
+                Open
+              </Button>
+              <Button
+                variant="outlined"
+                size="sm"
+                startIcon={<Download size={16} />}
+                onClick={() => downloadFile(message.fileUrl, message.fileName)}
+              >
+                Download
+              </Button>
+            </div>
           </div>
         );
       }
 
+      // For other file types
       return (
         <div className={styles.fileMessage}>
-          <a
-            href={message.fileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.fileLink}
-          >
-            <Text value={`📎 ${message.fileName}`} fontSize="sm" />
-          </a>
+          <div className={styles.documentPreview}>
+            <div className={styles.documentIcon}>
+              <Paperclip size={32} />
+            </div>
+            <div className={styles.documentInfo}>
+              <Text
+                value={message.fileName}
+                fontSize="sm"
+                fontWeight="medium"
+              />
+              <Text value="File" fontSize="xs" color="gray" />
+            </div>
+          </div>
+          <div className={styles.fileActions}>
+            <Button
+              variant="outlined"
+              size="sm"
+              startIcon={<ExternalLinkIcon size={16} />}
+              onClick={() => window.open(message.fileUrl, "_blank")}
+            >
+              Open
+            </Button>
+            <Button
+              variant="outlined"
+              size="sm"
+              startIcon={<Download size={16} />}
+              onClick={() => downloadFile(message.fileUrl, message.fileName)}
+            >
+              Download
+            </Button>
+          </div>
         </div>
       );
     }
 
-    return <div className={styles.messageContent}>{message.content}</div>;
+    return <Text value={message.content} />;
   };
 
   return (
@@ -273,13 +382,6 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
                 accept="image/*,.pdf,.doc,.docx"
                 className={styles.fileInput}
               />
-              <Button
-                variant="outlined"
-                className={styles.attachButton}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Paperclip size={18} />
-              </Button>
               <TextField
                 multiline
                 maxLength={100}
@@ -290,6 +392,15 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type your message..."
                 disabled={!isChatActive}
+                endAdornmentClassName={styles.attachButtonContainer}
+                endAdornment={
+                  <Button
+                    className={styles.attachButton}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Paperclip size={18} />
+                  </Button>
+                }
               />
               <Button
                 type="submit"
