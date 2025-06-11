@@ -26,3 +26,17 @@ export type ConsultationRequest = {
   createdAt: number;
   consultationDateTime?: string;
 };
+
+export type PendingConsultation = {
+  _id: Id<"consultationRequests">;
+  _creationTime: number;
+  createdAt: number;
+  patientId: Id<"patientProfiles">;
+  status: "pending" | "accepted" | "rejected";
+  patientOverview: string;
+  patient: {
+    fullName: string;
+    age: number;
+    sex: string;
+  } | null;
+};

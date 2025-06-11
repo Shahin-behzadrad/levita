@@ -16,6 +16,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import Image from "next/image";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useApp } from "@/lib/AppContext";
 
 interface UserProfileProps {
   userData: Pick<UserType, "fullName" | "role" | "profileImage">;
@@ -23,7 +24,7 @@ interface UserProfileProps {
 }
 
 export const UserProfile = ({ userData, onCloseSidebar }: UserProfileProps) => {
-  const router = useRouter();
+  const { setView } = useApp();
   const isMobile = useIsMobile();
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const { messages } = useLanguage();
@@ -74,7 +75,7 @@ export const UserProfile = ({ userData, onCloseSidebar }: UserProfileProps) => {
         variant="text"
         startIcon={<User size={20} />}
         onClick={() => {
-          router.push("/profile");
+          setView("profile");
           onCloseSidebar?.();
           setIsTooltipOpen(false);
         }}

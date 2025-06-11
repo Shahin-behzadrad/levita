@@ -65,6 +65,14 @@
     color: var(--success-main);
   }
 
+  &.title {
+    color: var(--title-main);
+  }
+
+  &.caption {
+    color: var(--caption-main);
+  }
+
   //p
   &.p-xxxs {
     font-size: 8px;

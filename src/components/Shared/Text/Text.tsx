@@ -40,16 +40,18 @@ export type TextProps = {
     | "success"
     | "warning"
     | "error"
-    | "info";
+    | "info"
+    | "title"
+    | "caption";
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 export const Text = ({
-  color = "black",
+  color = "title",
   id,
   value,
   className,
-  fontWeight = "light",
+  fontWeight = "normal",
   includesPersianDigits = true,
   numberOfLines,
   variant = "p",
@@ -106,6 +108,8 @@ export const Text = ({
         [classes.warning]: color === "warning",
         [classes.info]: color === "info",
         [classes.success]: color === "success",
+        [classes.title]: color === "title",
+        [classes.caption]: color === "caption",
 
         // Font family
         [classes.englishDigitsFontFamily]: !includesPersianDigits,

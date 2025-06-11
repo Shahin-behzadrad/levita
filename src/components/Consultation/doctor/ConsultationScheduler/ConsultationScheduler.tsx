@@ -37,6 +37,7 @@ export default function ConsultationScheduler({
       .slice(0, 16)
       .replace("T", " ");
     onConfirm(formattedDateTime);
+    onClose();
   };
 
   return (

@@ -1,0 +1,109 @@
+.pendingConsultations {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .title {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .icon {
+      width: 8px;
+      height: 30px;
+      background-color: var(--warning-darker);
+      border-radius: 8px;
+    }
+  }
+}
+
+.appointmentCard {
+  padding: 16px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--gray-50);
+  }
+
+  &.highlight {
+    animation: highlight 2s ease-out;
+  }
+
+  .appointmentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+
+    .patientInfo {
+      .patientLabel {
+        display: flex;
+        gap: 4px;
+      }
+
+      .patientDetails {
+        display: flex;
+        gap: 16px;
+        color: var(--gray-600);
+        font-size: 0.875rem;
+      }
+    }
+
+    .timestamp {
+      color: var(--gray-500);
+      font-size: 0.875rem;
+    }
+  }
+
+  .appointmentActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+
+    button {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+  }
+}
+
+@keyframes highlight {
+  0% {
+    background-color: var(--primary-opaque-10);
+    transform: scale(1.02);
+  }
+  100% {
+    background-color: transparent;
+    transform: scale(1);
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+  gap: 8px;
+
+  .emoji {
+    font-size: 2.5rem;
+  }
+
+  .title {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .description {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+    text-align: center;
+  }
+}

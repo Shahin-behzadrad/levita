@@ -1,95 +1,26 @@
 .main {
-  flex: 1;
-}
-
-.hero {
   width: 100%;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(
-    to top,
-    var(--secondary-main),
-    var(--primaryAlt-main)
-  );
-}
-
-.heroContainer {
-  max-width: 1200px;
-  padding: 0 16px;
-
-  @media (min-width: 768px) {
-    padding: 0 24px;
-  }
-}
-
-.heroContent {
+  margin: 100px auto;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  text-align: center;
-}
-
-.heroTitle {
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-
-  @media (min-width: 640px) {
-    font-size: 36px;
-  }
-
-  @media (min-width: 768px) {
-    font-size: 48px;
-  }
-
-  @media (min-width: 1024px) {
-    font-size: 60px;
-  }
-}
-
-.heroDescription {
-  margin: 0 auto;
-  max-width: 700px;
-  color: #6b7280;
-
-  @media (min-width: 768px) {
-    font-size: 20px;
-  }
-}
-
-.features {
-  width: 100%;
-  padding: 48px 0;
-
-  @media (min-width: 768px) {
-    padding: 96px 0;
-  }
-
-  @media (min-width: 1024px) {
-    padding: 128px 0;
-  }
-}
-
-.featuresContainer {
-  max-width: 1200px;
-  padding: 0 16px;
-  margin-inline: auto;
-
-  @media (min-width: 768px) {
-    padding: 0 24px;
-  }
-}
-
-.featuresGrid {
-  display: grid;
   gap: 24px;
 
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 48px;
+  .heroContainer {
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 32px auto 24px;
+    .hero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+
+      @media (max-width: 768px) {
+        flex-wrap: wrap;
+      }
+    }
   }
 }

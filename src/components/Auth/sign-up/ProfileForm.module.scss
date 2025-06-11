@@ -1,0 +1,13 @@
+.formContainer {
+  max-width: 768px;
+
+  &.doctorForm {
+    margin: 100px auto;
+  }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

@@ -3,8 +3,7 @@
 import { useQuery } from "convex/react";
 import { Button } from "@/components/Shared/Button/Button";
 import { api } from "../../../convex/_generated/api";
-import { useRouter } from "next/navigation";
-import { Bell, Menu } from "lucide-react";
+import { Flower, Menu } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
 import styles from "./Header.module.scss";
@@ -14,11 +13,11 @@ import Sidebar from "../Shared/Sidebar/Sidebar";
 import { LanguageSwitcher } from "../Shared/LanguageSwitcher/LanguageSwitcher";
 import { useLanguage } from "@/i18n/LanguageContext";
 import Notification from "../Notification/Notification";
+import { useApp } from "@/lib/AppContext";
 
 const Header = () => {
   const userData = useQuery(api.api.profiles.userProfiles.getUserProfile);
-
-  const router = useRouter();
+  const { setView, currentView } = useApp();
   const isMobile = useIsMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { messages } = useLanguage();
@@ -28,12 +27,18 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <div className={`${styles.container} ${isMobile ? styles.mobile : ""}`}>
-        <div onClick={() => router.push("/")} className={styles.levita}>
+        <div
+          onClick={() => {
+            setView("home");
+          }}
+          className={styles.levita}
+        >
           <Text
-            fontSize="lg"
-            variant="h3"
+            startAdornment={<Flower size={isMobile ? 24 : 40} />}
+            fontSize={isMobile ? "md" : "lg"}
+            variant={isMobile ? "h4" : "h3"}
             fontWeight="bold"
-            color="black"
+            color="primary"
             value="Levita"
           />
         </div>
@@ -91,23 +96,27 @@ const Header = () => {
                 />
               </>
             ) : (
-              <div className={styles.rightSection}>
-                <LanguageSwitcher />
-                <div className={styles.authButtons}>
-                  <Button
-                    variant="contained"
-                    onClick={() => router.push("/sign-up")}
-                  >
-                    {messages.auth.signUp}
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={() => router.push("/sign-in")}
-                  >
-                    {messages.auth.signIn}
-                  </Button>
-                </div>
-              </div>
+              <>
+                {currentView !== "complete-profile" && (
+                  <div className={styles.rightSection}>
+                    <LanguageSwitcher />
+                    <div className={styles.authButtons}>
+                      <Button
+                        variant="contained"
+                        onClick={() => setView("sign-up")}
+                      >
+                        {messages.auth.signUp}
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        onClick={() => setView("sign-in")}
+                      >
+                        {messages.auth.signIn}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </>
         )}
