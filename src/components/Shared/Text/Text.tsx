@@ -51,7 +51,7 @@ export const Text = ({
   id,
   value,
   className,
-  fontWeight = "light",
+  fontWeight = "normal",
   includesPersianDigits = true,
   numberOfLines,
   variant = "p",
