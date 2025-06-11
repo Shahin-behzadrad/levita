@@ -1,6 +1,10 @@
 .main {
   width: 100%;
   margin: 100px auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 
   .heroContainer {
     max-width: 400px;
@@ -13,6 +17,10 @@
       justify-content: center;
       align-items: center;
       gap: 8px;
+
+      @media (max-width: 768px) {
+        flex-wrap: wrap;
+      }
     }
   }
 }

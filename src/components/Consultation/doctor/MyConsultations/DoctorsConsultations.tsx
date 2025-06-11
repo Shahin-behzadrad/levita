@@ -7,7 +7,7 @@ import { api } from "../../../../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { Button } from "@/components/Shared/Button/Button";
 import { format } from "date-fns";
-import { MessageSquareText, ChevronDown } from "lucide-react";
+import { MessageSquareText, ChevronDown, Microscope } from "lucide-react";
 import { useState } from "react";
 
 const DoctorsConsultations = () => {
@@ -30,6 +30,83 @@ const DoctorsConsultations = () => {
     });
   };
 
+  const renderLabFindings = (findings: any) => {
+    if (
+      !findings ||
+      (!findings.Biochemistry?.length &&
+        !findings.Complete_Blood_Count?.length &&
+        !findings.Other?.length)
+    ) {
+      return (
+        <Text
+          value="No laboratory findings available"
+          fontSize="sm"
+          color="gray"
+        />
+      );
+    }
+
+    return (
+      <div className={styles.labFindings}>
+        {findings.Biochemistry?.length > 0 && (
+          <div className={styles.labSection}>
+            <Text
+              value="Biochemistry"
+              fontSize="sm"
+              fontWeight="bold"
+              className={styles.labSectionTitle}
+            />
+            <div className={styles.labResults}>
+              {findings.Biochemistry.map((result: string, idx: number) => (
+                <div key={idx} className={styles.labResult}>
+                  <Text value={result} fontSize="sm" color="gray" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {findings.Complete_Blood_Count?.length > 0 && (
+          <div className={styles.labSection}>
+            <Text
+              value="Complete Blood Count"
+              fontSize="sm"
+              fontWeight="bold"
+              className={styles.labSectionTitle}
+            />
+            <div className={styles.labResults}>
+              {findings.Complete_Blood_Count.map(
+                (result: string, idx: number) => (
+                  <div key={idx} className={styles.labResult}>
+                    <Text value={result} fontSize="sm" color="gray" />
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        )}
+
+        {findings.Other?.length > 0 && (
+          <div className={styles.labSection}>
+            <Text
+              value="Other Tests"
+              fontSize="sm"
+              fontWeight="bold"
+              className={styles.labSectionTitle}
+            />
+            <div className={styles.labResults}>
+              {findings.Other.map((result: string, idx: number) => (
+                <div key={idx} className={styles.labResult}>
+                  <Text value={result} fontSize="sm" color="gray" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       <div className={styles.pendingConsultations}>
@@ -41,7 +118,7 @@ const DoctorsConsultations = () => {
           className={styles.title}
           startAdornment={<div className={styles.icon} />}
         />
-        <Card className={styles.pendingConsultationsList}>
+        <Card>
           <CardContent className={styles.consultationsList}>
             {consultations && consultations.length > 0 ? (
               consultations.map((consultation, index) => {
@@ -137,6 +214,21 @@ const DoctorsConsultations = () => {
                               fontSize="sm"
                               color="gray"
                             />
+                          </div>
+
+                          <div className={styles.laboratoryFindings}>
+                            <div className={styles.sectionHeader}>
+                              <Microscope size={16} />
+                              <Text
+                                value="Laboratory Findings"
+                                fontSize="sm"
+                                fontWeight="bold"
+                              />
+                            </div>
+                            {renderLabFindings(
+                              consultation.doctorReportPreview
+                                ?.laboratoryFindings
+                            )}
                           </div>
 
                           <div className={styles.recommendations}>

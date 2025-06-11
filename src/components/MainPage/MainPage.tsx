@@ -10,19 +10,29 @@ import DoctorsConsultations from "../Consultation/doctor/MyConsultations/Doctors
 import PatientConsultations from "../Consultation/patient/MyConsultations/PatientConsultations";
 import PatientHealthAnalysisForm from "../Consultation/patient/PatientHealthAnalysisForm/PatientHealthAnalysisForm";
 import { Id } from "../../../convex/_generated/dataModel";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const HeroSection = ({ userData }: { userData: UserType }) => {
+  const isMobile = useIsMobile();
+
   return (
     <div className={styles.heroContainer}>
       <div className={styles.hero}>
-        <Text value="Welcome, " fontSize="xxl" fontWeight="bold" />
+        <Text
+          value="Welcome, "
+          fontSize={isMobile ? "lg" : "xxxl"}
+          variant="h4"
+          fontWeight="bold"
+        />
         <Text
           value={
             userData?.role === "doctor"
               ? `Dr. ${userData?.fullName}`
               : `${userData?.fullName}`
           }
-          fontSize="xxl"
+          fontSize={isMobile ? "lg" : "xxxl"}
+          variant="h4"
+          noWrap
           color="primary"
           fontWeight="bold"
         />
@@ -34,6 +44,7 @@ const HeroSection = ({ userData }: { userData: UserType }) => {
             : "Review patient cases and manage appointments with our AI-powered platform"
         }
         color="gray"
+        fontSize={isMobile ? "md" : "lg"}
         textAlign="center"
       />
     </div>

@@ -42,11 +42,14 @@ const PendingConsultations = ({
       requestId: selectedConsultation as Id<"consultationRequests">,
       consultationDateTime,
     });
+    setShowScheduler(false);
   };
 
   const handleRejectConsultation = (consultationId: string) => {
     console.log("reject consultation", consultationId);
   };
+
+  console.log(pendingConsultation);
 
   return (
     <>
@@ -64,7 +67,10 @@ const PendingConsultations = ({
             {pendingConsultation && pendingConsultation.length > 0 ? (
               pendingConsultation.map((consultation, index) => (
                 <div key={consultation._id}>
-                  <div className={styles.appointmentCard}>
+                  <div
+                    id={`consultation-${consultation._id}`}
+                    className={styles.appointmentCard}
+                  >
                     <div className={styles.appointmentHeader}>
                       <div className={styles.patientInfo}>
                         <div className={styles.patientLabel}>
@@ -98,6 +104,11 @@ const PendingConsultations = ({
                         className={styles.timestamp}
                       />
                     </div>
+                    <Text
+                      value={consultation.patientOverview}
+                      color="gray"
+                      fontSize="sm"
+                    />
                     <div className={styles.appointmentActions}>
                       <Button
                         variant="contained"

@@ -13,11 +13,12 @@ export const getPendingConsultations = query({
       consultations.map(async (consultation) => {
         const patient = await ctx.db.get(consultation.patientId);
         return {
-          _id: consultation._id,
-          _creationTime: consultation._creationTime,
-          createdAt: consultation.createdAt,
-          patientId: consultation.patientId,
-          status: consultation.status,
+          _id: consultation?._id,
+          _creationTime: consultation?._creationTime,
+          createdAt: consultation?.createdAt,
+          patientId: consultation?.patientId,
+          status: consultation?.status,
+          patientOverview: consultation?.doctorReportPreview?.patientOverview,
           patient: patient
             ? {
                 fullName: patient.fullName,

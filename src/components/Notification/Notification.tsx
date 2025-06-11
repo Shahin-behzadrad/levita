@@ -1,13 +1,12 @@
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Tooltip from "@/components/Shared/Tooltip/Tooltip";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Bell } from "lucide-react";
 import classes from "./Notification.module.scss";
-import Text from "@/components/Shared/Text";
 import DoctorNotification from "./ٔNotificationContent/Doctor/DoctorNotification";
 import PatientNotification from "./ٔNotificationContent/Patient/PatientNotification";
-import { ConsultationRequest } from "@/types/consultation";
+import { ConsultationRequest, PendingConsultation } from "@/types/consultation";
 
 const Notification = ({ isDoctor }: { isDoctor: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +23,7 @@ const Notification = ({ isDoctor }: { isDoctor: boolean }) => {
 
   const pendingConsultations = useQuery(
     api.api.consultation.getPendingConsultations.getPendingConsultations
-  ) as ConsultationRequest[];
+  ) as PendingConsultation[];
 
   const hasNotifications =
     getExistingNotification || pendingConsultations?.length > 0;

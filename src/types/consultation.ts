@@ -33,6 +33,7 @@ export type PendingConsultation = {
   createdAt: number;
   patientId: Id<"patientProfiles">;
   status: "pending" | "accepted" | "rejected";
+  patientOverview: string;
   patient: {
     fullName: string;
     age: number;
