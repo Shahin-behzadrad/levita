@@ -360,21 +360,15 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
 
           <Button
             className={clsx(styles.endChatButton, {
-              [styles.hideButton]: !canEndChat,
+              [styles.hideButton]: !isDoctor,
             })}
             variant="outlined"
             size="sm"
             onClick={handleEndChat}
           >
-            End Chat
+            {chatEnded ? "Reopen Chat" : "End Chat"}
           </Button>
         </div>
-      )}
-
-      {canStartChat && (
-        <Button variant="contained" onClick={handleStartChat}>
-          Start Chat
-        </Button>
       )}
 
       <div className={styles.chatBox}>
@@ -400,105 +394,80 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
         {chatEnded ? (
           <div className={styles.chatEndedMessage}>
             <Text
-              value="This chat has ended. You can view the conversation history below."
+              value="This chat has ended. You can view the conversation history."
               color="gray"
               fontSize="sm"
             />
           </div>
         ) : (
-          <>
-            {!isChatActive ? (
-              <div className={styles.chatEndedMessage}>
-                <Text
-                  value="Waiting for the doctor to start the chat..."
-                  color="gray"
-                  fontSize="sm"
-                />
-              </div>
-            ) : (
-              <form
-                onSubmit={handleSendMessage}
-                className={styles.messageInput}
-              >
-                <div className={styles.inputContainer}>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileSelect}
-                    accept="image/*,.pdf,.doc,.docx"
-                    className={styles.fileInput}
-                  />
-                  <TextField
-                    multiline
-                    maxLength={100}
-                    fullWidth
-                    type="text"
-                    className={styles.messageInputField}
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type your message..."
-                    disabled={!isChatActive}
-                    endAdornmentClassName={styles.attachButtonContainer}
-                    endAdornment={
-                      selectedFile ? (
-                        <div className={styles.filePreview}>
-                          <div className={styles.fileInfo}>
-                            {selectedFile.type.startsWith("image/") ? (
-                              <Image
-                                src={URL.createObjectURL(selectedFile)}
-                                alt={selectedFile.name}
-                                width={70}
-                                height={70}
-                                shape="square"
-                              />
-                            ) : (
-                              <div className={styles.fileIcon}>
-                                <FileText size={80} />
-                              </div>
-                            )}
-                          </div>
-                          <Button
-                            variant="contained"
-                            size="sm"
-                            className={styles.removeFileButton}
-                            onClick={removeSelectedFile}
-                            startIcon={<X size={14} />}
+          <form onSubmit={handleSendMessage} className={styles.messageInput}>
+            <div className={styles.inputContainer}>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                accept="image/*,.pdf,.doc,.docx"
+                className={styles.fileInput}
+              />
+              <TextField
+                multiline
+                maxLength={100}
+                fullWidth
+                type="text"
+                className={styles.messageInputField}
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Type your message..."
+                disabled={!isChatActive}
+                endAdornmentClassName={styles.attachButtonContainer}
+                endAdornment={
+                  selectedFile ? (
+                    <div className={styles.filePreview}>
+                      <div className={styles.fileInfo}>
+                        {selectedFile.type.startsWith("image/") ? (
+                          <Image
+                            src={URL.createObjectURL(selectedFile)}
+                            alt={selectedFile.name}
+                            width={70}
+                            height={70}
+                            shape="square"
                           />
-                        </div>
-                      ) : (
-                        <Button
-                          className={styles.attachButton}
-                          onClick={() => fileInputRef.current?.click()}
-                        >
-                          <Paperclip size={18} />
-                        </Button>
-                      )
-                    }
-                  />
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    className={styles.sendButton}
-                    disabled={!isChatActive}
-                  >
-                    Send
-                  </Button>
-                </div>
-              </form>
-            )}
-          </>
+                        ) : (
+                          <div className={styles.fileIcon}>
+                            <FileText size={80} />
+                          </div>
+                        )}
+                      </div>
+                      <Button
+                        variant="contained"
+                        size="sm"
+                        className={styles.removeFileButton}
+                        onClick={removeSelectedFile}
+                        startIcon={<X size={14} />}
+                      />
+                    </div>
+                  ) : (
+                    <Button
+                      className={styles.attachButton}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Paperclip size={18} />
+                    </Button>
+                  )
+                }
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                className={styles.sendButton}
+                disabled={!isChatActive}
+              >
+                Send
+              </Button>
+            </div>
+          </form>
         )}
       </div>
-
-      {consultation.chatEnded && !isChatActive && (
-        <div className={styles.chatEndedMessage}>
-          <Text
-            value="This chat has ended. You can view the conversation history below."
-            color="gray"
-            fontSize="sm"
-          />
-        </div>
-      )}
     </div>
   );
 };

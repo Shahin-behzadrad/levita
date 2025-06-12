@@ -18,7 +18,6 @@ const DoctorsConsultations = () => {
   const consultations = useQuery(
     api.api.consultation.getDoctorConsultations.getDoctorConsultations
   );
-  const startChat = useMutation(api.api.consultation.startChat.startChat);
 
   const [expandedConsultations, setExpandedConsultations] = useState<
     Set<string>
@@ -52,7 +51,6 @@ const DoctorsConsultations = () => {
   };
 
   const handleStartChat = (consultationId: Id<"consultations">) => {
-    startChat({ consultationId });
     setActiveChatId(consultationId);
     setView("chat");
   };
