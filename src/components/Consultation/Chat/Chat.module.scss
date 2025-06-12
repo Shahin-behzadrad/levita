@@ -118,6 +118,7 @@
 }
 
 .messageInput {
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   gap: 8px;
@@ -251,5 +252,46 @@
 .endChatButton {
   &.hideButton {
     visibility: hidden;
+  }
+}
+
+.filePreview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  background-color: var(--color-background-secondary);
+  border-radius: 4px;
+  max-width: 200px;
+
+  .fileInfo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow: hidden;
+
+    span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .fileIcon {
+      background-color: var(--secondary-main);
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .removeFileButton {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 }

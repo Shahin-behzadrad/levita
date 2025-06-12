@@ -108,6 +108,7 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSelectedFile(null);
     if (!newMessage.trim() && !selectedFile) return;
 
     try {
@@ -363,17 +364,6 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
           </div>
 
           <form onSubmit={handleSendMessage} className={styles.messageInput}>
-            {selectedFile && (
-              <div className={styles.selectedFile}>
-                <Text value={selectedFile.name} fontSize="sm" />
-                <Button
-                  variant="text"
-                  size="sm"
-                  onClick={removeSelectedFile}
-                  startIcon={<X size={16} />}
-                />
-              </div>
-            )}
             <div className={styles.inputContainer}>
               <input
                 type="file"
@@ -394,12 +384,39 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
                 disabled={!isChatActive}
                 endAdornmentClassName={styles.attachButtonContainer}
                 endAdornment={
-                  <Button
-                    className={styles.attachButton}
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <Paperclip size={18} />
-                  </Button>
+                  selectedFile ? (
+                    <div className={styles.filePreview}>
+                      <div className={styles.fileInfo}>
+                        {selectedFile.type.startsWith("image/") ? (
+                          <Image
+                            src={URL.createObjectURL(selectedFile)}
+                            alt={selectedFile.name}
+                            width={24}
+                            height={24}
+                            shape="square"
+                          />
+                        ) : (
+                          <div className={styles.fileIcon}>
+                            <FileText size={80} />
+                          </div>
+                        )}
+                      </div>
+                      <Button
+                        variant="contained"
+                        size="sm"
+                        className={styles.removeFileButton}
+                        onClick={removeSelectedFile}
+                        startIcon={<X size={14} />}
+                      />
+                    </div>
+                  ) : (
+                    <Button
+                      className={styles.attachButton}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Paperclip size={18} />
+                    </Button>
+                  )
                 }
               />
               <Button
