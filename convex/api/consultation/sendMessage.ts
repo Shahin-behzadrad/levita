@@ -22,7 +22,7 @@ export const sendMessage = mutation({
     const consultation = await ctx.db.get(consultationId);
     if (!consultation) throw new Error("Consultation not found");
 
-    if (!consultation.chatStarted || consultation.chatEnded) {
+    if (!consultation.chatIsActive) {
       throw new Error("Chat is not active");
     }
 

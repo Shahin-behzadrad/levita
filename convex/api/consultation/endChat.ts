@@ -26,12 +26,12 @@ export const endChat = mutation({
       throw new Error("Only the assigned doctor can end the chat");
     }
 
-    if (!consultation.chatStarted) {
+    if (!consultation.chatIsActive) {
       throw new Error("Chat has not been started");
     }
 
     await ctx.db.patch(args.consultationId, {
-      chatEnded: true,
+      chatIsActive: false,
     });
   },
 });

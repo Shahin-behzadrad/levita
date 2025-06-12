@@ -92,19 +92,7 @@ const PatientConsultations = ({
                   {!isExpanded &&
                     existingConsultations.status !== "pending" && (
                       <div className={styles.actions}>
-                        {existingConsultations.chatStarted &&
-                        !existingConsultations.chatEnded ? (
-                          <Button
-                            variant="contained"
-                            onClick={() =>
-                              handleStartChat(existingConsultations._id)
-                            }
-                            startIcon={<MessageSquareText />}
-                          >
-                            Continue Chat
-                          </Button>
-                        ) : !existingConsultations.chatStarted &&
-                          !existingConsultations.chatEnded ? (
+                        {existingConsultations.chatIsActive ? (
                           <Button
                             variant="contained"
                             onClick={() =>
@@ -172,19 +160,7 @@ const PatientConsultations = ({
 
                   {existingConsultations.status !== "pending" && (
                     <div className={styles.actions}>
-                      {existingConsultations.chatStarted &&
-                      !existingConsultations.chatEnded ? (
-                        <Button
-                          variant="contained"
-                          onClick={() =>
-                            handleStartChat(existingConsultations._id)
-                          }
-                          startIcon={<MessageSquareText />}
-                        >
-                          Continue Chat
-                        </Button>
-                      ) : !existingConsultations.chatStarted &&
-                        !existingConsultations.chatEnded ? (
+                      {existingConsultations.chatIsActive ? (
                         <Button
                           variant="contained"
                           onClick={() =>

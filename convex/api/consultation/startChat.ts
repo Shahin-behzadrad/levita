@@ -34,7 +34,7 @@ export const startChat = mutation({
     // }
 
     await ctx.db.patch(args.consultationId, {
-      chatStarted: true,
+      chatIsActive: true,
     });
   },
 });

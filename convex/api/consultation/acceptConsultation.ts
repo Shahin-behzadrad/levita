@@ -19,8 +19,7 @@ export const acceptConsultation = mutation({
       status: "accepted",
       acceptedByDoctorId: doctorId,
       consultationDateTime,
-      chatStarted: true,
-      chatEnded: false,
+      chatIsActive: true,
     });
   },
 });

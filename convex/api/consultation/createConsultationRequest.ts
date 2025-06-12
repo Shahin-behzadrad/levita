@@ -56,8 +56,7 @@ export const CreateConsultationRequest = mutation({
       senderUserId: patientProfile.userId,
       status: "pending",
       doctorReportPreview: args.doctorReportPreview,
-      chatStarted: false,
-      chatEnded: false,
+      chatIsActive: false,
       createdAt: Date.now(),
     });
   },

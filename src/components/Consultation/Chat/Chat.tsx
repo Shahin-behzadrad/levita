@@ -69,10 +69,14 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
     }
   };
 
-  const handleEndChat = async () => {
+  const handleEndChatOrStartChat = async () => {
     try {
-      await endChat({ consultationId });
-      setView("home");
+      if (chatIsActive) {
+        await endChat({ consultationId });
+        setView("home");
+      } else {
+        await startChat({ consultationId });
+      }
     } catch (error) {
       console.error("Failed to end chat:", error);
     }
@@ -176,12 +180,7 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
   }
 
   // Ensure we have boolean values for chat states
-  const chatStarted = Boolean(consultation.chatStarted);
-  const chatEnded = Boolean(consultation.chatEnded);
-
-  const canStartChat = isDoctor && !chatStarted && !chatEnded;
-  const isChatActive = chatStarted && !chatEnded;
-  const canEndChat = isDoctor && chatStarted && !chatEnded;
+  const chatIsActive = Boolean(consultation.chatIsActive);
 
   // Determine if a message is from the current user
   const isMessageFromCurrentUser = (message: any) => {
@@ -364,9 +363,9 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
             })}
             variant="outlined"
             size="sm"
-            onClick={handleEndChat}
+            onClick={handleEndChatOrStartChat}
           >
-            {chatEnded ? "Reopen Chat" : "End Chat"}
+            {chatIsActive ? "End Chat" : "Reopen Chat"}
           </Button>
         </div>
       )}
@@ -391,7 +390,7 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
           <div ref={messagesEndRef} />
         </div>
 
-        {chatEnded ? (
+        {!chatIsActive ? (
           <div className={styles.chatEndedMessage}>
             <Text
               value="This chat has ended. You can view the conversation history."
@@ -418,7 +417,7 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type your message..."
-                disabled={!isChatActive}
+                disabled={!chatIsActive}
                 endAdornmentClassName={styles.attachButtonContainer}
                 endAdornment={
                   selectedFile ? (
@@ -460,7 +459,7 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
                 type="submit"
                 variant="contained"
                 className={styles.sendButton}
-                disabled={!isChatActive}
+                disabled={!chatIsActive}
               >
                 Send
               </Button>

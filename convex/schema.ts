@@ -101,8 +101,7 @@ const applicationTables = {
     ),
     acceptedByDoctorId: v.optional(v.id("doctorProfiles")),
     consultationDateTime: v.optional(v.string()), // Format: YYYY-MM-DD HH:mm
-    chatStarted: v.optional(v.boolean()),
-    chatEnded: v.optional(v.boolean()),
+    chatIsActive: v.optional(v.boolean()),
 
     doctorReportPreview: v.optional(
       v.object({

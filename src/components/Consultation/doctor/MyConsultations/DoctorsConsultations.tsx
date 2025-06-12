@@ -9,11 +9,12 @@ import { Button } from "@/components/Shared/Button/Button";
 import { format } from "date-fns";
 import { MessageSquareText, ChevronDown, Microscope } from "lucide-react";
 import { useState } from "react";
-import { Chat } from "../../Chat/Chat";
 import { useApp } from "@/lib/AppContext";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const DoctorsConsultations = () => {
+  const isMobile = useIsMobile();
   const { setView, setActiveChatId } = useApp();
   const consultations = useQuery(
     api.api.consultation.getDoctorConsultations.getDoctorConsultations
@@ -172,9 +173,6 @@ const DoctorsConsultations = () => {
                   const isExpanded = expandedConsultations.has(
                     consultation._id
                   );
-                  const isConsultationTime = consultation.consultationDateTime
-                    ? new Date(consultation.consultationDateTime) <= new Date()
-                    : false;
 
                   return (
                     <div
@@ -226,7 +224,7 @@ const DoctorsConsultations = () => {
                                     )
                                   : "N/A"
                               }
-                              fontSize="sm"
+                              fontSize={isMobile ? "xs" : "sm"}
                               fontWeight="medium"
                             />
                             <Text
@@ -264,7 +262,7 @@ const DoctorsConsultations = () => {
                               <div className={styles.infoGrid}>
                                 <div className={styles.infoItem}>
                                   <Text
-                                    value="Name"
+                                    value="Name:"
                                     fontSize="sm"
                                     color="gray"
                                   />
@@ -277,7 +275,7 @@ const DoctorsConsultations = () => {
                                 </div>
                                 <div className={styles.infoItem}>
                                   <Text
-                                    value="Age"
+                                    value="Age:"
                                     fontSize="sm"
                                     color="gray"
                                   />
@@ -291,7 +289,7 @@ const DoctorsConsultations = () => {
                                 </div>
                                 <div className={styles.infoItem}>
                                   <Text
-                                    value="Sex"
+                                    value="Sex:"
                                     fontSize="sm"
                                     color="gray"
                                   />
@@ -330,8 +328,7 @@ const DoctorsConsultations = () => {
                               )}
 
                             <div className={styles.actions}>
-                              {consultation.chatStarted &&
-                              !consultation.chatEnded ? (
+                              {consultation.chatIsActive ? (
                                 <Button
                                   variant="contained"
                                   onClick={() =>
@@ -341,8 +338,7 @@ const DoctorsConsultations = () => {
                                 >
                                   Continue Chat
                                 </Button>
-                              ) : !consultation.chatStarted &&
-                                !consultation.chatEnded ? (
+                              ) : !consultation.chatIsActive ? (
                                 <Button
                                   variant="contained"
                                   onClick={() =>
