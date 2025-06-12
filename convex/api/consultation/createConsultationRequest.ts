@@ -32,11 +32,24 @@ export const CreateConsultationRequest = mutation({
       .withIndex("by_patientId", (q) => q.eq("patientId", args.patientId))
       .collect();
 
-    const alreadyExists = existing.some(
+    const activeConsultation = existing.find(
       (r) => r.status === "pending" || r.status === "accepted"
     );
 
-    if (alreadyExists) return null;
+    if (activeConsultation) {
+      console.log("Duplicate consultation attempt:", {
+        patientId: args.patientId,
+        existingStatus: activeConsultation.status,
+        existingId: activeConsultation._id,
+      });
+      throw new Error("Patient already has an active consultation");
+    }
+
+    console.log("Creating new consultation request:", {
+      patientId: args.patientId,
+      senderUserId: patientProfile.userId,
+      hasDoctorReport: !!args.doctorReportPreview,
+    });
 
     return await ctx.db.insert("consultations", {
       patientId: args.patientId,

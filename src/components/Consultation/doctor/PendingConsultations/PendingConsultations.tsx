@@ -49,8 +49,6 @@ const PendingConsultations = ({
     console.log("reject consultation", consultationId);
   };
 
-  console.log(pendingConsultation);
-
   return (
     <>
       <div className={styles.pendingConsultations}>

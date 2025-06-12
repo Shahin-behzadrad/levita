@@ -89,43 +89,44 @@ const PatientConsultations = ({
                       color="gray"
                     />
                   </div>
-                  {!isExpanded && (
-                    <div className={styles.actions}>
-                      {existingConsultations.chatStarted &&
-                      !existingConsultations.chatEnded ? (
-                        <Button
-                          variant="contained"
-                          onClick={() =>
-                            handleStartChat(existingConsultations._id)
-                          }
-                          startIcon={<MessageSquareText />}
-                        >
-                          Continue Chat
-                        </Button>
-                      ) : !existingConsultations.chatStarted &&
+                  {!isExpanded &&
+                    existingConsultations.status !== "pending" && (
+                      <div className={styles.actions}>
+                        {existingConsultations.chatStarted &&
                         !existingConsultations.chatEnded ? (
-                        <Button
-                          variant="contained"
-                          onClick={() =>
-                            handleStartChat(existingConsultations._id)
-                          }
-                          startIcon={<MessageSquareText />}
-                        >
-                          Join Chat
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outlined"
-                          onClick={() =>
-                            handleStartChat(existingConsultations._id)
-                          }
-                          startIcon={<MessageSquareText />}
-                        >
-                          View Chat History
-                        </Button>
-                      )}
-                    </div>
-                  )}
+                          <Button
+                            variant="contained"
+                            onClick={() =>
+                              handleStartChat(existingConsultations._id)
+                            }
+                            startIcon={<MessageSquareText />}
+                          >
+                            Continue Chat
+                          </Button>
+                        ) : !existingConsultations.chatStarted &&
+                          !existingConsultations.chatEnded ? (
+                          <Button
+                            variant="contained"
+                            onClick={() =>
+                              handleStartChat(existingConsultations._id)
+                            }
+                            startIcon={<MessageSquareText />}
+                          >
+                            Join Chat
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="outlined"
+                            onClick={() =>
+                              handleStartChat(existingConsultations._id)
+                            }
+                            startIcon={<MessageSquareText />}
+                          >
+                            View Chat History
+                          </Button>
+                        )}
+                      </div>
+                    )}
                 </div>
               </div>
 
@@ -169,41 +170,43 @@ const PatientConsultations = ({
                     </div>
                   )}
 
-                  <div className={styles.actions}>
-                    {existingConsultations.chatStarted &&
-                    !existingConsultations.chatEnded ? (
-                      <Button
-                        variant="contained"
-                        onClick={() =>
-                          handleStartChat(existingConsultations._id)
-                        }
-                        startIcon={<MessageSquareText />}
-                      >
-                        Continue Chat
-                      </Button>
-                    ) : !existingConsultations.chatStarted &&
+                  {existingConsultations.status !== "pending" && (
+                    <div className={styles.actions}>
+                      {existingConsultations.chatStarted &&
                       !existingConsultations.chatEnded ? (
-                      <Button
-                        variant="contained"
-                        onClick={() =>
-                          handleStartChat(existingConsultations._id)
-                        }
-                        startIcon={<MessageSquareText />}
-                      >
-                        Join Chat
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outlined"
-                        onClick={() =>
-                          handleStartChat(existingConsultations._id)
-                        }
-                        startIcon={<MessageSquareText />}
-                      >
-                        View Chat History
-                      </Button>
-                    )}
-                  </div>
+                        <Button
+                          variant="contained"
+                          onClick={() =>
+                            handleStartChat(existingConsultations._id)
+                          }
+                          startIcon={<MessageSquareText />}
+                        >
+                          Continue Chat
+                        </Button>
+                      ) : !existingConsultations.chatStarted &&
+                        !existingConsultations.chatEnded ? (
+                        <Button
+                          variant="contained"
+                          onClick={() =>
+                            handleStartChat(existingConsultations._id)
+                          }
+                          startIcon={<MessageSquareText />}
+                        >
+                          Join Chat
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outlined"
+                          onClick={() =>
+                            handleStartChat(existingConsultations._id)
+                          }
+                          startIcon={<MessageSquareText />}
+                        >
+                          View Chat History
+                        </Button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

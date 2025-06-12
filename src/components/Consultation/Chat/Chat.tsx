@@ -141,9 +141,6 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
     }
   };
 
-  // Debug consultation data
-  console.log("Raw Consultation Data:", consultation);
-
   if (consultation === undefined) {
     return (
       <div className={styles.chatContainer}>
@@ -161,7 +158,7 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
     );
   }
 
-  if (!consultation) {
+  if (consultation === null) {
     return (
       <div className={styles.chatContainer}>
         <div className={styles.header}>
@@ -185,17 +182,6 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
   const canStartChat = isDoctor && !chatStarted && !chatEnded;
   const isChatActive = chatStarted && !chatEnded;
   const canEndChat = isDoctor && chatStarted && !chatEnded;
-
-  console.log("Chat State:", {
-    isDoctor,
-    rawChatStarted: consultation.chatStarted,
-    rawChatEnded: consultation.chatEnded,
-    chatStarted,
-    chatEnded,
-    canStartChat,
-    isChatActive,
-    canEndChat,
-  });
 
   // Determine if a message is from the current user
   const isMessageFromCurrentUser = (message: any) => {
@@ -391,98 +377,127 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
         </Button>
       )}
 
-      {isChatActive && (
-        <div className={styles.chatBox}>
-          <div className={styles.messages}>
-            {chatMessages?.map((message) => (
-              <div
-                key={message._id}
-                className={`${styles.message} ${
-                  isMessageFromCurrentUser(message)
-                    ? styles.currentUserMessage
-                    : styles.otherUserMessage
-                }`}
-              >
-                {renderMessageContent(message)}
-                <div className={styles.messageTime}>
-                  {format(new Date(message.createdAt), "HH:mm")}
-                </div>
+      <div className={styles.chatBox}>
+        <div className={styles.messages}>
+          {chatMessages?.map((message) => (
+            <div
+              key={message._id}
+              className={`${styles.message} ${
+                isMessageFromCurrentUser(message)
+                  ? styles.currentUserMessage
+                  : styles.otherUserMessage
+              }`}
+            >
+              {renderMessageContent(message)}
+              <div className={styles.messageTime}>
+                {format(new Date(message.createdAt), "HH:mm")}
               </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <form onSubmit={handleSendMessage} className={styles.messageInput}>
-            <div className={styles.inputContainer}>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileSelect}
-                accept="image/*,.pdf,.doc,.docx"
-                className={styles.fileInput}
-              />
-              <TextField
-                multiline
-                maxLength={100}
-                fullWidth
-                type="text"
-                className={styles.messageInputField}
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Type your message..."
-                disabled={!isChatActive}
-                endAdornmentClassName={styles.attachButtonContainer}
-                endAdornment={
-                  selectedFile ? (
-                    <div className={styles.filePreview}>
-                      <div className={styles.fileInfo}>
-                        {selectedFile.type.startsWith("image/") ? (
-                          <Image
-                            src={URL.createObjectURL(selectedFile)}
-                            alt={selectedFile.name}
-                            width={70}
-                            height={70}
-                            shape="square"
-                          />
-                        ) : (
-                          <div className={styles.fileIcon}>
-                            <FileText size={80} />
-                          </div>
-                        )}
-                      </div>
-                      <Button
-                        variant="contained"
-                        size="sm"
-                        className={styles.removeFileButton}
-                        onClick={removeSelectedFile}
-                        startIcon={<X size={14} />}
-                      />
-                    </div>
-                  ) : (
-                    <Button
-                      className={styles.attachButton}
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      <Paperclip size={18} />
-                    </Button>
-                  )
-                }
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                className={styles.sendButton}
-                disabled={!isChatActive}
-              >
-                Send
-              </Button>
             </div>
-          </form>
+          ))}
+          <div ref={messagesEndRef} />
         </div>
-      )}
 
-      {consultation.chatEnded && (
-        <Text value="This chat has ended" color="gray" />
+        {chatEnded ? (
+          <div className={styles.chatEndedMessage}>
+            <Text
+              value="This chat has ended. You can view the conversation history below."
+              color="gray"
+              fontSize="sm"
+            />
+          </div>
+        ) : (
+          <>
+            {!isChatActive ? (
+              <div className={styles.chatEndedMessage}>
+                <Text
+                  value="Waiting for the doctor to start the chat..."
+                  color="gray"
+                  fontSize="sm"
+                />
+              </div>
+            ) : (
+              <form
+                onSubmit={handleSendMessage}
+                className={styles.messageInput}
+              >
+                <div className={styles.inputContainer}>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileSelect}
+                    accept="image/*,.pdf,.doc,.docx"
+                    className={styles.fileInput}
+                  />
+                  <TextField
+                    multiline
+                    maxLength={100}
+                    fullWidth
+                    type="text"
+                    className={styles.messageInputField}
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Type your message..."
+                    disabled={!isChatActive}
+                    endAdornmentClassName={styles.attachButtonContainer}
+                    endAdornment={
+                      selectedFile ? (
+                        <div className={styles.filePreview}>
+                          <div className={styles.fileInfo}>
+                            {selectedFile.type.startsWith("image/") ? (
+                              <Image
+                                src={URL.createObjectURL(selectedFile)}
+                                alt={selectedFile.name}
+                                width={70}
+                                height={70}
+                                shape="square"
+                              />
+                            ) : (
+                              <div className={styles.fileIcon}>
+                                <FileText size={80} />
+                              </div>
+                            )}
+                          </div>
+                          <Button
+                            variant="contained"
+                            size="sm"
+                            className={styles.removeFileButton}
+                            onClick={removeSelectedFile}
+                            startIcon={<X size={14} />}
+                          />
+                        </div>
+                      ) : (
+                        <Button
+                          className={styles.attachButton}
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          <Paperclip size={18} />
+                        </Button>
+                      )
+                    }
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    className={styles.sendButton}
+                    disabled={!isChatActive}
+                  >
+                    Send
+                  </Button>
+                </div>
+              </form>
+            )}
+          </>
+        )}
+      </div>
+
+      {consultation.chatEnded && !isChatActive && (
+        <div className={styles.chatEndedMessage}>
+          <Text
+            value="This chat has ended. You can view the conversation history below."
+            color="gray"
+            fontSize="sm"
+          />
+        </div>
       )}
     </div>
   );

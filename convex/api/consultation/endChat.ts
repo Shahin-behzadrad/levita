@@ -32,7 +32,6 @@ export const endChat = mutation({
 
     await ctx.db.patch(args.consultationId, {
       chatEnded: true,
-      status: "completed",
     });
   },
 });
