@@ -21,16 +21,17 @@ export function ProfileImageUpload({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const generateUploadUrl = useMutation(
-    api.api.storage.profileImage.generateProfileImageUploadUrl
+    api.functions.internal.api.storage.profileImage
+      .generateProfileImageUploadUrl
   );
   const updateProfileImage = useMutation(
-    api.api.storage.profileImage.updateProfileImage
+    api.functions.internal.api.storage.profileImage.updateProfileImage
   );
   const deleteProfileImage = useMutation(
-    api.api.storage.profileImage.deleteProfileImage
+    api.functions.internal.api.storage.profileImage.deleteProfileImage
   );
   const imageUrl = useQuery(
-    api.api.storage.profileImage.getProfileImageUrl,
+    api.functions.internal.api.storage.profileImage.getProfileImageUrl,
     currentImageUrl ? { storageId: currentImageUrl } : "skip"
   );
 

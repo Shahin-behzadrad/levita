@@ -13,7 +13,7 @@ export const uploadFile = action({
     }),
   },
   handler: async (ctx, args): Promise<string> => {
-    const { consultationId, fileData } = args;
+    const { fileData } = args;
 
     // Generate an upload URL
     const uploadUrl: string = await ctx.runMutation(
