@@ -44,10 +44,6 @@ const PatientConsultations = ({
     setView("chat");
   };
 
-  if (!existingConsultations) {
-    return null;
-  }
-
   return (
     <div className={styles.pendingConsultations}>
       <Text
@@ -133,81 +129,83 @@ const PatientConsultations = ({
                 </div>
               </div>
 
-              {isExpanded && (
-                <>
-                  <Divider />
-                  <div className={styles.consultationDetails}>
-                    {existingConsultations.consultationDateTime && (
-                      <div className={styles.scheduledTime}>
-                        <Text
-                          value="Scheduled Time"
-                          fontSize="sm"
-                          fontWeight="medium"
-                        />
-                        <Text
-                          value={existingConsultations.consultationDateTime}
-                          fontSize="sm"
-                          color="gray"
-                        />
-                      </div>
-                    )}
-
-                    {existingConsultations.doctorReportPreview && (
-                      <div className={styles.reportPreview}>
-                        <Text
-                          value="Report Preview"
-                          fontSize="sm"
-                          fontWeight="medium"
-                        />
-                        <Text
-                          value={
-                            existingConsultations.doctorReportPreview
-                              .patientOverview
-                          }
-                          fontSize="sm"
-                          color="gray"
-                        />
-                      </div>
-                    )}
-
-                    <div className={styles.actions}>
-                      {existingConsultations.chatStarted &&
-                      !existingConsultations.chatEnded ? (
-                        <Button
-                          variant="contained"
-                          onClick={() =>
-                            handleStartChat(existingConsultations._id)
-                          }
-                          startIcon={<MessageSquareText />}
-                        >
-                          Continue Chat
-                        </Button>
-                      ) : !existingConsultations.chatStarted &&
-                        !existingConsultations.chatEnded ? (
-                        <Button
-                          variant="contained"
-                          onClick={() =>
-                            handleStartChat(existingConsultations._id)
-                          }
-                          startIcon={<MessageSquareText />}
-                        >
-                          Join Chat
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outlined"
-                          onClick={() =>
-                            handleStartChat(existingConsultations._id)
-                          }
-                          startIcon={<MessageSquareText />}
-                        >
-                          View Chat History
-                        </Button>
-                      )}
+              <div
+                className={clsx(styles.content, {
+                  [styles.expanded]: isExpanded,
+                })}
+              >
+                <Divider />
+                <div className={styles.consultationDetails}>
+                  {existingConsultations.consultationDateTime && (
+                    <div className={styles.scheduledTime}>
+                      <Text
+                        value="Scheduled Time"
+                        fontSize="sm"
+                        fontWeight="medium"
+                      />
+                      <Text
+                        value={existingConsultations.consultationDateTime}
+                        fontSize="sm"
+                        color="gray"
+                      />
                     </div>
+                  )}
+
+                  {existingConsultations.doctorReportPreview && (
+                    <div className={styles.reportPreview}>
+                      <Text
+                        value="Report Preview"
+                        fontSize="sm"
+                        fontWeight="medium"
+                      />
+                      <Text
+                        value={
+                          existingConsultations.doctorReportPreview
+                            .patientOverview
+                        }
+                        fontSize="sm"
+                        color="gray"
+                      />
+                    </div>
+                  )}
+
+                  <div className={styles.actions}>
+                    {existingConsultations.chatStarted &&
+                    !existingConsultations.chatEnded ? (
+                      <Button
+                        variant="contained"
+                        onClick={() =>
+                          handleStartChat(existingConsultations._id)
+                        }
+                        startIcon={<MessageSquareText />}
+                      >
+                        Continue Chat
+                      </Button>
+                    ) : !existingConsultations.chatStarted &&
+                      !existingConsultations.chatEnded ? (
+                      <Button
+                        variant="contained"
+                        onClick={() =>
+                          handleStartChat(existingConsultations._id)
+                        }
+                        startIcon={<MessageSquareText />}
+                      >
+                        Join Chat
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outlined"
+                        onClick={() =>
+                          handleStartChat(existingConsultations._id)
+                        }
+                        startIcon={<MessageSquareText />}
+                      >
+                        View Chat History
+                      </Button>
+                    )}
                   </div>
-                </>
-              )}
+                </div>
+              </div>
             </div>
           ) : (
             <div className={styles.emptyState}>

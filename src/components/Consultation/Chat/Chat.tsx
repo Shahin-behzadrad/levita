@@ -72,6 +72,7 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
   const handleEndChat = async () => {
     try {
       await endChat({ consultationId });
+      setView("home");
     } catch (error) {
       console.error("Failed to end chat:", error);
     }
@@ -140,13 +141,61 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
     }
   };
 
-  if (!consultation) return null;
+  // Debug consultation data
+  console.log("Raw Consultation Data:", consultation);
 
-  const canStartChat =
-    isDoctor && !consultation.chatStarted && !consultation.chatEnded;
-  const isChatActive = consultation.chatStarted && !consultation.chatEnded;
-  const canEndChat =
-    isDoctor && consultation.chatStarted && !consultation.chatEnded;
+  if (consultation === undefined) {
+    return (
+      <div className={styles.chatContainer}>
+        <div className={styles.header}>
+          <Button
+            variant="text"
+            startIcon={<ArrowLeft size={18} />}
+            onClick={() => setView("home")}
+          >
+            Back
+          </Button>
+          <Text value="Loading chat..." fontWeight="medium" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!consultation) {
+    return (
+      <div className={styles.chatContainer}>
+        <div className={styles.header}>
+          <Button
+            variant="text"
+            startIcon={<ArrowLeft size={18} />}
+            onClick={() => setView("home")}
+          >
+            Back
+          </Button>
+          <Text value="Chat not found" fontWeight="medium" />
+        </div>
+      </div>
+    );
+  }
+
+  // Ensure we have boolean values for chat states
+  const chatStarted = Boolean(consultation.chatStarted);
+  const chatEnded = Boolean(consultation.chatEnded);
+
+  const canStartChat = isDoctor && !chatStarted && !chatEnded;
+  const isChatActive = chatStarted && !chatEnded;
+  const canEndChat = isDoctor && chatStarted && !chatEnded;
+
+  console.log("Chat State:", {
+    isDoctor,
+    rawChatStarted: consultation.chatStarted,
+    rawChatEnded: consultation.chatEnded,
+    chatStarted,
+    chatEnded,
+    canStartChat,
+    isChatActive,
+    canEndChat,
+  });
 
   // Determine if a message is from the current user
   const isMessageFromCurrentUser = (message: any) => {
@@ -391,8 +440,8 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
                           <Image
                             src={URL.createObjectURL(selectedFile)}
                             alt={selectedFile.name}
-                            width={24}
-                            height={24}
+                            width={70}
+                            height={70}
                             shape="square"
                           />
                         ) : (

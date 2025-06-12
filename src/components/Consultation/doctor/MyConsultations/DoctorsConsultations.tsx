@@ -4,7 +4,7 @@ import Text from "@/components/Shared/Text";
 import { Card, CardContent } from "@/components/Shared/Card";
 import Divider from "@/components/Shared/Divider/Divider";
 import { api } from "../../../../../convex/_generated/api";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { Button } from "@/components/Shared/Button/Button";
 import { format } from "date-fns";
 import { MessageSquareText, ChevronDown, Microscope } from "lucide-react";
@@ -18,6 +18,8 @@ const DoctorsConsultations = () => {
   const consultations = useQuery(
     api.api.consultation.getDoctorConsultations.getDoctorConsultations
   );
+  const startChat = useMutation(api.api.consultation.startChat.startChat);
+
   const [expandedConsultations, setExpandedConsultations] = useState<
     Set<string>
   >(new Set());
@@ -50,6 +52,7 @@ const DoctorsConsultations = () => {
   };
 
   const handleStartChat = (consultationId: Id<"consultations">) => {
+    startChat({ consultationId });
     setActiveChatId(consultationId);
     setView("chat");
   };
