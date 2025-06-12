@@ -7,9 +7,11 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useLanguage } from "@/i18n/LanguageContext";
 import styles from "./HealthAnalysisResult.module.scss";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export const HealthAnalysisResult = () => {
+  const hasSubmitted = useRef(false);
+
   const { messages } = useLanguage();
   const getAIAnalysis = useQuery(api.api.health.healthAnalysis.getAIAnalysis);
   const patientProfile = useQuery(
@@ -30,14 +32,16 @@ export const HealthAnalysisResult = () => {
     if (
       patientProfile?._id &&
       getAIAnalysis?.doctorReport &&
-      getExisting === null
+      getExisting === null &&
+      !hasSubmitted.current
     ) {
+      hasSubmitted.current = true; // prevent second execution
       void safeCreateRequest({
-        patientId: patientProfile?._id,
+        patientId: patientProfile._id,
         doctorReportPreview: getAIAnalysis.doctorReport,
       });
     }
-  }, [getAIAnalysis, getExisting, safeCreateRequest]);
+  }, [getAIAnalysis, getExisting, patientProfile?._id]);
 
   if (!getAIAnalysis?.doctorReport) {
     return null;

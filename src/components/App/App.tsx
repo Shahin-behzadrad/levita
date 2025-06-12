@@ -10,9 +10,11 @@ import SignInClient from "../Auth/sign-in/SignInClient";
 import SignUpClient from "../Auth/sign-up/SignUpClient";
 import { ProfileForm } from "../Auth/sign-up/ProfileForm";
 import LoadingModal from "../LoadingModal/LoadingModal";
+import { Chat } from "../Consultation/Chat/Chat";
 
 export function App() {
-  const { currentView, isAuthenticated, userData } = useApp();
+  const { currentView, isAuthenticated, userData, activeChatId, userType } =
+    useApp();
 
   if (userData === undefined) {
     return <LoadingModal />;
@@ -38,6 +40,16 @@ export function App() {
         return <ProfileForm />;
       case "profile":
         return <ProfileScreen userData={userData} />;
+      case "chat":
+        if (!activeChatId) return <MainPage userData={userData} />;
+        return (
+          <div className={styles.chatView}>
+            <Chat
+              consultationId={activeChatId}
+              isDoctor={userType === "doctor"}
+            />
+          </div>
+        );
 
       default:
         return <MainPage userData={userData} />;

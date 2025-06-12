@@ -3,7 +3,7 @@ import { v } from "convex/values";
 
 export const acceptConsultation = mutation({
   args: {
-    requestId: v.id("consultationRequests"),
+    requestId: v.id("consultations"),
     doctorId: v.id("doctorProfiles"),
     consultationDateTime: v.string(), // Format: YYYY-MM-DD HH:mm
   },
@@ -19,6 +19,7 @@ export const acceptConsultation = mutation({
       status: "accepted",
       acceptedByDoctorId: doctorId,
       consultationDateTime,
+      chatIsActive: true,
     });
   },
 });

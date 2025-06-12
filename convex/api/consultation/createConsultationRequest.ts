@@ -28,21 +28,35 @@ export const CreateConsultationRequest = mutation({
     if (!patientProfile) throw new Error("Patient profile not found");
 
     const existing = await ctx.db
-      .query("consultationRequests")
+      .query("consultations")
       .withIndex("by_patientId", (q) => q.eq("patientId", args.patientId))
       .collect();
 
-    const alreadyExists = existing.some(
+    const activeConsultation = existing.find(
       (r) => r.status === "pending" || r.status === "accepted"
     );
 
-    if (alreadyExists) return null;
+    if (activeConsultation) {
+      console.log("Duplicate consultation attempt:", {
+        patientId: args.patientId,
+        existingStatus: activeConsultation.status,
+        existingId: activeConsultation._id,
+      });
+      throw new Error("Patient already has an active consultation");
+    }
 
-    return await ctx.db.insert("consultationRequests", {
+    console.log("Creating new consultation request:", {
+      patientId: args.patientId,
+      senderUserId: patientProfile.userId,
+      hasDoctorReport: !!args.doctorReportPreview,
+    });
+
+    return await ctx.db.insert("consultations", {
       patientId: args.patientId,
       senderUserId: patientProfile.userId,
       status: "pending",
       doctorReportPreview: args.doctorReportPreview,
+      chatIsActive: false,
       createdAt: Date.now(),
     });
   },

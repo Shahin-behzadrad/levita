@@ -16,7 +16,7 @@ export type DoctorReportPreview = {
 };
 
 export type ConsultationRequest = {
-  _id: Id<"consultationRequests">;
+  _id: Id<"consultations">;
   _creationTime: number;
   patientId: Id<"patientProfiles">;
   senderUserId: Id<"users">;
@@ -28,7 +28,7 @@ export type ConsultationRequest = {
 };
 
 export type PendingConsultation = {
-  _id: Id<"consultationRequests">;
+  _id: Id<"consultations">;
   _creationTime: number;
   createdAt: number;
   patientId: Id<"patientProfiles">;

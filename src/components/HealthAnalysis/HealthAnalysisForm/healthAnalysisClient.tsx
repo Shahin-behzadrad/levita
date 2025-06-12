@@ -65,7 +65,7 @@ export const HealthAnalysis = ({ onCancel }: Props) => {
     api.api.health.healthAnalysis.getHealthAnalysisInfo
   );
   const generateUploadUrl = useMutation(
-    api.api.storage.fileStorage.generateUploadUrl
+    api.functions.internal.api.storage.fileStorage.generateUploadUrl
   );
 
   useEffect(() => {

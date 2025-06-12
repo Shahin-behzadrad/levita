@@ -7,7 +7,7 @@ export const getExistingConsultationRequest = query({
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
-      .query("consultationRequests")
+      .query("consultations")
       .withIndex("by_patientId", (q) => q.eq("patientId", args.patientId))
       .collect();
 

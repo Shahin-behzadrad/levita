@@ -21,7 +21,7 @@ export const getDoctorConsultations = query({
 
     // Get all consultations for this doctor
     const consultations = await ctx.db
-      .query("consultationRequests")
+      .query("consultations")
       .filter((q) => q.eq(q.field("acceptedByDoctorId"), doctorProfile._id))
       .collect();
 

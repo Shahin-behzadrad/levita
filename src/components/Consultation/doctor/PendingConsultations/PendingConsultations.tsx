@@ -39,7 +39,7 @@ const PendingConsultations = ({
     if (!userId) return;
     await acceptConsultation({
       doctorId: userId,
-      requestId: selectedConsultation as Id<"consultationRequests">,
+      requestId: selectedConsultation as Id<"consultations">,
       consultationDateTime,
     });
     setShowScheduler(false);
@@ -48,8 +48,6 @@ const PendingConsultations = ({
   const handleRejectConsultation = (consultationId: string) => {
     console.log("reject consultation", consultationId);
   };
-
-  console.log(pendingConsultation);
 
   return (
     <>
