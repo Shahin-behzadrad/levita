@@ -149,6 +149,15 @@
 }
 
 // Laboratory Findings Styles
+.laboratoryFindings {
+  background-color: var(--cardBackground-main);
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .labFindings {
   display: flex;
   flex-direction: column;

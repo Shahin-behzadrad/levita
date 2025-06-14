@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useApp } from "@/lib/AppContext";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { LaboratoryFindings } from "./LaboratoryFindings/LaboratoryFindings";
 
 const DoctorsConsultations = () => {
   const isMobile = useIsMobile();
@@ -54,100 +55,6 @@ const DoctorsConsultations = () => {
   const handleStartChat = (consultationId: Id<"consultations">) => {
     setActiveChatId(consultationId);
     setView("chat");
-  };
-
-  const renderLabFindings = (findings: any, consultationId: string) => {
-    if (
-      !findings ||
-      (!findings.Biochemistry?.length &&
-        !findings.Complete_Blood_Count?.length &&
-        !findings.Other?.length)
-    ) {
-      return (
-        <Text
-          value="No laboratory findings available"
-          fontSize="sm"
-          color="gray"
-        />
-      );
-    }
-
-    const isExpanded = expandedLabFindings.has(consultationId);
-
-    return (
-      <div className={styles.laboratoryFindings}>
-        <div
-          className={styles.sectionHeader}
-          onClick={() => toggleLabFindings(consultationId)}
-        >
-          <Microscope size={20} />
-          <Text value="Laboratory Findings" fontSize="sm" fontWeight="medium" />
-          <ChevronDown
-            className={`${styles.chevron} ${isExpanded ? styles.expanded : ""}`}
-            size={20}
-          />
-        </div>
-        {isExpanded && (
-          <div className={styles.labFindings}>
-            {findings.Biochemistry?.length > 0 && (
-              <div className={styles.labSection}>
-                <Text
-                  value="Biochemistry"
-                  fontSize="sm"
-                  fontWeight="bold"
-                  className={styles.labSectionTitle}
-                />
-                <div className={styles.labResults}>
-                  {findings.Biochemistry.map((result: string, idx: number) => (
-                    <div key={idx} className={styles.labResult}>
-                      <Text value={result} fontSize="sm" color="gray" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {findings.Complete_Blood_Count?.length > 0 && (
-              <div className={styles.labSection}>
-                <Text
-                  value="Complete Blood Count"
-                  fontSize="sm"
-                  fontWeight="bold"
-                  className={styles.labSectionTitle}
-                />
-                <div className={styles.labResults}>
-                  {findings.Complete_Blood_Count.map(
-                    (result: string, idx: number) => (
-                      <div key={idx} className={styles.labResult}>
-                        <Text value={result} fontSize="sm" color="gray" />
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
-            )}
-
-            {findings.Other?.length > 0 && (
-              <div className={styles.labSection}>
-                <Text
-                  value="Other Tests"
-                  fontSize="sm"
-                  fontWeight="bold"
-                  className={styles.labSectionTitle}
-                />
-                <div className={styles.labResults}>
-                  {findings.Other.map((result: string, idx: number) => (
-                    <div key={idx} className={styles.labResult}>
-                      <Text value={result} fontSize="sm" color="gray" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    );
   };
 
   if (!consultations) {
@@ -450,13 +357,17 @@ const DoctorsConsultations = () => {
                               </div>
                             )}
 
-                            {consultation.doctorReportPreview
-                              ?.laboratoryFindings &&
-                              renderLabFindings(
+                            <LaboratoryFindings
+                              findings={
                                 consultation.doctorReportPreview
-                                  .laboratoryFindings,
+                                  ?.laboratoryFindings
+                              }
+                              consultationId={consultation._id}
+                              isExpanded={expandedLabFindings.has(
                                 consultation._id
                               )}
+                              onToggle={toggleLabFindings}
+                            />
 
                             <div className={styles.actions}>
                               {consultation.chatIsActive ? (
