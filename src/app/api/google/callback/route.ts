@@ -1,46 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getTokens } from "@/lib/googleAuth";
-import { serialize } from "cookie";
+import { google } from "googleapis";
 
-export async function GET(req: NextRequest) {
-  try {
-    const code = req.nextUrl.searchParams.get("code");
-    if (!code) {
-      return new NextResponse("No authorization code provided", {
-        status: 400,
-      });
-    }
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const code = url.searchParams.get("code");
 
-    const tokens = await getTokens(code);
-    console.log("Tokens received successfully");
+  if (!code) return new Response("Missing code", { status: 400 });
 
-    // Set cookie header on the response
-    const response = NextResponse.redirect(new URL("/?view=home", req.url));
-    response.headers.set(
-      "Set-Cookie",
-      serialize("google_tokens", JSON.stringify(tokens), {
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-      })
-    );
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID!,
+    process.env.GOOGLE_CLIENT_SECRET!,
+    process.env.GOOGLE_REDIRECT_URI!
+  );
 
-    return response;
-  } catch (error: any) {
-    console.error("Google callback error:", error);
+  const { tokens } = await oauth2Client.getToken(code);
+  oauth2Client.setCredentials(tokens);
 
-    // Handle specific error cases
-    if (error.message.includes("No refresh token")) {
-      return NextResponse.redirect(
-        new URL("/api/google/redirect?prompt=consent", req.url)
-      );
-    }
+  const oauth2 = google.oauth2({ auth: oauth2Client, version: "v2" });
+  const userInfo = await oauth2.userinfo.get();
+  const email = userInfo.data.email;
 
-    // For other errors, redirect to home with error parameter
-    return NextResponse.redirect(
-      new URL("/?view=home&error=google_auth_failed", req.url)
-    );
-  }
+  // For now, redirect with token data to frontend route
+  const query = new URLSearchParams({
+    accessToken: tokens.access_token || "",
+    refreshToken: tokens.refresh_token || "",
+    email: email || "",
+  });
+
+  return Response.redirect(`http://localhost:3000?${query}`);
 }

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useApp } from "@/lib/AppContext";
 import AuthForm from "@/components/Shared/AuthForm/AuthForm";
+import { ConnectGoogleButton } from "@/components/Shared/GoogleButton/GoogleButton";
 
 export default function SignInClient() {
   const { signIn } = useAuthActions();

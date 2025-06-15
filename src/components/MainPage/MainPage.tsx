@@ -11,6 +11,7 @@ import PatientConsultations from "../Consultation/patient/MyConsultations/Patien
 import PatientHealthAnalysisForm from "../Consultation/patient/PatientHealthAnalysisForm/PatientHealthAnalysisForm";
 import { Id } from "../../../convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ConnectGoogleButton } from "../Shared/GoogleButton/GoogleButton";
 
 const HeroSection = ({ userData }: { userData: UserType }) => {
   const isMobile = useIsMobile();
@@ -68,6 +69,7 @@ const MainPage = ({ userData }: { userData: UserType }) => {
     <div className={styles.main}>
       <HeroSection userData={userData} />
       <DoctorsConsultations />
+      <ConnectGoogleButton />
       <PendingConsultations
         userId={userData?._id as Id<"doctorProfiles"> | null}
       />

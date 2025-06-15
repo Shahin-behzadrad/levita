@@ -132,6 +132,13 @@ const applicationTables = {
     fileName: v.optional(v.string()),
     fileType: v.optional(v.string()),
   }).index("by_consultation", ["consultationId"]),
+
+  googleTokens: defineTable({
+    userId: v.id("users"),
+    accessToken: v.string(),
+    refreshToken: v.optional(v.string()),
+    email: v.string(),
+  }).index("by_userId", ["userId"]),
 };
 
 export default defineSchema({
