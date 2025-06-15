@@ -4,10 +4,15 @@ import Text from "@/components/Shared/Text";
 import { Card, CardContent } from "@/components/Shared/Card";
 import Divider from "@/components/Shared/Divider/Divider";
 import { api } from "../../../../../convex/_generated/api";
-import { useMutation, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { Button } from "@/components/Shared/Button/Button";
 import { format } from "date-fns";
-import { MessageSquareText, ChevronDown, Microscope } from "lucide-react";
+import {
+  MessageSquareText,
+  ChevronDown,
+  FileText,
+  Download,
+} from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/lib/AppContext";
 import { Id } from "../../../../../convex/_generated/dataModel";
@@ -20,6 +25,7 @@ const DoctorsConsultations = () => {
   const consultations = useQuery(
     api.api.consultation.getDoctorConsultations.getDoctorConsultations
   );
+  console.log(consultations);
 
   const [expandedConsultations, setExpandedConsultations] = useState<
     Set<string>
@@ -76,7 +82,7 @@ const DoctorsConsultations = () => {
           <CardContent>
             <div className={styles.consultationsList}>
               {consultations.length > 0 ? (
-                consultations.map((consultation, index) => {
+                consultations.map((consultation) => {
                   const isExpanded = expandedConsultations.has(
                     consultation._id
                   );
@@ -356,6 +362,57 @@ const DoctorsConsultations = () => {
                                 />
                               </div>
                             )}
+
+                            {consultation.patient?.documents &&
+                              consultation.patient.documents.length > 0 && (
+                                <div className={styles.section}>
+                                  <Text
+                                    value="Patient Documents"
+                                    fontSize="sm"
+                                    fontWeight="medium"
+                                  />
+                                  <div className={styles.documentsList}>
+                                    {consultation.patient.documents.map(
+                                      (doc, index) => (
+                                        <>
+                                          <div
+                                            key={index}
+                                            className={styles.documentItem}
+                                          >
+                                            <FileText size={20} />
+                                            <Button
+                                              size="sm"
+                                              variant="text"
+                                              startIcon={<Download size={16} />}
+                                              onClick={() =>
+                                                window.open(doc ?? "", "_blank")
+                                              }
+                                            >
+                                              Download
+                                            </Button>
+                                          </div>
+                                          <div
+                                            key={index}
+                                            className={styles.documentItem}
+                                          >
+                                            <FileText size={20} />
+                                            <Button
+                                              size="sm"
+                                              variant="text"
+                                              startIcon={<Download size={16} />}
+                                              onClick={() =>
+                                                window.open(doc ?? "", "_blank")
+                                              }
+                                            >
+                                              Download
+                                            </Button>
+                                          </div>
+                                        </>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                              )}
 
                             <LaboratoryFindings
                               findings={

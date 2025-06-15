@@ -5,9 +5,9 @@ import styles from "../DoctorsConsultations.module.scss";
 interface LaboratoryFindingsProps {
   findings:
     | {
-        Biochemistry: string[];
-        Complete_Blood_Count: string[];
-        Other: string[];
+        Biochemistry?: string[];
+        Complete_Blood_Count?: string[];
+        Other?: string[];
       }
     | undefined;
   consultationId: string;

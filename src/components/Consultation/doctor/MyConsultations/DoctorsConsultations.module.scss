@@ -118,6 +118,21 @@
   padding: 16px;
   background-color: var(--cardBackground-main);
   border-radius: 8px;
+
+  .documentsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .documentItem {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border-radius: 4px;
+      background-color: var(--primary-opaque-5);
+    }
+  }
 }
 
 .overview,
