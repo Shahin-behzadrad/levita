@@ -34,7 +34,12 @@ const PendingConsultations = ({
     setShowScheduler(true);
   };
 
-  const acceptConsultationHandler = async (consultationDateTime: string) => {
+  const acceptConsultationHandler = async (
+    consultationDateTime: string,
+    meetLink: string
+  ) => {
+    console.log("meetLink", meetLink);
+
     if (!selectedConsultation) return;
     if (!userId) return;
     await acceptConsultation({

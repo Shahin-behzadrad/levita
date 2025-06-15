@@ -25,7 +25,6 @@ const DoctorsConsultations = () => {
   const consultations = useQuery(
     api.api.consultation.getDoctorConsultations.getDoctorConsultations
   );
-  console.log(consultations);
 
   const [expandedConsultations, setExpandedConsultations] = useState<
     Set<string>
