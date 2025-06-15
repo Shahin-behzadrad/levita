@@ -4,14 +4,20 @@ import Text from "@/components/Shared/Text";
 import { Card, CardContent } from "@/components/Shared/Card";
 import Divider from "@/components/Shared/Divider/Divider";
 import { api } from "../../../../../convex/_generated/api";
-import { useMutation, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { Button } from "@/components/Shared/Button/Button";
 import { format } from "date-fns";
-import { MessageSquareText, ChevronDown, Microscope } from "lucide-react";
+import {
+  MessageSquareText,
+  ChevronDown,
+  FileText,
+  Download,
+} from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/lib/AppContext";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { LaboratoryFindings } from "./LaboratoryFindings/LaboratoryFindings";
 
 const DoctorsConsultations = () => {
   const isMobile = useIsMobile();
@@ -19,6 +25,7 @@ const DoctorsConsultations = () => {
   const consultations = useQuery(
     api.api.consultation.getDoctorConsultations.getDoctorConsultations
   );
+  console.log(consultations);
 
   const [expandedConsultations, setExpandedConsultations] = useState<
     Set<string>
@@ -56,100 +63,6 @@ const DoctorsConsultations = () => {
     setView("chat");
   };
 
-  const renderLabFindings = (findings: any, consultationId: string) => {
-    if (
-      !findings ||
-      (!findings.Biochemistry?.length &&
-        !findings.Complete_Blood_Count?.length &&
-        !findings.Other?.length)
-    ) {
-      return (
-        <Text
-          value="No laboratory findings available"
-          fontSize="sm"
-          color="gray"
-        />
-      );
-    }
-
-    const isExpanded = expandedLabFindings.has(consultationId);
-
-    return (
-      <div className={styles.laboratoryFindings}>
-        <div
-          className={styles.sectionHeader}
-          onClick={() => toggleLabFindings(consultationId)}
-        >
-          <Microscope size={20} />
-          <Text value="Laboratory Findings" fontSize="sm" fontWeight="medium" />
-          <ChevronDown
-            className={`${styles.chevron} ${isExpanded ? styles.expanded : ""}`}
-            size={20}
-          />
-        </div>
-        {isExpanded && (
-          <div className={styles.labFindings}>
-            {findings.Biochemistry?.length > 0 && (
-              <div className={styles.labSection}>
-                <Text
-                  value="Biochemistry"
-                  fontSize="sm"
-                  fontWeight="bold"
-                  className={styles.labSectionTitle}
-                />
-                <div className={styles.labResults}>
-                  {findings.Biochemistry.map((result: string, idx: number) => (
-                    <div key={idx} className={styles.labResult}>
-                      <Text value={result} fontSize="sm" color="gray" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {findings.Complete_Blood_Count?.length > 0 && (
-              <div className={styles.labSection}>
-                <Text
-                  value="Complete Blood Count"
-                  fontSize="sm"
-                  fontWeight="bold"
-                  className={styles.labSectionTitle}
-                />
-                <div className={styles.labResults}>
-                  {findings.Complete_Blood_Count.map(
-                    (result: string, idx: number) => (
-                      <div key={idx} className={styles.labResult}>
-                        <Text value={result} fontSize="sm" color="gray" />
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
-            )}
-
-            {findings.Other?.length > 0 && (
-              <div className={styles.labSection}>
-                <Text
-                  value="Other Tests"
-                  fontSize="sm"
-                  fontWeight="bold"
-                  className={styles.labSectionTitle}
-                />
-                <div className={styles.labResults}>
-                  {findings.Other.map((result: string, idx: number) => (
-                    <div key={idx} className={styles.labResult}>
-                      <Text value={result} fontSize="sm" color="gray" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  };
-
   if (!consultations) {
     return null;
   }
@@ -169,7 +82,7 @@ const DoctorsConsultations = () => {
           <CardContent>
             <div className={styles.consultationsList}>
               {consultations.length > 0 ? (
-                consultations.map((consultation, index) => {
+                consultations.map((consultation) => {
                   const isExpanded = expandedConsultations.has(
                     consultation._id
                   );
@@ -184,69 +97,112 @@ const DoctorsConsultations = () => {
                         className={styles.consultationHeader}
                         onClick={() => toggleConsultation(consultation._id)}
                       >
-                        <div className={styles.headerLeft}>
-                          <Text
-                            value={
-                              consultation.patient?.fullName ??
-                              "Unknown Patient"
-                            }
-                            fontSize="md"
-                            fontWeight="medium"
-                          />
-                          <div className={styles.status}>
-                            <div
-                              className={`${styles.statusDot} ${
-                                consultation.status === "pending"
-                                  ? styles.pending
-                                  : consultation.status === "accepted"
-                                    ? styles.completed
-                                    : styles.cancelled
-                              }`}
-                            />
-                            <Text
-                              value={consultation.status}
-                              fontSize="sm"
-                              color="gray"
-                            />
-                          </div>
-                        </div>
-
-                        <div className={styles.headerRight}>
-                          <div className={styles.consultationDateTime}>
+                        <div className={styles.headerContainer}>
+                          <div className={styles.headerLeft}>
                             <Text
                               value={
-                                consultation.consultationDateTime
-                                  ? format(
-                                      new Date(
-                                        consultation.consultationDateTime
-                                      ),
-                                      "MMM dd, yyyy"
-                                    )
-                                  : "N/A"
+                                consultation.patient?.fullName ??
+                                "Unknown Patient"
                               }
-                              fontSize={isMobile ? "xs" : "sm"}
+                              fontSize="md"
                               fontWeight="medium"
                             />
-                            <Text
-                              value={
-                                consultation.consultationDateTime
-                                  ? format(
-                                      new Date(
-                                        consultation.consultationDateTime
-                                      ),
-                                      "hh:mm a"
-                                    )
-                                  : "N/A"
-                              }
-                              fontSize="sm"
-                              color="gray"
+                            <div className={styles.status}>
+                              <div
+                                className={`${styles.statusDot} ${
+                                  consultation.status === "pending"
+                                    ? styles.pending
+                                    : consultation.status === "accepted"
+                                      ? styles.completed
+                                      : styles.cancelled
+                                }`}
+                              />
+                              <Text
+                                value={consultation.status}
+                                fontSize="sm"
+                                color="gray"
+                              />
+                            </div>
+                          </div>
+
+                          <div className={styles.headerRight}>
+                            <div className={styles.consultationDateTime}>
+                              <Text
+                                value={
+                                  consultation.consultationDateTime
+                                    ? format(
+                                        new Date(
+                                          consultation.consultationDateTime
+                                        ),
+                                        "MMM dd, yyyy"
+                                      )
+                                    : "N/A"
+                                }
+                                fontSize={isMobile ? "xs" : "sm"}
+                                fontWeight="medium"
+                              />
+                              <Text
+                                value={
+                                  consultation.consultationDateTime
+                                    ? format(
+                                        new Date(
+                                          consultation.consultationDateTime
+                                        ),
+                                        "hh:mm a"
+                                      )
+                                    : "N/A"
+                                }
+                                fontSize="sm"
+                                color="gray"
+                              />
+                            </div>
+                            <ChevronDown
+                              className={`${styles.chevron} ${isExpanded ? styles.expanded : ""}`}
+                              size={20}
                             />
                           </div>
-                          <ChevronDown
-                            className={`${styles.chevron} ${isExpanded ? styles.expanded : ""}`}
-                            size={20}
-                          />
                         </div>
+                        {!isExpanded && (
+                          <div className={styles.headerActions}>
+                            {consultation.chatIsActive ? (
+                              <Button
+                                size="sm"
+                                variant="contained"
+                                fullWidth={isMobile}
+                                onClick={() =>
+                                  handleStartChat(consultation._id)
+                                }
+                                startIcon={<MessageSquareText />}
+                              >
+                                Continue Chat
+                              </Button>
+                            ) : !consultation.chatIsActive ? (
+                              <Button
+                                size="sm"
+                                variant="contained"
+                                fullWidth={isMobile}
+                                onClick={() =>
+                                  handleStartChat(consultation._id)
+                                }
+                                startIcon={<MessageSquareText />}
+                              >
+                                Start Chat
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outlined"
+                                onClick={() =>
+                                  handleStartChat(consultation._id)
+                                }
+                                startIcon={<MessageSquareText />}
+                                fullWidth={isMobile}
+                              >
+                                View Chat History
+                              </Button>
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       {isExpanded && (
@@ -320,17 +276,162 @@ const DoctorsConsultations = () => {
                             )}
 
                             {consultation.doctorReportPreview
-                              ?.laboratoryFindings &&
-                              renderLabFindings(
+                              ?.clinicalConsiderations && (
+                              <div className={styles.section}>
+                                <Text
+                                  value="Clinical Considerations"
+                                  fontSize="sm"
+                                  fontWeight="medium"
+                                />
+                                <Text
+                                  value={
+                                    consultation.doctorReportPreview
+                                      .clinicalConsiderations
+                                  }
+                                  fontSize="sm"
+                                  color="gray"
+                                />
+                              </div>
+                            )}
+
+                            {consultation.doctorReportPreview
+                              ?.differentialDiagnosis &&
+                              consultation.doctorReportPreview
+                                .differentialDiagnosis.length > 0 && (
+                                <div className={styles.section}>
+                                  <Text
+                                    value="Differential Diagnosis"
+                                    fontSize="sm"
+                                    fontWeight="medium"
+                                  />
+                                  <ul className={styles.list}>
+                                    {consultation.doctorReportPreview.differentialDiagnosis.map(
+                                      (diagnosis, index) => (
+                                        <li key={index}>
+                                          <Text
+                                            value={diagnosis}
+                                            fontSize="sm"
+                                            color="gray"
+                                          />
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
+
+                            {consultation.doctorReportPreview
+                              ?.recommendations &&
+                              consultation.doctorReportPreview.recommendations
+                                .length > 0 && (
+                                <div className={styles.section}>
+                                  <Text
+                                    value="Recommendations"
+                                    fontSize="sm"
+                                    fontWeight="medium"
+                                  />
+                                  <ul className={styles.list}>
+                                    {consultation.doctorReportPreview.recommendations.map(
+                                      (recommendation, index) => (
+                                        <li key={index}>
+                                          <Text
+                                            value={recommendation}
+                                            fontSize="sm"
+                                            color="gray"
+                                          />
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
+
+                            {consultation.doctorReportPreview?.conclusion && (
+                              <div className={styles.section}>
+                                <Text
+                                  value="Conclusion"
+                                  fontSize="sm"
+                                  fontWeight="medium"
+                                />
+                                <Text
+                                  value={
+                                    consultation.doctorReportPreview.conclusion
+                                  }
+                                  fontSize="sm"
+                                  color="gray"
+                                />
+                              </div>
+                            )}
+
+                            {consultation.patient?.documents &&
+                              consultation.patient.documents.length > 0 && (
+                                <div className={styles.section}>
+                                  <Text
+                                    value="Patient Documents"
+                                    fontSize="sm"
+                                    fontWeight="medium"
+                                  />
+                                  <div className={styles.documentsList}>
+                                    {consultation.patient.documents.map(
+                                      (doc, index) => (
+                                        <>
+                                          <div
+                                            key={index}
+                                            className={styles.documentItem}
+                                          >
+                                            <FileText size={20} />
+                                            <Button
+                                              size="sm"
+                                              variant="text"
+                                              startIcon={<Download size={16} />}
+                                              onClick={() =>
+                                                window.open(doc ?? "", "_blank")
+                                              }
+                                            >
+                                              Download
+                                            </Button>
+                                          </div>
+                                          <div
+                                            key={index}
+                                            className={styles.documentItem}
+                                          >
+                                            <FileText size={20} />
+                                            <Button
+                                              size="sm"
+                                              variant="text"
+                                              startIcon={<Download size={16} />}
+                                              onClick={() =>
+                                                window.open(doc ?? "", "_blank")
+                                              }
+                                            >
+                                              Download
+                                            </Button>
+                                          </div>
+                                        </>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+
+                            <LaboratoryFindings
+                              findings={
                                 consultation.doctorReportPreview
-                                  .laboratoryFindings,
+                                  ?.laboratoryFindings
+                              }
+                              consultationId={consultation._id}
+                              isExpanded={expandedLabFindings.has(
                                 consultation._id
                               )}
+                              onToggle={toggleLabFindings}
+                            />
 
                             <div className={styles.actions}>
                               {consultation.chatIsActive ? (
                                 <Button
                                   variant="contained"
+                                  size="sm"
+                                  fullWidth={isMobile}
                                   onClick={() =>
                                     handleStartChat(consultation._id)
                                   }
@@ -341,6 +442,8 @@ const DoctorsConsultations = () => {
                               ) : !consultation.chatIsActive ? (
                                 <Button
                                   variant="contained"
+                                  size="sm"
+                                  fullWidth={isMobile}
                                   onClick={() =>
                                     handleStartChat(consultation._id)
                                   }
@@ -351,6 +454,8 @@ const DoctorsConsultations = () => {
                               ) : (
                                 <Button
                                   variant="outlined"
+                                  size="sm"
+                                  fullWidth={isMobile}
                                   onClick={() =>
                                     handleStartChat(consultation._id)
                                   }
