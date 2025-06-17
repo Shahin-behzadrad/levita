@@ -57,6 +57,17 @@
   }
 }
 
+.chatAndMeetActions {
+  display: flex;
+  gap: 16px;
+
+  &.mobileActions {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+}
+
 .headerLeft {
   display: flex;
   flex-direction: column;

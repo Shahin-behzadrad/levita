@@ -12,12 +12,15 @@ import {
   ChevronDown,
   FileText,
   Download,
+  Video,
 } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/lib/AppContext";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { LaboratoryFindings } from "./LaboratoryFindings/LaboratoryFindings";
+import Link from "next/link";
+import clsx from "clsx";
 
 const DoctorsConsultations = () => {
   const isMobile = useIsMobile();
@@ -163,42 +166,39 @@ const DoctorsConsultations = () => {
                         </div>
                         {!isExpanded && (
                           <div className={styles.headerActions}>
-                            {consultation.chatIsActive ? (
-                              <Button
-                                size="sm"
-                                variant="contained"
-                                fullWidth={isMobile}
-                                onClick={() =>
-                                  handleStartChat(consultation._id)
-                                }
-                                startIcon={<MessageSquareText />}
+                            {consultation.chatIsActive && (
+                              <div
+                                className={clsx(styles.chatAndMeetActions, {
+                                  [styles.mobileActions]: isMobile,
+                                })}
                               >
-                                Continue Chat
-                              </Button>
-                            ) : !consultation.chatIsActive ? (
-                              <Button
-                                size="sm"
-                                variant="contained"
-                                fullWidth={isMobile}
-                                onClick={() =>
-                                  handleStartChat(consultation._id)
-                                }
-                                startIcon={<MessageSquareText />}
-                              >
-                                Start Chat
-                              </Button>
-                            ) : (
-                              <Button
-                                size="sm"
-                                variant="outlined"
-                                onClick={() =>
-                                  handleStartChat(consultation._id)
-                                }
-                                startIcon={<MessageSquareText />}
-                                fullWidth={isMobile}
-                              >
-                                View Chat History
-                              </Button>
+                                {consultation.meetLink && (
+                                  <Link
+                                    href={consultation.meetLink}
+                                    target="_blank"
+                                  >
+                                    <Button
+                                      size="sm"
+                                      fullWidth={isMobile}
+                                      variant="outlined"
+                                      startIcon={<Video size={20} />}
+                                    >
+                                      join meeting
+                                    </Button>
+                                  </Link>
+                                )}
+                                <Button
+                                  size="sm"
+                                  variant="contained"
+                                  fullWidth={isMobile}
+                                  onClick={() =>
+                                    handleStartChat(consultation._id)
+                                  }
+                                  startIcon={<MessageSquareText size={20} />}
+                                >
+                                  Continue Chat
+                                </Button>
+                              </div>
                             )}
                           </div>
                         )}
@@ -409,29 +409,38 @@ const DoctorsConsultations = () => {
 
                             <div className={styles.actions}>
                               {consultation.chatIsActive ? (
-                                <Button
-                                  variant="contained"
-                                  size="sm"
-                                  fullWidth={isMobile}
-                                  onClick={() =>
-                                    handleStartChat(consultation._id)
-                                  }
-                                  startIcon={<MessageSquareText />}
+                                <div
+                                  className={clsx(styles.chatAndMeetActions, {
+                                    [styles.mobileActions]: isMobile,
+                                  })}
                                 >
-                                  Continue Chat
-                                </Button>
-                              ) : !consultation.chatIsActive ? (
-                                <Button
-                                  variant="contained"
-                                  size="sm"
-                                  fullWidth={isMobile}
-                                  onClick={() =>
-                                    handleStartChat(consultation._id)
-                                  }
-                                  startIcon={<MessageSquareText />}
-                                >
-                                  Start Chat
-                                </Button>
+                                  {consultation.meetLink && (
+                                    <Link
+                                      href={consultation.meetLink}
+                                      target="_blank"
+                                    >
+                                      <Button
+                                        size="sm"
+                                        fullWidth={isMobile}
+                                        variant="outlined"
+                                        startIcon={<Video size={20} />}
+                                      >
+                                        join meeting
+                                      </Button>
+                                    </Link>
+                                  )}
+                                  <Button
+                                    variant="contained"
+                                    size="sm"
+                                    fullWidth={isMobile}
+                                    onClick={() =>
+                                      handleStartChat(consultation._id)
+                                    }
+                                    startIcon={<MessageSquareText />}
+                                  >
+                                    Continue Chat
+                                  </Button>
+                                </div>
                               ) : (
                                 <Button
                                   variant="outlined"
