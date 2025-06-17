@@ -19,7 +19,7 @@ const Tooltip = ({ children, tooltipContent, style, onClose, open }: Props) => {
       if (parentRef.current) {
         const rect = parentRef.current.getBoundingClientRect();
         // Check if the child goes beyond the viewport's right edge
-        setIsRightAligned(rect.right + 200 > window.innerWidth);
+        setIsRightAligned(rect.right + 350 > window.innerWidth);
       }
     };
 

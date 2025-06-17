@@ -103,13 +103,6 @@ const PatientConsultations = ({
                     fontSize="sm"
                     color="gray"
                   />
-                  <ChevronDown
-                    size={16}
-                    color="var(--gray)"
-                    className={clsx(styles.expandIcon, {
-                      [styles.expanded]: isExpanded,
-                    })}
-                  />
                 </div>
                 <div className={styles.consultationHeaderRight}>
                   <div className={styles.time}>
@@ -119,6 +112,13 @@ const PatientConsultations = ({
                       color="gray"
                     />
                   </div>
+                  <ChevronDown
+                    size={20}
+                    color="var(--gray)"
+                    className={clsx(styles.expandIcon, {
+                      [styles.expanded]: isExpanded,
+                    })}
+                  />
                 </div>
               </div>
 
@@ -128,6 +128,7 @@ const PatientConsultations = ({
                     <div
                       className={clsx(styles.chatAndMeetActions, {
                         [styles.mobileActions]: isMobile,
+                        [styles.mobileExpanded]: !isExpanded && isMobile,
                       })}
                     >
                       {existingConsultations.meetLink && (
@@ -235,13 +236,7 @@ const PatientConsultations = ({
                               fontSize="sm"
                               color="primary"
                             />
-                            {doctorProfile.bio && (
-                              <Text
-                                value={doctorProfile.bio}
-                                fontSize="sm"
-                                color="gray"
-                              />
-                            )}
+
                             <div className={styles.doctorContact}>
                               <div className={styles.contactItem}>
                                 <Text
@@ -266,6 +261,13 @@ const PatientConsultations = ({
                                   fontSize="sm"
                                 />
                               </div>
+                              {doctorProfile.bio && (
+                                <Text
+                                  value={doctorProfile.bio}
+                                  fontSize="sm"
+                                  color="gray"
+                                />
+                              )}
                             </div>
                           </div>
                         </div>

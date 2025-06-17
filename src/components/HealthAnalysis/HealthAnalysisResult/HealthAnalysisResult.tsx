@@ -7,10 +7,15 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useLanguage } from "@/i18n/LanguageContext";
 import styles from "./HealthAnalysisResult.module.scss";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import clsx from "clsx";
+import { ChevronDown } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const HealthAnalysisResult = () => {
+  const isMobile = useIsMobile();
   const hasSubmitted = useRef(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const { messages } = useLanguage();
   const getAIAnalysis = useQuery(api.api.health.healthAnalysis.getAIAnalysis);
@@ -54,11 +59,26 @@ export const HealthAnalysisResult = () => {
     <div className={styles.container}>
       <Card className={styles.card}>
         <CardHeader
+          onClick={() => setIsExpanded(!isExpanded)}
           titleStartAdornment={<div className={styles.titleIcon}>📋</div>}
           title={messages.healthAnalysis?.yourAnalysisResults}
           titleColor="black"
+          titleFontSize={isMobile ? 14 : 20}
+          className={styles.cardHeader}
+          titleEndAdornment={
+            <ChevronDown
+              size={20}
+              className={clsx(styles.expandIcon, {
+                [styles.expanded]: isExpanded,
+              })}
+            />
+          }
         />
-        <CardContent>
+        <CardContent
+          className={clsx(styles.cardContent, {
+            [styles.expanded]: isExpanded,
+          })}
+        >
           <Grid container spacing={4}>
             <Grid item xs={12} md={6}>
               <Card hasBoxShadow={false}>
