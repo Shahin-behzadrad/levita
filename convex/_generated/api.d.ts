@@ -15,7 +15,6 @@ import type {
 } from "convex/server";
 import type * as api_ai_ocr from "../api/ai/ocr.js";
 import type * as api_ai_openai from "../api/ai/openai.js";
-import type * as api_auth_checkEmailExists from "../api/auth/checkEmailExists.js";
 import type * as api_consultation_acceptConsultation from "../api/consultation/acceptConsultation.js";
 import type * as api_consultation_createConsultationRequest from "../api/consultation/createConsultationRequest.js";
 import type * as api_consultation_endChat from "../api/consultation/endChat.js";
@@ -27,6 +26,8 @@ import type * as api_consultation_getPendingConsultations from "../api/consultat
 import type * as api_consultation_sendMessage from "../api/consultation/sendMessage.js";
 import type * as api_consultation_startChat from "../api/consultation/startChat.js";
 import type * as api_consultation_uploadFile from "../api/consultation/uploadFile.js";
+import type * as api_google_getGoogleToken from "../api/google/getGoogleToken.js";
+import type * as api_google_storeGoogleTokens from "../api/google/storeGoogleTokens.js";
 import type * as api_health_healthAnalysis from "../api/health/healthAnalysis.js";
 import type * as api_profiles_doctorProfile from "../api/profiles/doctorProfile.js";
 import type * as api_profiles_patientProfiles from "../api/profiles/patientProfiles.js";
@@ -49,7 +50,6 @@ import type * as router from "../router.js";
 declare const fullApi: ApiFromModules<{
   "api/ai/ocr": typeof api_ai_ocr;
   "api/ai/openai": typeof api_ai_openai;
-  "api/auth/checkEmailExists": typeof api_auth_checkEmailExists;
   "api/consultation/acceptConsultation": typeof api_consultation_acceptConsultation;
   "api/consultation/createConsultationRequest": typeof api_consultation_createConsultationRequest;
   "api/consultation/endChat": typeof api_consultation_endChat;
@@ -61,6 +61,8 @@ declare const fullApi: ApiFromModules<{
   "api/consultation/sendMessage": typeof api_consultation_sendMessage;
   "api/consultation/startChat": typeof api_consultation_startChat;
   "api/consultation/uploadFile": typeof api_consultation_uploadFile;
+  "api/google/getGoogleToken": typeof api_google_getGoogleToken;
+  "api/google/storeGoogleTokens": typeof api_google_storeGoogleTokens;
   "api/health/healthAnalysis": typeof api_health_healthAnalysis;
   "api/profiles/doctorProfile": typeof api_profiles_doctorProfile;
   "api/profiles/patientProfiles": typeof api_profiles_patientProfiles;

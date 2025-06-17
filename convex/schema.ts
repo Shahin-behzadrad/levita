@@ -102,7 +102,7 @@ const applicationTables = {
     acceptedByDoctorId: v.optional(v.id("doctorProfiles")),
     consultationDateTime: v.optional(v.string()), // Format: YYYY-MM-DD HH:mm
     chatIsActive: v.optional(v.boolean()),
-
+    meetLink: v.optional(v.string()),
     doctorReportPreview: v.optional(
       v.object({
         patientOverview: v.string(),
@@ -132,6 +132,13 @@ const applicationTables = {
     fileName: v.optional(v.string()),
     fileType: v.optional(v.string()),
   }).index("by_consultation", ["consultationId"]),
+
+  googleTokens: defineTable({
+    userId: v.id("users"),
+    accessToken: v.string(),
+    refreshToken: v.optional(v.string()),
+    email: v.string(),
+  }).index("by_userId", ["userId"]),
 };
 
 export default defineSchema({

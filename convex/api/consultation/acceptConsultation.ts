@@ -5,9 +5,13 @@ export const acceptConsultation = mutation({
   args: {
     requestId: v.id("consultations"),
     doctorId: v.id("doctorProfiles"),
-    consultationDateTime: v.string(), // Format: YYYY-MM-DD HH:mm
+    consultationDateTime: v.string(),
+    meetLink: v.string(),
   },
-  handler: async (ctx, { requestId, doctorId, consultationDateTime }) => {
+  handler: async (
+    ctx,
+    { requestId, doctorId, consultationDateTime, meetLink }
+  ) => {
     const request = await ctx.db.get(requestId);
     if (!request) throw new Error("Request not found");
 
@@ -20,6 +24,7 @@ export const acceptConsultation = mutation({
       acceptedByDoctorId: doctorId,
       consultationDateTime,
       chatIsActive: true,
+      meetLink,
     });
   },
 });

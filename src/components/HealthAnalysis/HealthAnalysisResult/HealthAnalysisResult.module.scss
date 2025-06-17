@@ -4,9 +4,44 @@
   .card {
     background-color: var(--primary-opaque-10);
 
+    position: relative;
+
+    .cardHeader {
+      cursor: pointer;
+    }
+
     .titleIcon {
       font-size: 24px;
       margin-right: 8px;
+    }
+
+    .expandIcon {
+      position: absolute;
+      top: 22px;
+      right: 16px;
+      color: var(--gray);
+
+      transition: transform 0.3s ease-out;
+
+      &.expanded {
+        transform: rotate(180deg);
+      }
+    }
+
+    .cardContent {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0;
+      transition: all 0.3s ease-out;
+      opacity: 0;
+      transform: translateY(-10px);
+
+      &.expanded {
+        padding: 16px;
+        max-height: 2000px;
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   }
 }

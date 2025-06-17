@@ -29,19 +29,18 @@ export const CardHeader: FC<CardHeaderProps> = ({
   onClick,
 }) => (
   <div className={`${styles.cardHeader} ${className || ""}`} onClick={onClick}>
-    <div>
-      <Text
-        value={title}
-        variant="h4"
-        className={clsx(styles.title, titleClassName)}
-        startAdornment={titleStartAdornment}
-        endAdornment={titleEndAdornment}
-        fontWeight="bold"
-        style={{ fontSize: titleFontSize }}
-        color={titleColor}
-      />
-      {subheader && <Text value={subheader} className={styles.subheader} />}
-    </div>
+    <Text
+      value={title}
+      variant="h4"
+      className={clsx(styles.title, titleClassName)}
+      startAdornment={titleStartAdornment}
+      endAdornment={titleEndAdornment}
+      fontWeight="bold"
+      style={{ fontSize: titleFontSize }}
+      color={titleColor}
+    />
+    {subheader && <Text value={subheader} className={styles.subheader} />}
+
     {action && action}
   </div>
 );

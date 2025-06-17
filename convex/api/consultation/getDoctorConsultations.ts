@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { api } from "../../_generated/api";
 import { Doc, Id } from "../../_generated/dataModel";
+import { Url } from "url";
 
 interface Document {
   storageId: string;
@@ -41,6 +42,7 @@ interface ConsultationWithPatient {
   chatIsActive?: boolean;
   doctorReportPreview?: DoctorReportPreview;
   patient: PatientDetails | null;
+  meetLink?: string;
 }
 
 export const getDoctorConsultations = query({

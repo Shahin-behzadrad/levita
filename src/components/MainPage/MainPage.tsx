@@ -68,6 +68,7 @@ const MainPage = ({ userData }: { userData: UserType }) => {
     <div className={styles.main}>
       <HeroSection userData={userData} />
       <DoctorsConsultations />
+
       <PendingConsultations
         userId={userData?._id as Id<"doctorProfiles"> | null}
       />

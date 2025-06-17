@@ -14,9 +14,16 @@ export const getDoctorProfileById = query({
       .withIndex("by_id", (q) => q.eq("_id", doctorId as Id<"doctorProfiles">))
       .unique();
 
-    const imageUrl = await ctx.storage.getUrl(
-      profile?.profileImage as Id<"_storage">
-    );
+    if (!profile) {
+      return null;
+    }
+
+    let imageUrl = null;
+    if (profile.profileImage) {
+      imageUrl = await ctx.storage.getUrl(
+        profile.profileImage as Id<"_storage">
+      );
+    }
 
     return { ...profile, profileImage: imageUrl };
   },

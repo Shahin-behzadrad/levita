@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "../../convex/_generated/api";
-import { useConvexAuth, useQuery } from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import React, {
   createContext,
   useContext,
@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import { UserType } from "@/types/userType";
 import { Id } from "../../convex/_generated/dataModel";
+import { toast } from "sonner";
 
 export type View =
   | "home"
@@ -42,6 +43,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   >(undefined);
   const { isAuthenticated } = useConvexAuth();
   const userData = useQuery(api.api.profiles.userProfiles.getUserProfile);
+  const storeTokens = useMutation(
+    api.api.google.storeGoogleTokens.storeGoogleTokens
+  );
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const accessToken = params.get("accessToken");
+    const refreshToken = params.get("refreshToken");
+    const email = params.get("email");
+
+    if (userData && accessToken && email) {
+      const userId = userData.userId;
+
+      storeTokens({
+        userId,
+        accessToken,
+        refreshToken: refreshToken || undefined,
+        email,
+      }).then(() => {
+        toast.success("Google Calendar connected!");
+        window.history.replaceState({}, "", "/");
+      });
+    }
+  }, [userData]);
 
   const setView = useCallback((view: View) => {
     setCurrentView(view);

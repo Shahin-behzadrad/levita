@@ -12,12 +12,16 @@ import {
   ChevronDown,
   FileText,
   Download,
+  Video,
 } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/lib/AppContext";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { LaboratoryFindings } from "./LaboratoryFindings/LaboratoryFindings";
+import Link from "next/link";
+import clsx from "clsx";
+import Tooltip from "@/components/Shared/Tooltip/Tooltip";
 
 const DoctorsConsultations = () => {
   const isMobile = useIsMobile();
@@ -25,7 +29,6 @@ const DoctorsConsultations = () => {
   const consultations = useQuery(
     api.api.consultation.getDoctorConsultations.getDoctorConsultations
   );
-  console.log(consultations);
 
   const [expandedConsultations, setExpandedConsultations] = useState<
     Set<string>
@@ -61,6 +64,24 @@ const DoctorsConsultations = () => {
   const handleStartChat = (consultationId: Id<"consultations">) => {
     setActiveChatId(consultationId);
     setView("chat");
+  };
+
+  // Helper to check if meeting can be joined
+  const canJoinMeeting = (consultationDateTime: string | null | undefined) => {
+    if (!consultationDateTime) return false;
+    const now = new Date();
+    const meetingTime = new Date(consultationDateTime);
+    // Allow joining if within 10 minutes before or after the scheduled time
+    return now >= new Date(meetingTime.getTime() - 10 * 60 * 1000);
+  };
+
+  // Helper to get meet link as string
+  const getMeetLinkUrl = (meetLink: any) => {
+    if (!meetLink) return "";
+    if (typeof meetLink === "string") return meetLink;
+    if (typeof meetLink === "object" && "href" in meetLink)
+      return meetLink.href;
+    return String(meetLink);
   };
 
   if (!consultations) {
@@ -128,6 +149,10 @@ const DoctorsConsultations = () => {
                           <div className={styles.headerRight}>
                             <div className={styles.consultationDateTime}>
                               <Text
+                                value="Consultation Date"
+                                fontWeight="medium"
+                              />
+                              <Text
                                 value={
                                   consultation.consultationDateTime
                                     ? format(
@@ -164,42 +189,75 @@ const DoctorsConsultations = () => {
                         </div>
                         {!isExpanded && (
                           <div className={styles.headerActions}>
-                            {consultation.chatIsActive ? (
-                              <Button
-                                size="sm"
-                                variant="contained"
-                                fullWidth={isMobile}
-                                onClick={() =>
-                                  handleStartChat(consultation._id)
-                                }
-                                startIcon={<MessageSquareText />}
+                            {consultation.chatIsActive && (
+                              <div
+                                className={clsx(styles.chatAndMeetActions, {
+                                  [styles.mobileActions]: isMobile,
+                                })}
                               >
-                                Continue Chat
-                              </Button>
-                            ) : !consultation.chatIsActive ? (
-                              <Button
-                                size="sm"
-                                variant="contained"
-                                fullWidth={isMobile}
-                                onClick={() =>
-                                  handleStartChat(consultation._id)
-                                }
-                                startIcon={<MessageSquareText />}
-                              >
-                                Start Chat
-                              </Button>
-                            ) : (
-                              <Button
-                                size="sm"
-                                variant="outlined"
-                                onClick={() =>
-                                  handleStartChat(consultation._id)
-                                }
-                                startIcon={<MessageSquareText />}
-                                fullWidth={isMobile}
-                              >
-                                View Chat History
-                              </Button>
+                                {consultation.meetLink && (
+                                  <Tooltip
+                                    tooltipContent={
+                                      !canJoinMeeting(
+                                        consultation.consultationDateTime
+                                      ) ? (
+                                        <Text
+                                          className={styles.tooltipText}
+                                          value="You can join the meeting 10 minutes before the scheduled time."
+                                        />
+                                      ) : null
+                                    }
+                                    open={
+                                      !canJoinMeeting(
+                                        consultation.consultationDateTime
+                                      )
+                                        ? undefined
+                                        : false
+                                    }
+                                  >
+                                    <span>
+                                      <Button
+                                        size="sm"
+                                        fullWidth={isMobile}
+                                        variant="outlined"
+                                        startIcon={<Video size={20} />}
+                                        disabled={
+                                          !canJoinMeeting(
+                                            consultation.consultationDateTime
+                                          )
+                                        }
+                                        onClick={() => {
+                                          if (
+                                            canJoinMeeting(
+                                              consultation.consultationDateTime
+                                            )
+                                          ) {
+                                            window.open(
+                                              getMeetLinkUrl(
+                                                consultation.meetLink
+                                              ),
+                                              "_blank"
+                                            );
+                                          }
+                                        }}
+                                      >
+                                        join meeting
+                                      </Button>
+                                    </span>
+                                  </Tooltip>
+                                )}
+                                <Button
+                                  size="sm"
+                                  variant="contained"
+                                  fullWidth={isMobile}
+                                  onClick={() =>
+                                    handleStartChat(consultation._id)
+                                  }
+                                  startIcon={<MessageSquareText size={20} />}
+                                >
+                                  Continue Chat
+                                </Button>
+                              </div>
                             )}
                           </div>
                         )}
@@ -374,40 +432,22 @@ const DoctorsConsultations = () => {
                                   <div className={styles.documentsList}>
                                     {consultation.patient.documents.map(
                                       (doc, index) => (
-                                        <>
-                                          <div
-                                            key={index}
-                                            className={styles.documentItem}
+                                        <div
+                                          key={index}
+                                          className={styles.documentItem}
+                                        >
+                                          <FileText size={20} />
+                                          <Button
+                                            size="sm"
+                                            variant="text"
+                                            startIcon={<Download size={16} />}
+                                            onClick={() =>
+                                              window.open(doc ?? "", "_blank")
+                                            }
                                           >
-                                            <FileText size={20} />
-                                            <Button
-                                              size="sm"
-                                              variant="text"
-                                              startIcon={<Download size={16} />}
-                                              onClick={() =>
-                                                window.open(doc ?? "", "_blank")
-                                              }
-                                            >
-                                              Download
-                                            </Button>
-                                          </div>
-                                          <div
-                                            key={index}
-                                            className={styles.documentItem}
-                                          >
-                                            <FileText size={20} />
-                                            <Button
-                                              size="sm"
-                                              variant="text"
-                                              startIcon={<Download size={16} />}
-                                              onClick={() =>
-                                                window.open(doc ?? "", "_blank")
-                                              }
-                                            >
-                                              Download
-                                            </Button>
-                                          </div>
-                                        </>
+                                            Download
+                                          </Button>
+                                        </div>
                                       )
                                     )}
                                   </div>
@@ -428,29 +468,74 @@ const DoctorsConsultations = () => {
 
                             <div className={styles.actions}>
                               {consultation.chatIsActive ? (
-                                <Button
-                                  variant="contained"
-                                  size="sm"
-                                  fullWidth={isMobile}
-                                  onClick={() =>
-                                    handleStartChat(consultation._id)
-                                  }
-                                  startIcon={<MessageSquareText />}
+                                <div
+                                  className={clsx(styles.chatAndMeetActions, {
+                                    [styles.mobileActions]: isMobile,
+                                  })}
                                 >
-                                  Continue Chat
-                                </Button>
-                              ) : !consultation.chatIsActive ? (
-                                <Button
-                                  variant="contained"
-                                  size="sm"
-                                  fullWidth={isMobile}
-                                  onClick={() =>
-                                    handleStartChat(consultation._id)
-                                  }
-                                  startIcon={<MessageSquareText />}
-                                >
-                                  Start Chat
-                                </Button>
+                                  {consultation.meetLink && (
+                                    <Tooltip
+                                      tooltipContent={
+                                        !canJoinMeeting(
+                                          consultation.consultationDateTime
+                                        ) ? (
+                                          <Text
+                                            className={styles.tooltipText}
+                                            value="You can join the meeting 10 minutes before the scheduled time."
+                                          />
+                                        ) : null
+                                      }
+                                      open={
+                                        !canJoinMeeting(
+                                          consultation.consultationDateTime
+                                        )
+                                          ? undefined
+                                          : false
+                                      }
+                                    >
+                                      <span>
+                                        <Button
+                                          size="sm"
+                                          fullWidth={isMobile}
+                                          variant="outlined"
+                                          startIcon={<Video size={20} />}
+                                          disabled={
+                                            !canJoinMeeting(
+                                              consultation.consultationDateTime
+                                            )
+                                          }
+                                          onClick={() => {
+                                            if (
+                                              canJoinMeeting(
+                                                consultation.consultationDateTime
+                                              )
+                                            ) {
+                                              window.open(
+                                                getMeetLinkUrl(
+                                                  consultation.meetLink
+                                                ),
+                                                "_blank"
+                                              );
+                                            }
+                                          }}
+                                        >
+                                          join meeting
+                                        </Button>
+                                      </span>
+                                    </Tooltip>
+                                  )}
+                                  <Button
+                                    variant="contained"
+                                    size="sm"
+                                    fullWidth={isMobile}
+                                    onClick={() =>
+                                      handleStartChat(consultation._id)
+                                    }
+                                    startIcon={<MessageSquareText />}
+                                  >
+                                    Continue Chat
+                                  </Button>
+                                </div>
                               ) : (
                                 <Button
                                   variant="outlined"

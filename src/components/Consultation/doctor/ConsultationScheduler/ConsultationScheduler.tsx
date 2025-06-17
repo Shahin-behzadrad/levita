@@ -7,37 +7,76 @@ import Button from "@/components/Shared/Button";
 import styles from "./ConsultationScheduler.module.scss";
 import { useLanguage } from "@/i18n/LanguageContext";
 import Grid from "@/components/Shared/Grid/Grid";
+import { createMeet } from "@/lib/createMeetLink";
+import { toast } from "sonner";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 interface ConsultationSchedulerProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (dateTime: string) => void;
+  onConfirm: (dateTime: string, meetLink: string) => void;
+  googleToken: {
+    access_token: string;
+    refresh_token?: string;
+  };
+  userId: Id<"doctorProfiles">;
+  email: string;
 }
 
 export default function ConsultationScheduler({
   isOpen,
   onClose,
   onConfirm,
+  googleToken,
+  userId,
+  email,
 }: ConsultationSchedulerProps) {
   const { messages } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selectedDate || !selectedTime) {
       return;
     }
 
-    const dateTime = new Date(selectedDate);
-    dateTime.setHours(selectedTime.getHours());
-    dateTime.setMinutes(selectedTime.getMinutes());
+    try {
+      setIsLoading(true);
+      const dateTime = new Date(selectedDate);
+      dateTime.setHours(selectedTime.getHours());
+      dateTime.setMinutes(selectedTime.getMinutes());
 
-    const formattedDateTime = dateTime
-      .toISOString()
-      .slice(0, 16)
-      .replace("T", " ");
-    onConfirm(formattedDateTime);
-    onClose();
+      const endDateTime = new Date(dateTime);
+      endDateTime.setHours(endDateTime.getHours() + 1);
+
+      const formattedStartTime = dateTime.toISOString();
+      const formattedEndTime = endDateTime.toISOString();
+
+      const meetLink = await createMeet(
+        formattedStartTime,
+        formattedEndTime,
+        googleToken,
+        userId,
+        email
+      );
+
+      const formattedDateTime = dateTime
+        .toISOString()
+        .slice(0, 16)
+        .replace("T", " ");
+
+      onConfirm(formattedDateTime, meetLink ?? "");
+      onClose();
+    } catch (error) {
+      console.error("Error creating consultation:", error);
+      toast.error(
+        messages?.common?.errorCreatingConsultation ??
+          "Error creating consultation"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -53,9 +92,11 @@ export default function ConsultationScheduler({
           <Button
             variant="contained"
             onClick={handleConfirm}
-            disabled={!selectedDate || !selectedTime}
+            disabled={!selectedDate || !selectedTime || isLoading}
           >
-            {messages.common.confirm}
+            {isLoading
+              ? messages.common.loading || "Loading..."
+              : messages.common.confirm}
           </Button>
         </div>
       }

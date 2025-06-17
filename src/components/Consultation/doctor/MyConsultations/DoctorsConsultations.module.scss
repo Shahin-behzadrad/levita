@@ -57,6 +57,21 @@
   }
 }
 
+.chatAndMeetActions {
+  display: flex;
+  gap: 16px;
+
+  &.mobileActions {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .tooltipText {
+    width: 200px;
+  }
+}
+
 .headerLeft {
   display: flex;
   flex-direction: column;
@@ -91,6 +106,7 @@
   text-align: right;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 4px;
 }
 
