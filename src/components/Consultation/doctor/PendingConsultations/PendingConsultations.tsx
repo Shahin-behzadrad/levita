@@ -10,6 +10,7 @@ import Divider from "@/components/Shared/Divider/Divider";
 import { formatDistanceToNow } from "date-fns";
 import Button from "@/components/Shared/Button";
 import { Id } from "convex/_generated/dataModel";
+import { ConnectGoogleButton } from "@/components/Shared/GoogleButton/GoogleButton";
 
 const PendingConsultations = ({
   userId,
@@ -20,6 +21,16 @@ const PendingConsultations = ({
   const [selectedConsultation, setSelectedConsultation] = useState<
     string | null
   >(null);
+
+  const doctorProfile = useQuery(
+    api.api.profiles.doctorProfile.getDoctorProfileById,
+    userId ? { doctorId: userId } : "skip"
+  );
+
+  const googleToken = useQuery(
+    api.api.google.getGoogleToken.getGoogleToken,
+    doctorProfile?.userId ? { userId: doctorProfile.userId } : "skip"
+  );
 
   const pendingConsultation = useQuery(
     api.api.consultation.getPendingConsultations.getPendingConsultations
@@ -38,20 +49,15 @@ const PendingConsultations = ({
     consultationDateTime: string,
     meetLink: string
   ) => {
-    console.log("meetLink", meetLink);
-
     if (!selectedConsultation) return;
     if (!userId) return;
     await acceptConsultation({
       doctorId: userId,
       requestId: selectedConsultation as Id<"consultations">,
       consultationDateTime,
+      meetLink,
     });
     setShowScheduler(false);
-  };
-
-  const handleRejectConsultation = (consultationId: string) => {
-    console.log("reject consultation", consultationId);
   };
 
   return (
@@ -66,6 +72,11 @@ const PendingConsultations = ({
           startAdornment={<div className={styles.icon} />}
         />
         <Card className={styles.pendingConsultationsList}>
+          {!googleToken?._id && (
+            <div className={styles.googleButtonContainer}>
+              <ConnectGoogleButton />
+            </div>
+          )}
           <CardContent>
             {pendingConsultation && pendingConsultation.length > 0 ? (
               pendingConsultation.map((consultation, index) => (
@@ -149,6 +160,12 @@ const PendingConsultations = ({
           isOpen={showScheduler}
           onClose={() => setShowScheduler(false)}
           onConfirm={acceptConsultationHandler}
+          googleToken={{
+            access_token: googleToken?.accessToken || "",
+            refresh_token: googleToken?.refreshToken || "",
+          }}
+          userId={userId as Id<"doctorProfiles">}
+          email={googleToken?.email || ""}
         />
       )}
     </>

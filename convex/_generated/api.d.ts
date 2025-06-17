@@ -26,7 +26,7 @@ import type * as api_consultation_getPendingConsultations from "../api/consultat
 import type * as api_consultation_sendMessage from "../api/consultation/sendMessage.js";
 import type * as api_consultation_startChat from "../api/consultation/startChat.js";
 import type * as api_consultation_uploadFile from "../api/consultation/uploadFile.js";
-import type * as api_google_google from "../api/google/google.js";
+import type * as api_google_getGoogleToken from "../api/google/getGoogleToken.js";
 import type * as api_google_storeGoogleTokens from "../api/google/storeGoogleTokens.js";
 import type * as api_health_healthAnalysis from "../api/health/healthAnalysis.js";
 import type * as api_profiles_doctorProfile from "../api/profiles/doctorProfile.js";
@@ -61,7 +61,7 @@ declare const fullApi: ApiFromModules<{
   "api/consultation/sendMessage": typeof api_consultation_sendMessage;
   "api/consultation/startChat": typeof api_consultation_startChat;
   "api/consultation/uploadFile": typeof api_consultation_uploadFile;
-  "api/google/google": typeof api_google_google;
+  "api/google/getGoogleToken": typeof api_google_getGoogleToken;
   "api/google/storeGoogleTokens": typeof api_google_storeGoogleTokens;
   "api/health/healthAnalysis": typeof api_health_healthAnalysis;
   "api/profiles/doctorProfile": typeof api_profiles_doctorProfile;

@@ -9,17 +9,27 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import Grid from "@/components/Shared/Grid/Grid";
 import { createMeet } from "@/lib/createMeetLink";
 import { toast } from "sonner";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 interface ConsultationSchedulerProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (dateTime: string, meetLink: string) => void;
+  googleToken: {
+    access_token: string;
+    refresh_token?: string;
+  };
+  userId: Id<"doctorProfiles">;
+  email: string;
 }
 
 export default function ConsultationScheduler({
   isOpen,
   onClose,
   onConfirm,
+  googleToken,
+  userId,
+  email,
 }: ConsultationSchedulerProps) {
   const { messages } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -37,15 +47,19 @@ export default function ConsultationScheduler({
       dateTime.setHours(selectedTime.getHours());
       dateTime.setMinutes(selectedTime.getMinutes());
 
-      // Create end time (1 hour after start time)
       const endDateTime = new Date(dateTime);
       endDateTime.setHours(endDateTime.getHours() + 1);
 
       const formattedStartTime = dateTime.toISOString();
       const formattedEndTime = endDateTime.toISOString();
 
-      // Create Google Meet link
-      const meetLink = await createMeet(formattedStartTime, formattedEndTime);
+      const meetLink = await createMeet(
+        formattedStartTime,
+        formattedEndTime,
+        googleToken,
+        userId,
+        email
+      );
 
       const formattedDateTime = dateTime
         .toISOString()

@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import { UserType } from "@/types/userType";
 import { Id } from "../../convex/_generated/dataModel";
+import { toast } from "sonner";
 
 export type View =
   | "home"
@@ -52,24 +53,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const refreshToken = params.get("refreshToken");
     const email = params.get("email");
 
-    console.log(
-      `userdata:${userData}`,
-      `accessToken:${accessToken}`,
-      `refreshToken:${refreshToken}`,
-      `email:${email}`
-    );
-
     if (userData && accessToken && email) {
-      const userId = userData.userId; // "token|user123" → "user123"
+      const userId = userData.userId;
 
-      // Extract the user ID from the tokenIdentifier
       storeTokens({
         userId,
         accessToken,
         refreshToken: refreshToken || undefined,
         email,
       }).then(() => {
-        alert("Google Calendar connected!");
+        toast.success("Google Calendar connected!");
       });
     }
   }, [userData]);

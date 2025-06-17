@@ -373,40 +373,22 @@ const DoctorsConsultations = () => {
                                   <div className={styles.documentsList}>
                                     {consultation.patient.documents.map(
                                       (doc, index) => (
-                                        <>
-                                          <div
-                                            key={index}
-                                            className={styles.documentItem}
+                                        <div
+                                          key={index}
+                                          className={styles.documentItem}
+                                        >
+                                          <FileText size={20} />
+                                          <Button
+                                            size="sm"
+                                            variant="text"
+                                            startIcon={<Download size={16} />}
+                                            onClick={() =>
+                                              window.open(doc ?? "", "_blank")
+                                            }
                                           >
-                                            <FileText size={20} />
-                                            <Button
-                                              size="sm"
-                                              variant="text"
-                                              startIcon={<Download size={16} />}
-                                              onClick={() =>
-                                                window.open(doc ?? "", "_blank")
-                                              }
-                                            >
-                                              Download
-                                            </Button>
-                                          </div>
-                                          <div
-                                            key={index}
-                                            className={styles.documentItem}
-                                          >
-                                            <FileText size={20} />
-                                            <Button
-                                              size="sm"
-                                              variant="text"
-                                              startIcon={<Download size={16} />}
-                                              onClick={() =>
-                                                window.open(doc ?? "", "_blank")
-                                              }
-                                            >
-                                              Download
-                                            </Button>
-                                          </div>
-                                        </>
+                                            Download
+                                          </Button>
+                                        </div>
                                       )
                                     )}
                                   </div>

@@ -1,31 +1,29 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { google } from "googleapis";
 
 /**
  * Create a meet event
  * @param {string} start
  * @param {string} end
+ * @param {object} tokens
+ * @param {string} userId
+ * @param {string} email
  * @returns {string}
  */
-export async function createMeet(start: string, end: string) {
+export async function createMeet(
+  start: string,
+  end: string,
+  tokens: {
+    access_token: string;
+    refresh_token?: string;
+  },
+  userId: string,
+  email: string
+) {
   try {
-    const cookieStore = await cookies();
-    const cookie = cookieStore.get("google_tokens");
-
-    if (!cookie?.value) {
-      throw new Error(
-        "No Google tokens found. Please authenticate with Google first."
-      );
-    }
-
-    const tokens = JSON.parse(cookie.value);
-
     if (!tokens.access_token) {
-      throw new Error(
-        "Invalid Google tokens. Please re-authenticate with Google."
-      );
+      throw new Error("Missing access token.");
     }
 
     const auth = new google.auth.OAuth2(
@@ -35,6 +33,24 @@ export async function createMeet(start: string, end: string) {
     );
 
     auth.setCredentials(tokens);
+
+    // Automatically refresh token if expired
+    auth.on("tokens", async (newTokens) => {
+      // Call API route to update tokens in DB
+      await fetch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/google/update-tokens`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            accessToken: newTokens.access_token,
+            refreshToken: newTokens.refresh_token,
+            email,
+          }),
+        }
+      );
+    });
 
     const calendar = google.calendar({ version: "v3", auth });
 
@@ -55,11 +71,13 @@ export async function createMeet(start: string, end: string) {
       conferenceDataVersion: 1,
     });
 
-    if (!event.data.hangoutLink) {
-      throw new Error("Failed to create Google Meet link");
+    const meetLink = event.data.hangoutLink;
+
+    if (!meetLink) {
+      throw new Error("Google Meet link not created.");
     }
 
-    return event.data.hangoutLink;
+    return meetLink;
   } catch (error) {
     console.error("Error creating Google Meet:", error);
     throw error;

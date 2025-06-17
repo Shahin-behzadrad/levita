@@ -17,6 +17,21 @@
       border-radius: 8px;
     }
   }
+
+  .pendingConsultationsList {
+    position: relative;
+
+    .googleButtonContainer {
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(6px);
+      background-color: rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+  }
 }
 
 .appointmentCard {
