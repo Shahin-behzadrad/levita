@@ -20,6 +20,7 @@ import {
 import Button from "@/components/Shared/Button";
 import Tooltip from "@/components/Shared/Tooltip/Tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Image from "@/components/Shared/Image/Image";
 
 const PatientConsultations = ({
   userId,
@@ -37,12 +38,10 @@ const PatientConsultations = ({
 
   const doctorProfile = useQuery(
     api.api.profiles.doctorProfile.getDoctorProfileById,
-    {
-      doctorId: existingConsultations?.acceptedByDoctorId ?? "",
-    }
+    existingConsultations?.acceptedByDoctorId
+      ? { doctorId: existingConsultations.acceptedByDoctorId }
+      : "skip"
   );
-
-  console.log(doctorProfile);
 
   const formatTime = (timestamp: number) => {
     return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
@@ -204,6 +203,76 @@ const PatientConsultations = ({
               >
                 <Divider />
                 <div className={styles.consultationDetails}>
+                  {doctorProfile && (
+                    <Card
+                      hasBoxShadow={false}
+                      className={styles.doctorProfileCard}
+                    >
+                      <CardContent className={styles.doctorProfile}>
+                        <Text
+                          value="Doctor Information"
+                          fontSize="sm"
+                          fontWeight="medium"
+                        />
+                        <div className={styles.doctorInfo}>
+                          {doctorProfile.profileImage && (
+                            <Image
+                              src={doctorProfile.profileImage}
+                              alt={doctorProfile.fullName}
+                              width={60}
+                              height={60}
+                              shape="square"
+                            />
+                          )}
+                          <div className={styles.doctorDetails}>
+                            <Text
+                              value={`Dr.  ${doctorProfile.fullName}`}
+                              fontSize="md"
+                              fontWeight="bold"
+                            />
+                            <Text
+                              value={doctorProfile.specialization}
+                              fontSize="sm"
+                              color="primary"
+                            />
+                            {doctorProfile.bio && (
+                              <Text
+                                value={doctorProfile.bio}
+                                fontSize="sm"
+                                color="gray"
+                              />
+                            )}
+                            <div className={styles.doctorContact}>
+                              <div className={styles.contactItem}>
+                                <Text
+                                  value="License:"
+                                  fontSize="sm"
+                                  color="gray"
+                                />
+                                <Text
+                                  value={doctorProfile.licenseNumber}
+                                  fontSize="sm"
+                                />
+                              </div>
+
+                              <div className={styles.contactItem}>
+                                <Text
+                                  value="Contact:"
+                                  fontSize="sm"
+                                  color="gray"
+                                />
+                                <Text
+                                  value={doctorProfile.phoneNumber}
+                                  fontSize="sm"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
                   {existingConsultations.consultationDateTime && (
                     <div className={styles.scheduledTime}>
                       <Text
