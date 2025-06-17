@@ -11,7 +11,12 @@ export const storeGoogleTokens = mutation({
   handler: async (ctx, args) => {
     const existing = await ctx.db
       .query("googleTokens")
-      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .filter((q) =>
+        q.or(
+          q.eq(q.field("userId"), args.userId),
+          q.eq(q.field("email"), args.email)
+        )
+      )
       .first();
 
     if (existing) {

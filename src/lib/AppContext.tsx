@@ -63,6 +63,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         email,
       }).then(() => {
         toast.success("Google Calendar connected!");
+        window.history.replaceState({}, "", "/");
       });
     }
   }, [userData]);

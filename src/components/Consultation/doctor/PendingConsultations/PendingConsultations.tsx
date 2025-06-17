@@ -57,6 +57,7 @@ const PendingConsultations = ({
       consultationDateTime,
       meetLink,
     });
+
     setShowScheduler(false);
   };
 

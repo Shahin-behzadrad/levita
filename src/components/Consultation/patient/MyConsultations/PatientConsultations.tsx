@@ -15,14 +15,18 @@ import {
   MessageSquareText,
   ChevronRight,
   ChevronDown,
+  Video,
 } from "lucide-react";
 import Button from "@/components/Shared/Button";
+import Tooltip from "@/components/Shared/Tooltip/Tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const PatientConsultations = ({
   userId,
 }: {
   userId: Id<"patientProfiles"> | null;
 }) => {
+  const isMobile = useIsMobile();
   const { setView, setActiveChatId } = useApp();
   const [isExpanded, setIsExpanded] = useState(false);
   const existingConsultations = useQuery(
@@ -30,6 +34,15 @@ const PatientConsultations = ({
       .getExistingConsultationRequest,
     userId ? { patientId: userId } : "skip"
   );
+
+  const doctorProfile = useQuery(
+    api.api.profiles.doctorProfile.getDoctorProfileById,
+    {
+      doctorId: existingConsultations?.acceptedByDoctorId ?? "",
+    }
+  );
+
+  console.log(doctorProfile);
 
   const formatTime = (timestamp: number) => {
     return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
@@ -42,6 +55,24 @@ const PatientConsultations = ({
   const handleStartChat = (consultationId: Id<"consultations">) => {
     setActiveChatId(consultationId);
     setView("chat");
+  };
+
+  // Helper to check if meeting can be joined
+  const canJoinMeeting = (consultationDateTime: string | null | undefined) => {
+    if (!consultationDateTime) return false;
+    const now = new Date();
+    const meetingTime = new Date(consultationDateTime);
+    // Allow joining if within 10 minutes before or after the scheduled time
+    return now >= new Date(meetingTime.getTime() - 10 * 60 * 1000);
+  };
+
+  // Helper to get meet link as string
+  const getMeetLinkUrl = (meetLink: any) => {
+    if (!meetLink) return "";
+    if (typeof meetLink === "string") return meetLink;
+    if (typeof meetLink === "object" && "href" in meetLink)
+      return meetLink.href;
+    return String(meetLink);
   };
 
   return (
@@ -89,35 +120,83 @@ const PatientConsultations = ({
                       color="gray"
                     />
                   </div>
-                  {!isExpanded &&
-                    existingConsultations.status !== "pending" && (
-                      <div className={styles.actions}>
-                        {existingConsultations.chatIsActive ? (
-                          <Button
-                            variant="contained"
-                            onClick={() =>
-                              handleStartChat(existingConsultations._id)
-                            }
-                            startIcon={<MessageSquareText />}
-                          >
-                            Join Chat
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="outlined"
-                            onClick={() =>
-                              handleStartChat(existingConsultations._id)
-                            }
-                            startIcon={<MessageSquareText />}
-                          >
-                            View Chat History
-                          </Button>
-                        )}
-                      </div>
-                    )}
                 </div>
               </div>
 
+              {!isExpanded && (
+                <div className={styles.headerActions}>
+                  {existingConsultations.chatIsActive && (
+                    <div
+                      className={clsx(styles.chatAndMeetActions, {
+                        [styles.mobileActions]: isMobile,
+                      })}
+                    >
+                      {existingConsultations.meetLink && (
+                        <Tooltip
+                          tooltipContent={
+                            !canJoinMeeting(
+                              existingConsultations.consultationDateTime
+                            ) ? (
+                              <Text
+                                className={styles.tooltipText}
+                                value="You can join the meeting 10 minutes before the scheduled time."
+                              />
+                            ) : null
+                          }
+                          open={
+                            !canJoinMeeting(
+                              existingConsultations.consultationDateTime
+                            )
+                              ? undefined
+                              : false
+                          }
+                        >
+                          <span>
+                            <Button
+                              size="sm"
+                              fullWidth={isMobile}
+                              variant="outlined"
+                              startIcon={<Video size={20} />}
+                              disabled={
+                                !canJoinMeeting(
+                                  existingConsultations.consultationDateTime
+                                )
+                              }
+                              onClick={() => {
+                                if (
+                                  canJoinMeeting(
+                                    existingConsultations.consultationDateTime
+                                  )
+                                ) {
+                                  window.open(
+                                    getMeetLinkUrl(
+                                      existingConsultations.meetLink
+                                    ),
+                                    "_blank"
+                                  );
+                                }
+                              }}
+                            >
+                              join meeting
+                            </Button>
+                          </span>
+                        </Tooltip>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="contained"
+                        fullWidth={isMobile}
+                        onClick={() =>
+                          handleStartChat(existingConsultations._id)
+                        }
+                        startIcon={<MessageSquareText size={20} />}
+                      >
+                        Continue Chat
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
               <div
                 className={clsx(styles.content, {
                   [styles.expanded]: isExpanded,
@@ -158,31 +237,90 @@ const PatientConsultations = ({
                     </div>
                   )}
 
-                  {existingConsultations.status !== "pending" && (
-                    <div className={styles.actions}>
-                      {existingConsultations.chatIsActive ? (
+                  <div className={styles.actions}>
+                    {existingConsultations.chatIsActive ? (
+                      <div
+                        className={clsx(styles.chatAndMeetActions, {
+                          [styles.mobileActions]: isMobile,
+                        })}
+                      >
+                        {existingConsultations.meetLink && (
+                          <Tooltip
+                            tooltipContent={
+                              !canJoinMeeting(
+                                existingConsultations.consultationDateTime
+                              ) ? (
+                                <Text
+                                  className={styles.tooltipText}
+                                  value="You can join the meeting 10 minutes before the scheduled time."
+                                />
+                              ) : null
+                            }
+                            open={
+                              !canJoinMeeting(
+                                existingConsultations.consultationDateTime
+                              )
+                                ? undefined
+                                : false
+                            }
+                          >
+                            <span>
+                              <Button
+                                size="sm"
+                                fullWidth={isMobile}
+                                variant="outlined"
+                                startIcon={<Video size={20} />}
+                                disabled={
+                                  !canJoinMeeting(
+                                    existingConsultations.consultationDateTime
+                                  )
+                                }
+                                onClick={() => {
+                                  if (
+                                    canJoinMeeting(
+                                      existingConsultations.consultationDateTime
+                                    )
+                                  ) {
+                                    window.open(
+                                      getMeetLinkUrl(
+                                        existingConsultations.meetLink
+                                      ),
+                                      "_blank"
+                                    );
+                                  }
+                                }}
+                              >
+                                join meeting
+                              </Button>
+                            </span>
+                          </Tooltip>
+                        )}
                         <Button
                           variant="contained"
+                          size="sm"
+                          fullWidth={isMobile}
                           onClick={() =>
                             handleStartChat(existingConsultations._id)
                           }
-                          startIcon={<MessageSquareText />}
+                          startIcon={<MessageSquareText size={20} />}
                         >
-                          Join Chat
+                          Continue Chat
                         </Button>
-                      ) : (
-                        <Button
-                          variant="outlined"
-                          onClick={() =>
-                            handleStartChat(existingConsultations._id)
-                          }
-                          startIcon={<MessageSquareText />}
-                        >
-                          View Chat History
-                        </Button>
-                      )}
-                    </div>
-                  )}
+                      </div>
+                    ) : (
+                      <Button
+                        variant="outlined"
+                        size="sm"
+                        fullWidth={isMobile}
+                        onClick={() =>
+                          handleStartChat(existingConsultations._id)
+                        }
+                        startIcon={<MessageSquareText />}
+                      >
+                        View Chat History
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

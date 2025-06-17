@@ -42,7 +42,7 @@ interface ConsultationWithPatient {
   chatIsActive?: boolean;
   doctorReportPreview?: DoctorReportPreview;
   patient: PatientDetails | null;
-  meetLink?: Url;
+  meetLink?: string;
 }
 
 export const getDoctorConsultations = query({
