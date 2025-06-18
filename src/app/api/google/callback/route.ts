@@ -26,5 +26,5 @@ export async function GET(req: Request) {
     email: email || "",
   });
 
-  return Response.redirect(`http://localhost:3000?${query}`);
+  return Response.redirect(`${process.env.NEXT_PUBLIC_APP_URL}?${query}`);
 }

@@ -392,11 +392,7 @@ export const Chat = ({ consultationId, isDoctor }: ChatProps) => {
 
         {!chatIsActive ? (
           <div className={styles.chatEndedMessage}>
-            <Text
-              value="This chat has ended. You can view the conversation history."
-              color="gray"
-              fontSize="sm"
-            />
+            <Text value="This chat is not active." color="gray" fontSize="sm" />
           </div>
         ) : (
           <form onSubmit={handleSendMessage} className={styles.messageInput}>

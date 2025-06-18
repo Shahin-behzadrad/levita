@@ -379,17 +379,21 @@ const PatientConsultations = ({
                         </Button>
                       </div>
                     ) : (
-                      <Button
-                        variant="outlined"
-                        size="sm"
-                        fullWidth={isMobile}
-                        onClick={() =>
-                          handleStartChat(existingConsultations._id)
-                        }
-                        startIcon={<MessageSquareText />}
-                      >
-                        View Chat History
-                      </Button>
+                      <>
+                        {existingConsultations?.status !== "pending" && (
+                          <Button
+                            variant="outlined"
+                            size="sm"
+                            fullWidth={isMobile}
+                            onClick={() =>
+                              handleStartChat(existingConsultations._id)
+                            }
+                            startIcon={<MessageSquareText />}
+                          >
+                            View Chat History
+                          </Button>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
