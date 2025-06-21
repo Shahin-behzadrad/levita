@@ -23,7 +23,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import Tooltip from "@/components/Shared/Tooltip/Tooltip";
 import { DateTime } from "luxon";
-import { useLocalAppointmentTime } from "@/lib/hooks";
+
 import { convertCETToLocal } from "@/lib/functions";
 import { JoinMeetingButton } from "@/components/JoinMeetingButton/JoinMeetingButton";
 
@@ -426,55 +426,14 @@ const DoctorsConsultations = () => {
                                   })}
                                 >
                                   {consultation.meetLink && (
-                                    <Tooltip
-                                      tooltipContent={
-                                        !canJoinMeeting(
-                                          consultation.consultationDateTime
-                                        ) ? (
-                                          <Text
-                                            className={styles.tooltipText}
-                                            value="You can join the meeting 10 minutes before the scheduled time."
-                                          />
-                                        ) : null
+                                    <JoinMeetingButton
+                                      consultationDateTime={
+                                        consultation.consultationDateTime ?? ""
                                       }
-                                      open={
-                                        !canJoinMeeting(
-                                          consultation.consultationDateTime
-                                        )
-                                          ? undefined
-                                          : false
-                                      }
-                                    >
-                                      <span>
-                                        <Button
-                                          size="sm"
-                                          fullWidth={isMobile}
-                                          variant="outlined"
-                                          startIcon={<Video size={20} />}
-                                          disabled={
-                                            !canJoinMeeting(
-                                              consultation.consultationDateTime
-                                            )
-                                          }
-                                          onClick={() => {
-                                            if (
-                                              canJoinMeeting(
-                                                consultation.consultationDateTime
-                                              )
-                                            ) {
-                                              window.open(
-                                                getMeetLinkUrl(
-                                                  consultation.meetLink
-                                                ),
-                                                "_blank"
-                                              );
-                                            }
-                                          }}
-                                        >
-                                          join meeting
-                                        </Button>
-                                      </span>
-                                    </Tooltip>
+                                      meetLink={getMeetLinkUrl(
+                                        consultation.meetLink
+                                      )}
+                                    />
                                   )}
                                   <Button
                                     variant="contained"
