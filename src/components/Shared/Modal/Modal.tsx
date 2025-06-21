@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 
 interface ModalProps {
   title?: string;
+  subTitle?: string;
   isOpen: boolean;
   onClose?: () => void;
   children: ReactNode;
@@ -16,6 +17,7 @@ interface ModalProps {
 
 const Modal = ({
   title,
+  subTitle,
   maxWidth,
   isOpen,
   onClose,
@@ -30,6 +32,7 @@ const Modal = ({
       <div className={classes.modal} style={{ maxWidth: maxWidth }}>
         <div className={classes.modalHeader}>
           <Text value={title} className={classes.modalTitle} />
+          {subTitle && <Text value={subTitle} fontSize="sm" color="gray" />}
           {Boolean(onClose) && (
             <Button onClick={onClose} className={classes.closeIcon}>
               <X />

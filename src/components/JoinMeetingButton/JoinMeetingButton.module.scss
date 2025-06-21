@@ -1,0 +1,21 @@
+.tooltipText {
+  width: 200px;
+}
+
+.joinMeetingButton {
+  &:not(:disabled) {
+    animation: pulse 2s infinite;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--primary-opaque-70);
+  }
+  70% {
+    box-shadow: 0 0 0 10px var(--primary-opaque-0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 var(--primary-opaque-0);
+  }
+}

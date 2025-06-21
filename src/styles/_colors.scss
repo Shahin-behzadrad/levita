@@ -6,6 +6,7 @@
     --#{$name}-dark: #{darken($color, 10%)};
     --#{$name}-darker: #{darken($color, 20%)};
 
+    --#{$name}-opaque-0: #{rgba($color, 0)};
     --#{$name}-opaque-5: #{rgba($color, 0.05)};
     --#{$name}-opaque-10: #{rgba($color, 0.1)};
     --#{$name}-opaque-20: #{rgba($color, 0.2)};

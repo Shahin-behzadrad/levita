@@ -22,6 +22,10 @@ import { LaboratoryFindings } from "./LaboratoryFindings/LaboratoryFindings";
 import Link from "next/link";
 import clsx from "clsx";
 import Tooltip from "@/components/Shared/Tooltip/Tooltip";
+import { DateTime } from "luxon";
+
+import { convertCETToLocal } from "@/lib/functions";
+import { JoinMeetingButton } from "@/components/JoinMeetingButton/JoinMeetingButton";
 
 const DoctorsConsultations = () => {
   const isMobile = useIsMobile();
@@ -66,16 +70,19 @@ const DoctorsConsultations = () => {
     setView("chat");
   };
 
-  // Helper to check if meeting can be joined
-  const canJoinMeeting = (consultationDateTime: string | null | undefined) => {
+  const canJoinMeeting = (
+    consultationDateTime: string | null | undefined
+  ): boolean => {
     if (!consultationDateTime) return false;
-    const now = new Date();
-    const meetingTime = new Date(consultationDateTime);
-    // Allow joining if within 10 minutes before or after the scheduled time
-    return now >= new Date(meetingTime.getTime() - 10 * 60 * 1000);
+
+    const now = DateTime.now().setZone("Europe/Berlin");
+    const meetingTime = DateTime.fromISO(consultationDateTime, {
+      zone: "Europe/Berlin",
+    });
+
+    return now >= meetingTime.minus({ minutes: 5 });
   };
 
-  // Helper to get meet link as string
   const getMeetLinkUrl = (meetLink: any) => {
     if (!meetLink) return "";
     if (typeof meetLink === "string") return meetLink;
@@ -104,6 +111,10 @@ const DoctorsConsultations = () => {
             <div className={styles.consultationsList}>
               {consultations.length > 0 ? (
                 consultations.map((consultation) => {
+                  const convertedConsulatationDate = convertCETToLocal(
+                    consultation?.consultationDateTime ?? ""
+                  );
+
                   const isExpanded = expandedConsultations.has(
                     consultation._id
                   );
@@ -153,30 +164,12 @@ const DoctorsConsultations = () => {
                                 fontWeight="medium"
                               />
                               <Text
-                                value={
-                                  consultation.consultationDateTime
-                                    ? format(
-                                        new Date(
-                                          consultation.consultationDateTime
-                                        ),
-                                        "MMM dd, yyyy"
-                                      )
-                                    : "N/A"
-                                }
+                                value={convertedConsulatationDate.date}
                                 fontSize={isMobile ? "xs" : "sm"}
                                 fontWeight="medium"
                               />
                               <Text
-                                value={
-                                  consultation.consultationDateTime
-                                    ? format(
-                                        new Date(
-                                          consultation.consultationDateTime
-                                        ),
-                                        "hh:mm a"
-                                      )
-                                    : "N/A"
-                                }
+                                value={convertedConsulatationDate.time}
                                 fontSize="sm"
                                 color="gray"
                               />
@@ -196,55 +189,14 @@ const DoctorsConsultations = () => {
                                 })}
                               >
                                 {consultation.meetLink && (
-                                  <Tooltip
-                                    tooltipContent={
-                                      !canJoinMeeting(
-                                        consultation.consultationDateTime
-                                      ) ? (
-                                        <Text
-                                          className={styles.tooltipText}
-                                          value="You can join the meeting 10 minutes before the scheduled time."
-                                        />
-                                      ) : null
+                                  <JoinMeetingButton
+                                    consultationDateTime={
+                                      consultation.consultationDateTime ?? ""
                                     }
-                                    open={
-                                      !canJoinMeeting(
-                                        consultation.consultationDateTime
-                                      )
-                                        ? undefined
-                                        : false
-                                    }
-                                  >
-                                    <span>
-                                      <Button
-                                        size="sm"
-                                        fullWidth={isMobile}
-                                        variant="outlined"
-                                        startIcon={<Video size={20} />}
-                                        disabled={
-                                          !canJoinMeeting(
-                                            consultation.consultationDateTime
-                                          )
-                                        }
-                                        onClick={() => {
-                                          if (
-                                            canJoinMeeting(
-                                              consultation.consultationDateTime
-                                            )
-                                          ) {
-                                            window.open(
-                                              getMeetLinkUrl(
-                                                consultation.meetLink
-                                              ),
-                                              "_blank"
-                                            );
-                                          }
-                                        }}
-                                      >
-                                        join meeting
-                                      </Button>
-                                    </span>
-                                  </Tooltip>
+                                    meetLink={getMeetLinkUrl(
+                                      consultation.meetLink
+                                    )}
+                                  />
                                 )}
                                 <Button
                                   size="sm"
@@ -474,55 +426,14 @@ const DoctorsConsultations = () => {
                                   })}
                                 >
                                   {consultation.meetLink && (
-                                    <Tooltip
-                                      tooltipContent={
-                                        !canJoinMeeting(
-                                          consultation.consultationDateTime
-                                        ) ? (
-                                          <Text
-                                            className={styles.tooltipText}
-                                            value="You can join the meeting 10 minutes before the scheduled time."
-                                          />
-                                        ) : null
+                                    <JoinMeetingButton
+                                      consultationDateTime={
+                                        consultation.consultationDateTime ?? ""
                                       }
-                                      open={
-                                        !canJoinMeeting(
-                                          consultation.consultationDateTime
-                                        )
-                                          ? undefined
-                                          : false
-                                      }
-                                    >
-                                      <span>
-                                        <Button
-                                          size="sm"
-                                          fullWidth={isMobile}
-                                          variant="outlined"
-                                          startIcon={<Video size={20} />}
-                                          disabled={
-                                            !canJoinMeeting(
-                                              consultation.consultationDateTime
-                                            )
-                                          }
-                                          onClick={() => {
-                                            if (
-                                              canJoinMeeting(
-                                                consultation.consultationDateTime
-                                              )
-                                            ) {
-                                              window.open(
-                                                getMeetLinkUrl(
-                                                  consultation.meetLink
-                                                ),
-                                                "_blank"
-                                              );
-                                            }
-                                          }}
-                                        >
-                                          join meeting
-                                        </Button>
-                                      </span>
-                                    </Tooltip>
+                                      meetLink={getMeetLinkUrl(
+                                        consultation.meetLink
+                                      )}
+                                    />
                                   )}
                                   <Button
                                     variant="contained"
