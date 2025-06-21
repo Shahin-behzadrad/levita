@@ -10,6 +10,8 @@ import Grid from "@/components/Shared/Grid/Grid";
 import { createMeet } from "@/lib/createMeetLink";
 import { toast } from "sonner";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import { formatPickedDateTimeCET } from "@/lib/functions";
+import { DateTime } from "luxon";
 
 interface ConsultationSchedulerProps {
   isOpen: boolean;
@@ -21,6 +23,8 @@ interface ConsultationSchedulerProps {
   };
   userId: Id<"doctorProfiles">;
   email: string;
+  patientName: string;
+  doctorName: string;
 }
 
 export default function ConsultationScheduler({
@@ -30,6 +34,8 @@ export default function ConsultationScheduler({
   googleToken,
   userId,
   email,
+  patientName,
+  doctorName,
 }: ConsultationSchedulerProps) {
   const { messages } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -37,36 +43,26 @@ export default function ConsultationScheduler({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleConfirm = async () => {
-    if (!selectedDate || !selectedTime) {
-      return;
-    }
+    if (!selectedDate || !selectedTime) return;
 
     try {
       setIsLoading(true);
-      const dateTime = new Date(selectedDate);
-      dateTime.setHours(selectedTime.getHours());
-      dateTime.setMinutes(selectedTime.getMinutes());
 
-      const endDateTime = new Date(dateTime);
-      endDateTime.setHours(endDateTime.getHours() + 1);
+      const start = formatPickedDateTimeCET(selectedDate, selectedTime);
 
-      const formattedStartTime = dateTime.toISOString();
-      const formattedEndTime = endDateTime.toISOString();
+      const end = DateTime.fromISO(start).plus({ hours: 1 }).toISO();
 
       const meetLink = await createMeet(
-        formattedStartTime,
-        formattedEndTime,
+        start,
+        end!,
         googleToken,
         userId,
-        email
+        email,
+        patientName,
+        doctorName
       );
 
-      const formattedDateTime = dateTime
-        .toISOString()
-        .slice(0, 16)
-        .replace("T", " ");
-
-      onConfirm(formattedDateTime, meetLink ?? "");
+      onConfirm(start, meetLink ?? "");
       onClose();
     } catch (error) {
       console.error("Error creating consultation:", error);
@@ -84,6 +80,9 @@ export default function ConsultationScheduler({
       isOpen={isOpen}
       onClose={onClose}
       title={messages.common.scheduleConsultation}
+      subTitle={
+        "The consultation will be scheduled in the Central European Time (CET) timezone."
+      }
       actions={
         <div className={styles.schedulerActions}>
           <Button variant="outlined" onClick={onClose}>
@@ -108,7 +107,7 @@ export default function ConsultationScheduler({
             selected={selectedDate}
             onChange={(date) => setSelectedDate(date)}
             minDate={new Date()}
-            dateFormat="MMMM d, yyyy"
+            dateFormat="yyyy-MM-dd"
             className={styles.datePicker}
             wrapperClassName={styles.timePickerWrapper}
             placeholderText={messages.common.selectDate}
@@ -123,7 +122,7 @@ export default function ConsultationScheduler({
             showTimeSelectOnly
             timeIntervals={30}
             timeCaption="Time"
-            dateFormat="h:mm aa"
+            dateFormat="HH:mm"
             className={styles.timePicker}
             wrapperClassName={styles.timePickerWrapper}
             placeholderText={messages.common.selectTime}

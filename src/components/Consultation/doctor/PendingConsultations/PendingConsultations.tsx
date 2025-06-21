@@ -51,6 +51,7 @@ const PendingConsultations = ({
   ) => {
     if (!selectedConsultation) return;
     if (!userId) return;
+
     await acceptConsultation({
       doctorId: userId,
       requestId: selectedConsultation as Id<"consultations">,
@@ -167,6 +168,12 @@ const PendingConsultations = ({
           }}
           userId={userId as Id<"doctorProfiles">}
           email={googleToken?.email || ""}
+          patientName={
+            pendingConsultation?.find(
+              (consultation) => consultation._id === selectedConsultation
+            )?.patient?.fullName || ""
+          }
+          doctorName={doctorProfile?.fullName || ""}
         />
       )}
     </>

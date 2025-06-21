@@ -19,7 +19,9 @@ export async function createMeet(
     refresh_token?: string;
   },
   userId: string,
-  email: string
+  email: string,
+  patientName: string,
+  doctorName: string
 ) {
   try {
     if (!tokens.access_token) {
@@ -54,13 +56,19 @@ export async function createMeet(
 
     const calendar = google.calendar({ version: "v3", auth });
 
+    const formatted = new Intl.DateTimeFormat("en-GB", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: "Europe/Berlin",
+    }).format(new Date(start));
+
     const event = await calendar.events.insert({
       calendarId: "primary",
       requestBody: {
-        summary: "Medical Consultation",
+        summary: `Dr. ${doctorName} & ${patientName} Consultation at ${formatted}`,
         description: "Online medical consultation appointment",
-        start: { dateTime: start },
-        end: { dateTime: end },
+        start: { dateTime: start, timeZone: "Europe/Berlin" },
+        end: { dateTime: end, timeZone: "Europe/Berlin" },
         conferenceData: {
           createRequest: {
             requestId: Math.random().toString(36).substring(2),

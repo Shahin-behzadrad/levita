@@ -21,6 +21,8 @@ import Button from "@/components/Shared/Button";
 import Tooltip from "@/components/Shared/Tooltip/Tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Image from "@/components/Shared/Image/Image";
+import { toZonedTime } from "date-fns-tz";
+import { getNowInCET } from "@/lib/functions";
 
 const PatientConsultations = ({
   userId,
@@ -56,16 +58,14 @@ const PatientConsultations = ({
     setView("chat");
   };
 
-  // Helper to check if meeting can be joined
   const canJoinMeeting = (consultationDateTime: string | null | undefined) => {
     if (!consultationDateTime) return false;
-    const now = new Date();
-    const meetingTime = new Date(consultationDateTime);
-    // Allow joining if within 10 minutes before or after the scheduled time
+    const timeZone = "Europe/Berlin";
+    const now = getNowInCET();
+    const meetingTime = toZonedTime(new Date(consultationDateTime), timeZone);
     return now >= new Date(meetingTime.getTime() - 10 * 60 * 1000);
   };
 
-  // Helper to get meet link as string
   const getMeetLinkUrl = (meetLink: any) => {
     if (!meetLink) return "";
     if (typeof meetLink === "string") return meetLink;
