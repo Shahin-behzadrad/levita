@@ -10,18 +10,10 @@ import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import clsx from "clsx";
 import { useApp } from "@/lib/AppContext";
-import {
-  LucideBookMarked,
-  MessageSquareText,
-  ChevronRight,
-  ChevronDown,
-  Video,
-} from "lucide-react";
+import { LucideBookMarked, MessageSquareText, ChevronDown } from "lucide-react";
 import Button from "@/components/Shared/Button";
-import Tooltip from "@/components/Shared/Tooltip/Tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Image from "@/components/Shared/Image/Image";
-import { toZonedTime } from "date-fns-tz";
 import { convertCETToLocal } from "@/lib/functions";
 import { JoinMeetingButton } from "@/components/JoinMeetingButton/JoinMeetingButton";
 
@@ -98,27 +90,33 @@ const PatientConsultations = ({
                   />
                 </div>
                 <div className={styles.consultationHeaderRight}>
-                  <div className={styles.time}>
-                    <Text value="Scheduled Time" fontSize="sm" />
+                  {existingConsultations.consultationDateTime ? (
+                    <div className={styles.time}>
+                      <Text value="Scheduled Time" fontSize="sm" />
+                      <Text
+                        value={
+                          convertCETToLocal(
+                            existingConsultations.consultationDateTime
+                          ).date
+                        }
+                        fontSize="sm"
+                        color="gray"
+                      />
+                      <Text
+                        value={
+                          convertCETToLocal(
+                            existingConsultations.consultationDateTime
+                          ).time
+                        }
+                        fontSize="sm"
+                        color="gray"
+                      />
+                    </div>
+                  ) : (
                     <Text
-                      value={
-                        convertCETToLocal(
-                          existingConsultations.consultationDateTime
-                        ).date
-                      }
-                      fontSize="sm"
-                      color="gray"
+                      value={formatTime(existingConsultations?._creationTime)}
                     />
-                    <Text
-                      value={
-                        convertCETToLocal(
-                          existingConsultations.consultationDateTime
-                        ).time
-                      }
-                      fontSize="sm"
-                      color="gray"
-                    />
-                  </div>
+                  )}
                   <ChevronDown
                     size={20}
                     color="var(--gray)"
